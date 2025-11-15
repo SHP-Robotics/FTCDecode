@@ -14,9 +14,8 @@ public class BaseRobot extends LinearOpMode {
     public DeterministicTracker tracker;
     public TeleOpController teleOpController;
 
-    public FeederSubsystem feederSubsystem;
-    public HoodSubsystem hoodSubsystem;
     public IntakeSubsystem intakeSubsystem;
+    public FeederSubsystem feederSubsystem;
     public OuttakeSubsystem outtakeSubsystem;
 
     public GamepadInterface gamepadInterface1;
@@ -36,15 +35,14 @@ public class BaseRobot extends LinearOpMode {
 
         mecanumController = (MecanumController) FrontalLobe.driveController;
         if (PestoFTCConfig.initializePinpoint) {
-            tracker = FrontalLobe.tracker;
-            tracker.reset();
+//            tracker = FrontalLobe.tracker;
+//            tracker.reset();
 
             teleOpController = FrontalLobe.teleOpController;
         }
 
-        feederSubsystem = new FeederSubsystem();
-        hoodSubsystem = new HoodSubsystem();
         intakeSubsystem = new IntakeSubsystem();
+        feederSubsystem = new FeederSubsystem();
         outtakeSubsystem = new OuttakeSubsystem();
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
@@ -64,11 +62,11 @@ public class BaseRobot extends LinearOpMode {
             @Override
             public boolean loop(double v) {
                 // how long (seconds) before starting to move other components
-                if (v < 0.5)
+                if (v < 0.75)
                     return false;
 
-                feederSubsystem.setState(FeederSubsystem.FeederState.FORWARD);
-                intakeSubsystem.setState(IntakeSubsystem.IntakeState.OUTTAKE);
+                feederSubsystem.setState(FeederSubsystem.FeederState.INTAKE);
+                intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
 
                 return true;
             }

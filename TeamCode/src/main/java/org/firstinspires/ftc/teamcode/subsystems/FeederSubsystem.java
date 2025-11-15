@@ -1,25 +1,25 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem.FeederState.FORWARD;
-import static org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem.FeederState.REVERSE;
-import static org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem.FeederState.STOPPED;
-
 import com.shprobotics.pestocore.hardware.CortexLinkedCRServo;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
 public class FeederSubsystem {
-    private final CortexLinkedCRServo feeder;
+    private final CortexLinkedCRServo feederLeft;
+    private final CortexLinkedCRServo feederRight;
+
     private FeederState state;
 
     public enum FeederState {
-        FORWARD,
-        REVERSE,
-        STOPPED
+        INTAKE,
+        NEUTRAL,
+        REJECT
     }
 
     public FeederSubsystem() {
-        feeder = MotorCortex.getCRServo("feeder");
-        state = STOPPED;
+        feederLeft = MotorCortex.getCRServo("feederLeft");
+        feederRight = MotorCortex.getCRServo("feederRight");
+
+        state = FeederState.NEUTRAL;
     }
 
     public void setState(FeederState state) {
@@ -27,11 +27,19 @@ public class FeederSubsystem {
     }
 
     public void update() {
-        if (state == FORWARD)
-            feeder.setPowerResult(1.0);
-        if (state == REVERSE)
-            feeder.setPowerResult(-1.0);
-        if (state == STOPPED)
-            feeder.setPowerResult(0.0);
+        if (state == FeederState.INTAKE) {
+            feederLeft.setPowerResult(0.5);
+            feederRight.setPowerResult(-0.5);
+        }
+
+        if (state == FeederState.NEUTRAL) {
+            feederLeft.setPowerResult(0.0);
+            feederRight.setPowerResult(0.0);
+        }
+
+        if (state == FeederState.REJECT) {
+            feederLeft.setPowerResult(-1.0);
+            feederRight.setPowerResult(1.0);
+        }
     }
 }

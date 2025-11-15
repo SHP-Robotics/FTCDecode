@@ -1,17 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.PestoFTCConfig.INDEXER_BLOCK;
-import static org.firstinspires.ftc.teamcode.PestoFTCConfig.INDEXER_OUTTAKE;
 import static org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem.OuttakeState.OUTTAKE;
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.shprobotics.pestocore.hardware.CortexLinkedMotor;
-import com.shprobotics.pestocore.hardware.CortexLinkedServo;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
 public class OuttakeSubsystem {
-    private final CortexLinkedMotor shooter;
-    private final CortexLinkedServo indexer;
+    private final CortexLinkedMotor shooterLeft;
+    private final CortexLinkedMotor shooterRight;
 
     private OuttakeState state;
 
@@ -20,13 +17,25 @@ public class OuttakeSubsystem {
         NEUTRAL
     }
 
-    public OuttakeSubsystem() {
-        shooter = MotorCortex.getMotor("shooter");
-        shooter.setMode(RUN_USING_ENCODER);
+    private double power;
 
-        indexer = MotorCortex.getServo("indexer");
+    public OuttakeSubsystem() {
+        shooterLeft = MotorCortex.getMotor("spinnerLeft");
+        shooterRight = MotorCortex.getMotor("spinnerRight");
+
+        shooterLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooterRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+//        shooterLeft.setMode(RUN_USING_ENCODER);
+//        shooterRight.setMode(RUN_USING_ENCODER);
 
         state = OuttakeState.NEUTRAL;
+
+        power = 0.4;
+    }
+
+    public void setPower(double power) {
+        this.power = power;
     }
 
     public void setState(OuttakeState state) {
@@ -35,11 +44,11 @@ public class OuttakeSubsystem {
 
     public void update() {
         if (state == OUTTAKE) {
-            shooter.setPowerResult(1.0);
-            indexer.setPositionResult(INDEXER_OUTTAKE);
+            shooterLeft.setPowerResult(power);
+            shooterRight.setPowerResult(power);
         } else {
-            shooter.setPowerResult(0.0);
-            indexer.setPositionResult(INDEXER_BLOCK);
+            shooterLeft.setPowerResult(0.0);
+            shooterRight.setPowerResult(0.0);
         }
     }
 }
