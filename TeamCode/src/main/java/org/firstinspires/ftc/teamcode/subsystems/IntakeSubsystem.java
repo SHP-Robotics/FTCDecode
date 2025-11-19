@@ -56,7 +56,7 @@ public class IntakeSubsystem {
         }
 
         if (state == OUTTAKE) {
-            intake.setPowerResult(0.0);
+            intake.setPowerResult(1.0);
             dropdown.setPositionResult(DROPDOWN_PUSH);
         }
     }

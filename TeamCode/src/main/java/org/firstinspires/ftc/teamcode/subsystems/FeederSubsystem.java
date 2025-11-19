@@ -28,7 +28,7 @@ public class FeederSubsystem {
 
     public void update() {
         if (state == FORWARD)
-            feeder.setPowerResult(1.0);
+            feeder.setPowerResult(0.7);
         if (state == REVERSE)
             feeder.setPowerResult(-1.0);
         if (state == STOPPED)

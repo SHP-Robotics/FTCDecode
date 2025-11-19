@@ -9,11 +9,15 @@ import com.shprobotics.pestocore.hardware.CortexLinkedMotor;
 import com.shprobotics.pestocore.hardware.CortexLinkedServo;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.PestoFTCConfig;
+
 public class OuttakeSubsystem {
     private final CortexLinkedMotor shooter;
-    private final CortexLinkedServo indexer;
 
     private OuttakeState state;
+
+    private double power = PestoFTCConfig.SHOOTER_CLOSE;
 
     public enum OuttakeState {
         OUTTAKE,
@@ -24,8 +28,6 @@ public class OuttakeSubsystem {
         shooter = MotorCortex.getMotor("shooter");
         shooter.setMode(RUN_USING_ENCODER);
 
-        indexer = MotorCortex.getServo("indexer");
-
         state = OuttakeState.NEUTRAL;
     }
 
@@ -33,13 +35,16 @@ public class OuttakeSubsystem {
         this.state = state;
     }
 
+    public void setPower(double power) {
+        assert 0 <= power && power <= 1;
+        this.power = power;
+    }
+
     public void update() {
         if (state == OUTTAKE) {
-            shooter.setPowerResult(1.0);
-            indexer.setPositionResult(INDEXER_OUTTAKE);
+            shooter.setPowerResult(power);
         } else {
             shooter.setPowerResult(0.0);
-            indexer.setPositionResult(INDEXER_BLOCK);
         }
     }
 }

@@ -36,8 +36,8 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double ODOMETRY_WIDTH = 9.663;
 
     // DROPDOWN
-    public static double DROPDOWN_DRIVE = 0.577;
-    public static double DROPDOWN_INTAKE = 0.668;
+    public static double DROPDOWN_DRIVE = 0.54;
+    public static double DROPDOWN_INTAKE = 0.6;
     public static double DROPDOWN_PUSH = 0.420;
 
     // INDEXER
@@ -45,9 +45,14 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double INDEXER_BLOCK = 0.26;
 
     // HOOD
-    public static double HOOD_CLOSE = 0.00;
-    public static double HOOD_MID = 0.0551;
+    public static double HOOD_CLOSE = 0.070;
+    public static double HOOD_MID = 0.1;
     public static double HOOD_FAR = 0.1131;
+
+    // SHOOTER
+    public static double SHOOTER_CLOSE = 0.73;
+    public static double SHOOTER_MIDDLE = 0.9;
+    public static double SHOOTER_FAR = 1.0;
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);

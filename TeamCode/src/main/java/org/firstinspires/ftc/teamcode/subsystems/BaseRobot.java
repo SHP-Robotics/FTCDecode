@@ -18,6 +18,7 @@ public class BaseRobot extends LinearOpMode {
     public HoodSubsystem hoodSubsystem;
     public IntakeSubsystem intakeSubsystem;
     public OuttakeSubsystem outtakeSubsystem;
+    public IndexerSubsystem indexerSubsystem;
 
     public GamepadInterface gamepadInterface1;
 
@@ -46,6 +47,7 @@ public class BaseRobot extends LinearOpMode {
         hoodSubsystem = new HoodSubsystem();
         intakeSubsystem = new IntakeSubsystem();
         outtakeSubsystem = new OuttakeSubsystem();
+        indexerSubsystem = new IndexerSubsystem();
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
 
@@ -64,11 +66,12 @@ public class BaseRobot extends LinearOpMode {
             @Override
             public boolean loop(double v) {
                 // how long (seconds) before starting to move other components
-                if (v < 0.5)
+                if (v < 1.0)
                     return false;
 
                 feederSubsystem.setState(FeederSubsystem.FeederState.FORWARD);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.OUTTAKE);
+                indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUTTAKE);
 
                 return true;
             }
