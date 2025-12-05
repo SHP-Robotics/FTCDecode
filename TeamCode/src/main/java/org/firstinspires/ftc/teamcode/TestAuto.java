@@ -26,10 +26,8 @@ public class TestAuto extends BaseRobot {
     private PathChain forwards;
     private PathChain forwards_again;
 
-    public static double forward_dist = 27;
-
     enum AutoState {
-        MOVING_1 (Double.POSITIVE_INFINITY),
+        MOVING_1 (2.0),
         MOVING_2 (10.0),
         DONE (Double.POSITIVE_INFINITY);
 
@@ -80,16 +78,16 @@ public class TestAuto extends BaseRobot {
         forwards = follower.pathBuilder()
                 .setGlobalDeceleration()
                 .addPath(new BezierLine(new Pose(0,0), new Pose(4,0)))
-                .setLinearHeadingInterpolation(0, -0.22)
+                .setLinearHeadingInterpolation(0, -0.36)
                 .build();
 
         forwards_again = follower.pathBuilder()
                 .setGlobalDeceleration()
-                .addPath(new BezierLine(new Pose(4, 0), new Pose(forward_dist, 0)))
-                .setLinearHeadingInterpolation(-0.22, -Math.PI/2)
+                .addPath(new BezierLine(new Pose(4, 0), new Pose(27, 0)))
+                .setLinearHeadingInterpolation(-0.36, -Math.PI/2)
                 .build();
 
-        follower.followPath(forwards);
+        follower.followPath(forwards, true);
 
         outtakeSubsystem.setPower(PestoFTCConfig.SHOOTER_FAR);
 
@@ -110,7 +108,7 @@ public class TestAuto extends BaseRobot {
 
         draw();
 
-        if (!follower.isBusy() || ((System.nanoTime() - state_start) / 1E9) > autoState.timer) {
+        if (((System.nanoTime() - state_start) / 1E9) > autoState.timer) {
             switch (autoState) {
                 case MOVING_1:
                     FrontalLobe.useMacro("outtake");
