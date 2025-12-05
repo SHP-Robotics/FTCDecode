@@ -28,10 +28,11 @@ public class FeederSubsystem {
 
     public void update() {
         if (state == FORWARD)
-            feeder.setPowerResult(0.7);
+            feeder.setPowerResult(1.0);
         if (state == REVERSE)
             feeder.setPowerResult(-1.0);
         if (state == STOPPED)
             feeder.setPowerResult(0.0);
+
     }
 }

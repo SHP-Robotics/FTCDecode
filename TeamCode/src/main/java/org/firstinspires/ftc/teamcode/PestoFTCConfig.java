@@ -4,12 +4,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.shprobotics.pestocore.drivebases.controllers.DriveController;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
 import com.shprobotics.pestocore.drivebases.trackers.DeterministicTracker;
 import com.shprobotics.pestocore.drivebases.trackers.ThreeWheelOdometryTracker;
-import com.shprobotics.pestocore.hardware.CortexLinkedMotor;
+import com.shprobotics.pestocore.geometries.Vector2D;
 import com.shprobotics.pestocore.processing.Cerebrum;
 import com.shprobotics.pestocore.processing.ConfigInterface;
 import com.shprobotics.pestocore.processing.FrontalLobe;
@@ -19,56 +18,58 @@ import com.shprobotics.pestocore.processing.PestoConfig;
 @Config
 @PestoConfig()
 public class PestoFTCConfig implements ConfigInterface {
-    public static boolean initialized = false; // don't mess with this :O
-    public static boolean initializePinpoint = false;
+    private static boolean initialized = false; // don't mess with this :O
+    public static boolean initializePinpoint = true;
+    public static boolean initializeDrive = true;
 
     // ODOMETRY
-    public static String leftName = "fl";
-    public static String centerName = "bl";
-    public static String rightName = "fr";
+    private static String leftName = "fl";
+    private static String centerName = "bl";
+    private static String rightName = "fr";
 
-    public static DcMotorSimple.Direction leftDirection = DcMotorSimple.Direction.REVERSE;
-    public static DcMotorSimple.Direction centerDirection = DcMotorSimple.Direction.FORWARD;
-    public static DcMotorSimple.Direction rightDirection = DcMotorSimple.Direction.REVERSE;
+    private static DcMotorSimple.Direction leftDirection = DcMotorSimple.Direction.REVERSE;
+    private static DcMotorSimple.Direction centerDirection = DcMotorSimple.Direction.REVERSE;
+    private static DcMotorSimple.Direction rightDirection = DcMotorSimple.Direction.REVERSE;
 
-    public static double ODOMETRY_TICKS_PER_INCH = 505.3169;
-    public static double FORWARD_OFFSET = -10;
-    public static double ODOMETRY_WIDTH = 9.663;
+    private static double ODOMETRY_TICKS_PER_INCH = 505.3169;
+    public static double FORWARD_OFFSET = -1.565;
+    public static double ODOMETRY_WIDTH = 10.1;
+
+    public static double FORWARD_VELOCITY = 76;
+    public static double STRAFE_VELOCITY = 61;
 
     // DROPDOWN
-    public static double DROPDOWN_DRIVE = 0.54;
-    public static double DROPDOWN_INTAKE = 0.6;
-    public static double DROPDOWN_PUSH = 0.420;
+    public static double DROPDOWN_DRIVE = 0.29;
+    public static double DROPDOWN_INTAKE = 0.47;
+    public static double DROPDOWN_PUSH = 0.29;
+    public static double DROPDOWN_PUSH_AUTO = 0.29;
 
     // INDEXER
     public static double INDEXER_OUTTAKE = 0.08;
-    public static double INDEXER_BLOCK = 0.26;
+    public static double INDEXER_BLOCK = 0.24;
 
     // HOOD
     public static double HOOD_CLOSE = 0.070;
     public static double HOOD_MID = 0.1;
     public static double HOOD_FAR = 0.1131;
+    public static double HOOD_AUTO_FAR = 0.1131;
 
     // SHOOTER
-    public static double SHOOTER_CLOSE = 0.73;
-    public static double SHOOTER_MIDDLE = 0.9;
+    public static double SHOOTER_CLOSE = 0.70;
+    public static double SHOOTER_MIDDLE = 0.87;
     public static double SHOOTER_FAR = 1.0;
+
+    // CAMERA
+    public static double STATIC_DRIVE = 0.05;
+    public static double KP = 0.015;
+
+    public static double DECELERATION = 45.0;
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);
         Cerebrum.initialize();
 
-        CortexLinkedMotor frontLeft = MotorCortex.getMotor("fl");
-        CortexLinkedMotor frontRight = MotorCortex.getMotor("fr");
-        CortexLinkedMotor backLeft = MotorCortex.getMotor("bl");
-        CortexLinkedMotor backRight = MotorCortex.getMotor("br");
-
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        DriveController driveController = new MecanumController(
+        MecanumController driveController = new MecanumController(
                 MotorCortex.getMotor("fl"),
                 MotorCortex.getMotor("fr"),
                 MotorCortex.getMotor("bl"),
@@ -82,7 +83,26 @@ public class PestoFTCConfig implements ConfigInterface {
                 DcMotorSimple.Direction.FORWARD
         });
 
+        driveController.setPowerVectors(new Vector2D[]{
+                new Vector2D(Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0)),
+                new Vector2D(-Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0)),
+                new Vector2D(-Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0)),
+                new Vector2D(Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0))
+        });
+
         driveController.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        driveController.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveController.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+//        driveController.frontLeft.setAccelerationMax(5.0);
+//        driveController.frontRight.setAccelerationMax(5.0);
+//        driveController.backLeft.setAccelerationMax(5.0);
+//        driveController.backRight.setAccelerationMax(5.0);
+
+        driveController.frontLeft.setAccelerationMax(Double.POSITIVE_INFINITY);
+        driveController.frontRight.setAccelerationMax(Double.POSITIVE_INFINITY);
+        driveController.backLeft.setAccelerationMax(Double.POSITIVE_INFINITY);
+        driveController.backRight.setAccelerationMax(Double.POSITIVE_INFINITY);
 
         if (initializePinpoint) {
             DeterministicTracker tracker = new ThreeWheelOdometryTracker.TrackerBuilder(
@@ -102,9 +122,9 @@ public class PestoFTCConfig implements ConfigInterface {
             TeleOpController teleOpController = new TeleOpController(driveController, hardwareMap);
             teleOpController.useTrackerIMU(tracker);
 
-            teleOpController.setSpeedController(gamepad -> 1.0);
+            teleOpController.setSpeedController(gamepad -> gamepad.left_bumper ? 0.6 : 1.0);
 
-//            teleOpController.counteractCentripetalForce();
+            teleOpController.counteractCentripetalForce(tracker, Math.min(STRAFE_VELOCITY, FORWARD_VELOCITY));
 
             FrontalLobe.teleOpController = teleOpController;
             FrontalLobe.tracker = tracker;

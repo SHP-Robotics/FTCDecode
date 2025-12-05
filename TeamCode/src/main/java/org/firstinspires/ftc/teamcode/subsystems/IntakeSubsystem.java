@@ -4,9 +4,11 @@ import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 import static org.firstinspires.ftc.teamcode.PestoFTCConfig.DROPDOWN_DRIVE;
 import static org.firstinspires.ftc.teamcode.PestoFTCConfig.DROPDOWN_INTAKE;
 import static org.firstinspires.ftc.teamcode.PestoFTCConfig.DROPDOWN_PUSH;
+import static org.firstinspires.ftc.teamcode.PestoFTCConfig.DROPDOWN_PUSH_AUTO;
 import static org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem.IntakeState.INTAKE;
 import static org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem.IntakeState.NEUTRAL;
 import static org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem.IntakeState.OUTTAKE;
+import static org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem.IntakeState.OUTTAKE_AUTO;
 import static org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem.IntakeState.REJECT;
 
 import com.shprobotics.pestocore.hardware.CortexLinkedMotor;
@@ -23,7 +25,8 @@ public class IntakeSubsystem {
         INTAKE,
         NEUTRAL,
         REJECT,
-        OUTTAKE
+        OUTTAKE,
+        OUTTAKE_AUTO
     }
 
     public IntakeSubsystem() {
@@ -46,7 +49,7 @@ public class IntakeSubsystem {
         }
 
         if (state == NEUTRAL) {
-            intake.setPowerResult(0.0);
+            intake.setPowerResult(0.15);
             dropdown.setPositionResult(DROPDOWN_DRIVE);
         }
 
@@ -58,6 +61,11 @@ public class IntakeSubsystem {
         if (state == OUTTAKE) {
             intake.setPowerResult(1.0);
             dropdown.setPositionResult(DROPDOWN_PUSH);
+        }
+
+        if (state == OUTTAKE_AUTO) {
+            intake.setPowerResult(1.0);
+            dropdown.setPositionResult(DROPDOWN_PUSH_AUTO);
         }
     }
 }

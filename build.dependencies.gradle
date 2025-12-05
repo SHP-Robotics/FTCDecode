@@ -5,6 +5,7 @@ repositories {
 
     maven { url = 'https://maven.brott.dev/' }
     maven { url = "https://repo.dairy.foundation/releases" }
+    maven { url = "https://mymaven.bylazar.com/releases" }
 
     flatDir {
         dirs rootProject.file('libs')
@@ -12,19 +13,23 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.firstinspires.ftc:Inspection:10.1.1'
-    implementation 'org.firstinspires.ftc:Blocks:10.1.1'
-    implementation 'org.firstinspires.ftc:RobotCore:10.1.1'
-    implementation 'org.firstinspires.ftc:RobotServer:10.1.1'
-    implementation 'org.firstinspires.ftc:OnBotJava:10.1.1'
-    implementation 'org.firstinspires.ftc:Hardware:10.1.1'
-    implementation 'org.firstinspires.ftc:FtcCommon:10.1.1'
-    implementation 'org.firstinspires.ftc:Vision:10.1.1'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-
     implementation "dev.frozenmilk.dairy:CachingHardware:1.0.0"
 
     implementation 'io.github.william27b:dashboard:0.15.03'
     implementation 'io.github.william27b:core:0.15.03'
+
+    implementation 'org.firstinspires.ftc:Inspection:11.0.0'
+    implementation 'org.firstinspires.ftc:Blocks:11.0.0'
+    implementation 'org.firstinspires.ftc:RobotCore:11.0.0'
+    implementation 'org.firstinspires.ftc:RobotServer:11.0.0'
+    implementation 'org.firstinspires.ftc:OnBotJava:11.0.0'
+    implementation 'org.firstinspires.ftc:Hardware:11.0.0'
+    implementation 'org.firstinspires.ftc:FtcCommon:11.0.0'
+    implementation 'org.firstinspires.ftc:Vision:11.0.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+
+    implementation 'com.pedropathing:ftc:2.0.4'
+    implementation 'com.pedropathing:telemetry:1.0.0'
+    implementation 'com.bylazar:fullpanels:1.0.9'
 }
 

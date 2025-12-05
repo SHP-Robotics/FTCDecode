@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
@@ -9,7 +11,7 @@ import com.shprobotics.pestocore.processing.FrontalLobe;
 
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
-public class BaseRobot extends LinearOpMode {
+public class BaseRobot extends OpMode {
     public MecanumController mecanumController;
     public DeterministicTracker tracker;
     public TeleOpController teleOpController;
@@ -19,6 +21,8 @@ public class BaseRobot extends LinearOpMode {
     public IntakeSubsystem intakeSubsystem;
     public OuttakeSubsystem outtakeSubsystem;
     public IndexerSubsystem indexerSubsystem;
+
+    public Limelight3A limelight;
 
     public GamepadInterface gamepadInterface1;
 
@@ -32,10 +36,11 @@ public class BaseRobot extends LinearOpMode {
     }
 
     @Override
-    public void runOpMode() {
+    public void init() {
         FrontalLobe.initialize(hardwareMap);
 
-        mecanumController = (MecanumController) FrontalLobe.driveController;
+        if (PestoFTCConfig.initializeDrive)
+            mecanumController = (MecanumController) FrontalLobe.driveController;
         if (PestoFTCConfig.initializePinpoint) {
             tracker = FrontalLobe.tracker;
             tracker.reset();
@@ -48,6 +53,11 @@ public class BaseRobot extends LinearOpMode {
         intakeSubsystem = new IntakeSubsystem();
         outtakeSubsystem = new OuttakeSubsystem();
         indexerSubsystem = new IndexerSubsystem();
+
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+
+        limelight.pipelineSwitch(0);
+        limelight.start();
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
 
@@ -76,5 +86,48 @@ public class BaseRobot extends LinearOpMode {
                 return true;
             }
         });
+
+        FrontalLobe.addMacro("limelight - align", new FrontalLobe.Macro() {
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public boolean loop(double v) {
+                LLResult result = limelight.getLatestResult();
+                if (result != null && result.isValid()) {
+                    telemetry.addData("tx", result.getTx());
+                    telemetry.update();
+
+                    double rotate = -result.getTx() * PestoFTCConfig.KP;
+                    rotate = Math.min(1, Math.max(-1, rotate));
+
+                    if (rotate < 0)
+                        rotate -= PestoFTCConfig.STATIC_DRIVE;
+                    else
+                        rotate += PestoFTCConfig.STATIC_DRIVE;
+
+                    teleOpController.driveRobotCentric(0, 0, rotate);
+                }
+
+                return v > 2.0;
+            }
+        });
+    }
+
+    @Override
+    public void init_loop() {
+
+    }
+
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void loop() {
+
     }
 }
