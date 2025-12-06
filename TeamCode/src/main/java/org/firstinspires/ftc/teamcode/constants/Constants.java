@@ -50,10 +50,11 @@ public class Constants {
 
                 .headingPIDFSwitch(0.2)
                 .headingPIDFCoefficients(new PIDFCoefficients(0.8, 0, 0, 0))
-                .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1.6, 0, 0, 0))
+                .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(2.0, 0, 0, 0))
 
+                .drivePIDFSwitch(2)
                 .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.1, 0, 0.01, 0.6, 0.0))
-                .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.1, 0, 0.01, 0.6, 0.0))
+                .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.0, 0, 0.0, 0.0, 0.0))
 
                 .mass(7.7); // 7.7kg == 17lbs
 

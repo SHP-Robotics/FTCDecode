@@ -52,12 +52,13 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double HOOD_CLOSE = 0.070;
     public static double HOOD_MID = 0.1;
     public static double HOOD_FAR = 0.1131;
-    public static double HOOD_AUTO_FAR = 0.1131;
+    public static double HOOD_AUTO_FAR = 0.115;
 
     // SHOOTER
     public static double SHOOTER_CLOSE = 0.70;
     public static double SHOOTER_MIDDLE = 0.87;
     public static double SHOOTER_FAR = 1.0;
+    public static double AUTO_FAR = 1.0;
 
     // CAMERA
     public static double STATIC_DRIVE = 0.05;
