@@ -22,8 +22,8 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 @Config
-@Autonomous(name = "Red Far Auto - Thanks Angela")
-public class RedAuto extends BaseRobot {
+@Autonomous(name = "Blue Close Auto - Thanks Angela")
+public class BlueCloseAuto extends BaseRobot {
     private PathChain forwards;
     private PathChain forwards_again;
     private PathChain intake_1;
@@ -34,7 +34,7 @@ public class RedAuto extends BaseRobot {
 
     enum AutoState {
         MOVING_1 (1.0),
-        MOVING_2 (2.0),
+        MOVING_2 (4.0),
         MOVING_3 (4.0),
         MOVING_4 (1.25),
         MOVING_5 (3.0),
@@ -69,7 +69,7 @@ public class RedAuto extends BaseRobot {
 
         autoState = AutoState.MOVING_1;
 
-        hoodSubsystem.setState(HoodSubsystem.HoodState.AUTO_FAR);
+        hoodSubsystem.setState(HoodSubsystem.HoodState.CLOSE);
         hoodSubsystem.update();
 
         follower.update();
@@ -79,24 +79,24 @@ public class RedAuto extends BaseRobot {
         forwards = follower.pathBuilder()
                 .setGlobalDeceleration()
                 .addPath(new BezierLine(new Pose(0,0), new Pose(4,0)))
-                .setLinearHeadingInterpolation(0, -0.36)
+                .setLinearHeadingInterpolation(0, -Math.PI/2)
                 .build();
 
         forwards_again = follower.pathBuilder()
                 .setGlobalDeceleration()
-                .addPath(new BezierLine(new Pose(4, 0), new Pose(33, 0)))
-                .setLinearHeadingInterpolation(-0.38, -Math.PI/2)
+                .addPath(new BezierLine(new Pose(4, 0), new Pose(57, 0)))
+                .setConstantHeadingInterpolation(-Math.PI/2)
                 .build();
 
         intake_1 = follower.pathBuilder()
                 .setGlobalDeceleration()
-                .addPath(new BezierLine(new Pose(33, 0), new Pose(33, -40)))
+                .addPath(new BezierLine(new Pose(57, 0), new Pose(57, -40)))
                 .setConstantHeadingInterpolation(-Math.PI/2)
                 .build();
 
         outtake_1 = follower.pathBuilder()
                 .setGlobalDeceleration()
-                .addPath(new BezierLine(new Pose(33, -40), new Pose(4, 0)))
+                .addPath(new BezierLine(new Pose(57, -40), new Pose(4, 0)))
                 .setLinearHeadingInterpolation(-Math.PI/2, -0.40)
                 .build();
 
@@ -120,7 +120,7 @@ public class RedAuto extends BaseRobot {
 
         follower.followPath(forwards, true);
 
-        outtakeSubsystem.setPower(PestoFTCConfig.AUTO_FAR);
+        outtakeSubsystem.setPower(PestoFTCConfig.SHOOTER_CLOSE);
 
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
@@ -132,6 +132,7 @@ public class RedAuto extends BaseRobot {
         follower.setPose(new Pose(0, 0));
 
         state_start = System.nanoTime();
+
 
         while (opModeIsActive() && !isStopRequested()) {
             FrontalLobe.update();

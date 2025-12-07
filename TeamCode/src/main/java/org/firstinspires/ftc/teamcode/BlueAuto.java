@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 @Config
-@Autonomous(name = "Blue Auto - Thanks Angela")
+@Autonomous(name = "Blue Far Auto - Thanks Angela")
 public class BlueAuto extends BaseRobot {
     private PathChain forwards;
     private PathChain forwards_again;
@@ -59,6 +59,9 @@ public class BlueAuto extends BaseRobot {
         PestoFTCConfig.initializeDrive = false;
         super.initialize();
 
+        FrontalLobe.update();
+        MotorCortex.update();
+
         follower = Constants.createFollower(hardwareMap);
         PanelsConfigurables.INSTANCE.refreshClass(this);
 
@@ -70,9 +73,7 @@ public class BlueAuto extends BaseRobot {
         hoodSubsystem.update();
 
         follower.update();
-
         follower.activateDrive();
-
         follower.setMaxPower(0.7);
 
         forwards = follower.pathBuilder()
@@ -84,7 +85,7 @@ public class BlueAuto extends BaseRobot {
         forwards_again = follower.pathBuilder()
                 .setGlobalDeceleration()
                 .addPath(new BezierLine(new Pose(4, 0), new Pose(33, 0)))
-                .setLinearHeadingInterpolation(0.38, -Math.PI/2)
+                .setLinearHeadingInterpolation(0.38, Math.PI/2)
                 .build();
 
         intake_1 = follower.pathBuilder()
@@ -127,6 +128,8 @@ public class BlueAuto extends BaseRobot {
         telemetry.update();
 
         waitForStart();
+
+        follower.setPose(new Pose(0, 0));
 
         state_start = System.nanoTime();
 
@@ -291,6 +294,9 @@ public class BlueAuto extends BaseRobot {
             telemetry.addData("time elapsed", ((System.nanoTime() - state_start) / 1E9));
             telemetry.addData("timer", autoState.timer);
             telemetry.addData("state", autoState);
+            telemetry.addData("x", follower.getPose().getX());
+            telemetry.addData("y", follower.getPose().getY());
+            telemetry.addData("r", follower.getPose().getHeading());
             telemetry.update();
         }
     }
