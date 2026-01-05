@@ -9,6 +9,7 @@ import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 import com.shprobotics.pestocore.processing.PestoTelemetry;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HoodSubsystem;
@@ -152,6 +153,12 @@ public class AngelaDrive extends BaseRobot {
             telemetry.addData("x", tracker.getCurrentPosition().getX());
             telemetry.addData("y", tracker.getCurrentPosition().getY());
             telemetry.addData("r", tracker.getCurrentPosition().getHeadingRadians());
+            telemetry.addData("target", intakeSubsystem.dropdownTarget);
+            telemetry.addData("pitch", intakeSubsystem.imu.getRobotYawPitchRollAngles().getPitch());
+            telemetry.addData("dx", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).xRotationRate);
+            telemetry.addData("dy", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).yRotationRate);
+            telemetry.addData("dz", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate);
+//            telemetry.update();
             telemetry.update();
         }
     }

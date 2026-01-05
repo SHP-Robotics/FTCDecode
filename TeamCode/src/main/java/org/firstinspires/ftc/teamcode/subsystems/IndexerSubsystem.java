@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.PestoFTCConfig.INDEXER_BLOCK;
 import static org.firstinspires.ftc.teamcode.PestoFTCConfig.INDEXER_OUTTAKE;
-import static org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem.OuttakeState.OUTTAKE;
 
-import com.shprobotics.pestocore.hardware.CortexLinkedMotor;
 import com.shprobotics.pestocore.hardware.CortexLinkedServo;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
@@ -20,7 +17,7 @@ public class IndexerSubsystem {
     }
 
     public IndexerSubsystem() {
-        indexer = MotorCortex.getServo("indexer");
+        indexer = MotorCortex.getServo("blocker");
 
         state = IndexerState.NEUTRAL;
     }

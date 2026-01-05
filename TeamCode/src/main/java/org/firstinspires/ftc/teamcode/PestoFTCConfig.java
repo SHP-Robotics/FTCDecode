@@ -23,9 +23,9 @@ public class PestoFTCConfig implements ConfigInterface {
     public static boolean initializeDrive = true;
 
     // ODOMETRY
-    private static String leftName = "fl";
-    private static String centerName = "bl";
-    private static String rightName = "fr";
+    private static String leftName = "left";
+    private static String centerName = "backLeft";
+    private static String rightName = "right";
 
     private static DcMotorSimple.Direction leftDirection = DcMotorSimple.Direction.REVERSE;
     private static DcMotorSimple.Direction centerDirection = DcMotorSimple.Direction.REVERSE;
@@ -39,10 +39,10 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double STRAFE_VELOCITY = 61;
 
     // DROPDOWN
-    public static double DROPDOWN_DRIVE = 0.29;
-    public static double DROPDOWN_INTAKE = 0.47;
-    public static double DROPDOWN_PUSH = 0.29;
-    public static double DROPDOWN_PUSH_AUTO = 0.29;
+    public static double DROPDOWN_DRIVE = 35; // 0.29;
+    public static double DROPDOWN_INTAKE = 80; // 0.47;
+    public static double DROPDOWN_PUSH = 35; // 0.29;
+    public static double DROPDOWN_PUSH_AUTO = 35; // 0.29;
 
     // INDEXER
     public static double INDEXER_OUTTAKE = 0.08;
@@ -71,10 +71,10 @@ public class PestoFTCConfig implements ConfigInterface {
         Cerebrum.initialize();
 
         MecanumController driveController = new MecanumController(
-                MotorCortex.getMotor("fl"),
-                MotorCortex.getMotor("fr"),
-                MotorCortex.getMotor("bl"),
-                MotorCortex.getMotor("br")
+                MotorCortex.getMotor("frontLeft"),
+                MotorCortex.getMotor("frontRight"),
+                MotorCortex.getMotor("backLeft"),
+                MotorCortex.getMotor("backRight")
         );
 
         driveController.configureMotorDirections(new DcMotorSimple.Direction[]{
@@ -121,7 +121,7 @@ public class PestoFTCConfig implements ConfigInterface {
                     .build();
 
             TeleOpController teleOpController = new TeleOpController(driveController, hardwareMap);
-            teleOpController.useTrackerIMU(tracker);
+//            teleOpController.useTrackerIMU(tracker);
 
             teleOpController.setSpeedController(gamepad -> gamepad.left_bumper ? 0.6 : 1.0);
 
