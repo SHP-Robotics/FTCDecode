@@ -12,7 +12,6 @@ import com.shprobotics.pestocore.processing.MotorCortex;
 
 public class HoodSubsystem {
     private final CortexLinkedServo hood;
-    private final CortexLinkedServo led;
 
     private HoodState state;
 
@@ -24,7 +23,6 @@ public class HoodSubsystem {
 
     public HoodSubsystem() {
         hood = MotorCortex.getServo("hood");
-        led = MotorCortex.getServo("led");
 
         state = CLOSE;
     }
@@ -38,19 +36,13 @@ public class HoodSubsystem {
     }
 
     public void update() {
-        if (state == CLOSE) {
+        if (state == CLOSE)
             hood.setPositionResult(HOOD_CLOSE);
-            led.setPositionResult(0.5); // GREEN
-        }
 
-        if (state == MID) {
+        if (state == MID)
             hood.setPositionResult(HOOD_MID);
-            led.setPositionResult(0.61); // BLUE
-        }
 
-        if (state == FAR) {
+        if (state == FAR)
             hood.setPositionResult(HOOD_FAR);
-            led.setPositionResult(0.28); // RED
-        }
     }
 }

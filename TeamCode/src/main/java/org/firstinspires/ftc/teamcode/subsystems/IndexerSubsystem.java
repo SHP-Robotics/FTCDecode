@@ -1,28 +1,21 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.PestoFTCConfig.INDEXER_BLOCK;
-import static org.firstinspires.ftc.teamcode.PestoFTCConfig.INDEXER_OUTTAKE;
-import static org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem.OuttakeState.OUTTAKE;
-
-import com.shprobotics.pestocore.hardware.CortexLinkedMotor;
-import com.shprobotics.pestocore.hardware.CortexLinkedServo;
-import com.shprobotics.pestocore.processing.MotorCortex;
+import static org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem.IndexerState.OUT;
 
 public class IndexerSubsystem {
-    private final CortexLinkedServo indexer;
+//    private final CortexLinkedServo indexer;
 
     private IndexerState state;
 
     public enum IndexerState {
-        OUTTAKE,
-        NEUTRAL
+        IN,
+        OUT
     }
 
     public IndexerSubsystem() {
-        indexer = MotorCortex.getServo("indexer");
+//        indexer = MotorCortex.getServo("lindex");
 
-        state = IndexerState.NEUTRAL;
+        state = OUT;
     }
 
     public void setState(IndexerState state) {
@@ -30,10 +23,10 @@ public class IndexerSubsystem {
     }
 
     public void update() {
-        if (state == IndexerState.OUTTAKE) {
-            indexer.setPositionResult(INDEXER_OUTTAKE);
-        } else {
-            indexer.setPositionResult(INDEXER_BLOCK);
-        }
+//        if (state == OUT)
+//            indexer.setPositionResult(INDEXER_OUT);
+//
+//        if (state == IN)
+//            indexer.setPositionResult(INDEXER_IN);
     }
 }

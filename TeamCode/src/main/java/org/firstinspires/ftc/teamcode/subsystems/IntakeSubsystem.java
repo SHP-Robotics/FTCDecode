@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
+import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
 import static org.firstinspires.ftc.teamcode.PestoFTCConfig.DROPDOWN_DRIVE;
 import static org.firstinspires.ftc.teamcode.PestoFTCConfig.DROPDOWN_INTAKE;
 import static org.firstinspires.ftc.teamcode.PestoFTCConfig.DROPDOWN_PUSH;
@@ -28,7 +28,7 @@ public class IntakeSubsystem {
 
     public IntakeSubsystem() {
         intake = MotorCortex.getMotor("intake");
-        intake.setDirection(REVERSE);
+        intake.setDirection(FORWARD);
 
         dropdown = MotorCortex.getServo("dropdown");
 

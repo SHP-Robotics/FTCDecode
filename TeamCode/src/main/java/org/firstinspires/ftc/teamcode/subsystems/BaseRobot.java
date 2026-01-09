@@ -4,21 +4,21 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
-import com.shprobotics.pestocore.drivebases.trackers.DeterministicTracker;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
 public class BaseRobot extends LinearOpMode {
     public MecanumController mecanumController;
-    public DeterministicTracker tracker;
+//    public DeterministicTracker tracker;
     public TeleOpController teleOpController;
 
-    public FeederSubsystem feederSubsystem;
+    public BlockerSubsystem blockerSubsystem;
     public HoodSubsystem hoodSubsystem;
     public IntakeSubsystem intakeSubsystem;
     public OuttakeSubsystem outtakeSubsystem;
     public IndexerSubsystem indexerSubsystem;
+    public TurretSubsystem turretSubsystem;
 
     public GamepadInterface gamepadInterface1;
 
@@ -31,23 +31,23 @@ public class BaseRobot extends LinearOpMode {
         NEUTRAL
     }
 
-    @Override
-    public void runOpMode() {
+    public void initialize() {
         FrontalLobe.initialize(hardwareMap);
 
         mecanumController = (MecanumController) FrontalLobe.driveController;
         if (PestoFTCConfig.initializePinpoint) {
-            tracker = FrontalLobe.tracker;
-            tracker.reset();
+//            tracker = FrontalLobe.tracker;
+//            tracker.reset();
 
             teleOpController = FrontalLobe.teleOpController;
         }
 
-        feederSubsystem = new FeederSubsystem();
+        blockerSubsystem = new BlockerSubsystem();
         hoodSubsystem = new HoodSubsystem();
         intakeSubsystem = new IntakeSubsystem();
         outtakeSubsystem = new OuttakeSubsystem();
         indexerSubsystem = new IndexerSubsystem();
+        turretSubsystem = new TurretSubsystem();
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
 
@@ -69,12 +69,16 @@ public class BaseRobot extends LinearOpMode {
                 if (v < 1.0)
                     return false;
 
-                feederSubsystem.setState(FeederSubsystem.FeederState.FORWARD);
+                blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.OUTTAKE);
-                indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUTTAKE);
 
                 return true;
             }
         });
+    }
+
+    @Override
+    public void runOpMode() {
+
     }
 }
