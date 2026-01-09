@@ -19,8 +19,8 @@ import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 import java.util.List;
 
-@TeleOp(name = "Angela Drive")
-public class AngelaDrive extends BaseRobot {
+@TeleOp(name = "Field Oriented")
+public class FieldOriented extends BaseRobot {
     PestoTelemetry pestoTelemetry;
 
     @Override
@@ -65,14 +65,14 @@ public class AngelaDrive extends BaseRobot {
                     else
                         rotate += PestoFTCConfig.STATIC_DRIVE;
 
-                    teleOpController.driveRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, rotate);
+                    teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, rotate);
                     telemetry.addData("tx", result.getTx());
                 } else {
                     telemetry.addLine("No Target :(");
-                    teleOpController.driveRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+                    teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 }
             } else
-                teleOpController.driveRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+                teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
             if (!outtaking && state == RobotState.OUTTAKE) {
                 FrontalLobe.removeMacros("outtake");

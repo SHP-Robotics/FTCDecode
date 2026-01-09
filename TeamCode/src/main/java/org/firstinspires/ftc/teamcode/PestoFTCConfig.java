@@ -24,7 +24,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
     // ODOMETRY
     private static String leftName = "left";
-    private static String centerName = "backLeft";
+    private static String centerName = "frontRight";
     private static String rightName = "right";
 
     private static DcMotorSimple.Direction leftDirection = DcMotorSimple.Direction.REVERSE;
@@ -33,7 +33,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
     private static double ODOMETRY_TICKS_PER_INCH = 505.3169;
     public static double FORWARD_OFFSET = -1.565;
-    public static double ODOMETRY_WIDTH = 10.1;
+    public static double ODOMETRY_WIDTH = 13.567;
 
     public static double FORWARD_VELOCITY = 76;
     public static double STRAFE_VELOCITY = 61;
@@ -121,11 +121,11 @@ public class PestoFTCConfig implements ConfigInterface {
                     .build();
 
             TeleOpController teleOpController = new TeleOpController(driveController, hardwareMap);
-//            teleOpController.useTrackerIMU(tracker);
+            teleOpController.useTrackerIMU(tracker);
 
             teleOpController.setSpeedController(gamepad -> gamepad.left_bumper ? 0.6 : 1.0);
 
-            teleOpController.counteractCentripetalForce(tracker, Math.min(STRAFE_VELOCITY, FORWARD_VELOCITY));
+//            teleOpController.counteractCentripetalForce(tracker, Math.min(STRAFE_VELOCITY, FORWARD_VELOCITY));
 
             FrontalLobe.teleOpController = teleOpController;
             FrontalLobe.tracker = tracker;
