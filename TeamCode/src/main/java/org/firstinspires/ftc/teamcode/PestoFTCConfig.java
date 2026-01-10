@@ -37,7 +37,7 @@ public class PestoFTCConfig implements ConfigInterface {
     // DROPDOWN
     public static double DROPDOWN_DRIVE = 0.4;
     public static double DROPDOWN_INTAKE = 0.25;
-    public static double DROPDOWN_PUSH = 0.420;
+    public static double DROPDOWN_PUSH = 0.35;
 
     // BLOCKER
     public static double BLOCKER_BLOCK = 0.34;
@@ -45,7 +45,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
     // INDEXER
     public static double INDEXER_IN = 0.20;
-    public static double INDEXER_OUT = 0.74;
+    public static double INDEXER_OUT = 0.66;
 
     // HOOD
     public static double HOOD_CLOSE = 0.75;

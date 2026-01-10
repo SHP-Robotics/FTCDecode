@@ -72,7 +72,7 @@ public class BaseRobot extends LinearOpMode {
             @Override
             public boolean loop(double v) {
                 // how long (seconds) before starting to move other components
-                if (v < 1.0)
+                if (v < 1.5)
                     return false;
 
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
