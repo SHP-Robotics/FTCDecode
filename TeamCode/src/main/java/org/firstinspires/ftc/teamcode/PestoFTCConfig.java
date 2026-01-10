@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.shprobotics.pestocore.algorithms.PID;
 import com.shprobotics.pestocore.drivebases.controllers.DriveController;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
@@ -45,21 +46,27 @@ public class PestoFTCConfig implements ConfigInterface {
 
     // INDEXER
     public static double INDEXER_IN = 0.20;
-    public static double INDEXER_OUT = 0.66;
+    public static double INDEXER_OUT = 0.62;
 
     // HOOD
-    public static double HOOD_CLOSE = 0.75;
+    public static double HOOD_CLOSE = 0.72;
     public static double HOOD_MID = 0.635;
     public static double HOOD_FAR = 0.52;
 
     // SHOOTER
-    public static double SHOOTER_CLOSE = 0.73;
+    public static double SHOOTER_CLOSE = 0.35;
     public static double SHOOTER_MIDDLE = 0.9;
     public static double SHOOTER_FAR = 1.0;
 
     // TURRET
     public static double TURRET_LEFT = 100;
     public static double TURRET_RIGHT = -100;
+    public static double TURRET_STATIC = 0.1;
+    public static double TURRET_KP = 0.002;
+
+    // BRAKE
+    public static double BRAKE_DOWN = 0.3;
+    public static double BRAKE_UP = 0.1;
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);

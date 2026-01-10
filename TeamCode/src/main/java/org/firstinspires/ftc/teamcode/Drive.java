@@ -8,6 +8,7 @@ import com.shprobotics.pestocore.processing.MotorCortex;
 
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.BrakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HoodSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
@@ -48,6 +49,13 @@ public class Drive extends BaseRobot {
 
             if (!outtaking && state == RobotState.OUTTAKE) {
                 FrontalLobe.removeMacros("outtake");
+
+                if (hoodSubsystem.getState() == HoodSubsystem.HoodState.CLOSE)
+                    turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
+                else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.MID)
+                    turretSubsystem.setState(TurretSubsystem.TurretState.LEFT);
+                else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.FAR)
+                    turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
             }
 
             if (gamepad1.dpad_left) {
@@ -71,6 +79,10 @@ public class Drive extends BaseRobot {
                 turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
             }
 
+            if (gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER)) {
+                brakeSubsystem.setState(brakeSubsystem.getState() == BrakeSubsystem.BrakeState.DOWN ? BrakeSubsystem.BrakeState.UP : BrakeSubsystem.BrakeState.DOWN);
+            }
+
             if (intaking) {
                 state = RobotState.INTAKE;
 
@@ -89,7 +101,7 @@ public class Drive extends BaseRobot {
                 state = RobotState.REJECT;
 
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.REJECT);
-                blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
+                blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
             }
 
@@ -136,11 +148,14 @@ public class Drive extends BaseRobot {
             outtakeSubsystem.update();
             indexerSubsystem.update();
             turretSubsystem.update();
+            brakeSubsystem.update();
 
 //            telemetry.addData("x", tracker.getCurrentPosition().getX());
 //            telemetry.addData("y", tracker.getCurrentPosition().getY());
 //            telemetry.addData("r", tracker.getCurrentPosition().getHeadingRadians());
-//            telemetry.update();
+            telemetry.addData("turret", turretSubsystem.getPosition());
+            telemetry.addData("state", turretSubsystem.getState());
+            telemetry.update();
         }
     }
 }

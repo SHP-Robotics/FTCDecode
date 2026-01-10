@@ -25,7 +25,7 @@ public class Test extends LinearOpMode {
             MotorCortex.update();
 
             turret.setPowerResult(gamepad1.right_trigger - gamepad1.left_trigger);
-            telemetry.addData("position", turret.getCurrentPosition());
+            telemetry.addData("power", gamepad1.right_trigger - gamepad1.left_trigger);
             telemetry.update();
         }
     }

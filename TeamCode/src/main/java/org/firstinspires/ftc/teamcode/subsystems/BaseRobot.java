@@ -21,6 +21,7 @@ public class BaseRobot extends LinearOpMode {
     public OuttakeSubsystem outtakeSubsystem;
     public IndexerSubsystem indexerSubsystem;
     public TurretSubsystem turretSubsystem;
+    public BrakeSubsystem brakeSubsystem;
 
     public GamepadInterface gamepadInterface1;
 
@@ -53,6 +54,7 @@ public class BaseRobot extends LinearOpMode {
         outtakeSubsystem = new OuttakeSubsystem();
         indexerSubsystem = new IndexerSubsystem();
         turretSubsystem = new TurretSubsystem();
+        brakeSubsystem = new BrakeSubsystem();
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
 
@@ -72,7 +74,7 @@ public class BaseRobot extends LinearOpMode {
             @Override
             public boolean loop(double v) {
                 // how long (seconds) before starting to move other components
-                if (v < 1.5)
+                if (v < 1.0)
                     return false;
 
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);

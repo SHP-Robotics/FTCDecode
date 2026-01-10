@@ -34,7 +34,7 @@ public class TurretSubsystem {
         turret.setDirection(DcMotorSimple.Direction.REVERSE);
         turret.setMode(RUN_USING_ENCODER);
 
-        pidController = new PID(0.005, 0, 0);
+        pidController = new PID(PestoFTCConfig.TURRET_KP, 0, 0);
 
         state = STRAIGHT;
     }
@@ -46,6 +46,14 @@ public class TurretSubsystem {
     public void setPower(double power) {
         assert state == MANUAL;
         turret.setPowerResult(power);
+    }
+
+    public double getPosition() {
+        return turret.getCurrentPosition();
+    }
+
+    public TurretState getState() {
+        return state;
     }
 
     public void rezero() {
@@ -65,6 +73,15 @@ public class TurretSubsystem {
         if (this.state == RIGHT)
             targetPosition = PestoFTCConfig.TURRET_RIGHT;
 
-        turret.setPowerResult(pidController.getOutput(turret.getCurrentPosition(), targetPosition));
+        if (Math.abs(turret.getCurrentPosition() - targetPosition) < 2) {
+            turret.setPowerResult(0.0);
+            return;
+        }
+
+        double power = pidController.getOutput(turret.getCurrentPosition(), targetPosition);
+
+        power += Math.signum(power) * PestoFTCConfig.TURRET_STATIC;
+
+        turret.setPowerResult(power);
     }
 }
