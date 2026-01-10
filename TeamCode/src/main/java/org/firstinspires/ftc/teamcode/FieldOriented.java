@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.config.variable.QualitativeData;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,11 +8,9 @@ import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 import com.shprobotics.pestocore.processing.PestoTelemetry;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HoodSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
@@ -84,7 +81,7 @@ public class FieldOriented extends BaseRobot {
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 feederSubsystem.setState(FeederSubsystem.FeederState.FORWARD);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
-                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
+//                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
             }
 
             if (outtaking && state != RobotState.OUTTAKE) {
@@ -99,7 +96,7 @@ public class FieldOriented extends BaseRobot {
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.REJECT);
                 feederSubsystem.setState(FeederSubsystem.FeederState.REVERSE);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
-                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
+//                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
             }
 
             if (neutralizing) {
@@ -108,11 +105,11 @@ public class FieldOriented extends BaseRobot {
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 feederSubsystem.setState(FeederSubsystem.FeederState.STOPPED);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
-                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
+//                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
             }
 
 
-            // Nice little LED display on the gamepad
+//            // Nice little LED display on the gamepad
             if (hoodSubsystem.getState() == HoodSubsystem.HoodState.CLOSE)
                 gamepad1.setLedColor(0, 255, 0, Integer.MAX_VALUE);
 
@@ -122,7 +119,7 @@ public class FieldOriented extends BaseRobot {
             if (hoodSubsystem.getState() == HoodSubsystem.HoodState.FAR)
                 gamepad1.setLedColor(255, 0, 0, Integer.MAX_VALUE);
 
-            // Cycle hood modes
+//            // Cycle hood modes
             if (gamepadInterface1.isKeyDown(GamepadKey.TOUCHPAD)) {
                 if (hoodSubsystem.getState() == HoodSubsystem.HoodState.CLOSE) {
                     hoodSubsystem.setState(HoodSubsystem.HoodState.FAR);
@@ -140,25 +137,24 @@ public class FieldOriented extends BaseRobot {
             hoodSubsystem.update();
             intakeSubsystem.update();
             outtakeSubsystem.update();
-            indexerSubsystem.update();
+//            indexerSubsystem.update();
 
-            double x = Math.round(tracker.getCurrentPosition().getX() * 100) / 100.0;
-            double y = Math.round(tracker.getCurrentPosition().getY() * 100) / 100.0;
-            double r = Math.round(tracker.getCurrentPosition().getHeadingRadians() * 100) / 100.0;
+//            double x = Math.round(tracker.getCurrentPosition().getX() * 100) / 100.0;
+//            double y = Math.round(tracker.getCurrentPosition().getY() * 100) / 100.0;
+//            double r = Math.round(tracker.getCurrentPosition().getHeadingRadians() * 100) / 100.0;
 
-            pestoTelemetry.addToDash(new QualitativeData("x, y, r", String.format("%.2f, %.2f, %.2f", x, y, r)));
-            pestoTelemetry.addToDash(new QualitativeData("d", String.format("%.2f", hoodSubsystem.getDistance())));
-            pestoTelemetry.update();
+//            pestoTelemetry.addToDash(new QualitativeData("x, y, r", String.format("%.2f, %.2f, %.2f", x, y, r)));
+//            pestoTelemetry.addToDash(new QualitativeData("d", String.format("%.2f", hoodSubsystem.getDistance())));
+//            pestoTelemetry.update();
 
             telemetry.addData("x", tracker.getCurrentPosition().getX());
             telemetry.addData("y", tracker.getCurrentPosition().getY());
             telemetry.addData("r", tracker.getCurrentPosition().getHeadingRadians());
             telemetry.addData("target", intakeSubsystem.dropdownTarget);
             telemetry.addData("pitch", intakeSubsystem.imu.getRobotYawPitchRollAngles().getPitch());
-            telemetry.addData("dx", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).xRotationRate);
-            telemetry.addData("dy", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).yRotationRate);
-            telemetry.addData("dz", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate);
-//            telemetry.update();
+//            telemetry.addData("dx", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).xRotationRate);
+//            telemetry.addData("dy", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).yRotationRate);
+//            telemetry.addData("dz", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate);
             telemetry.update();
         }
     }

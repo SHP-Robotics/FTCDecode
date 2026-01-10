@@ -8,7 +8,6 @@ import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
 import com.shprobotics.pestocore.drivebases.trackers.DeterministicTracker;
 import com.shprobotics.pestocore.drivebases.trackers.ThreeWheelOdometryTracker;
-import com.shprobotics.pestocore.geometries.Vector2D;
 import com.shprobotics.pestocore.processing.Cerebrum;
 import com.shprobotics.pestocore.processing.ConfigInterface;
 import com.shprobotics.pestocore.processing.FrontalLobe;
@@ -23,9 +22,9 @@ public class PestoFTCConfig implements ConfigInterface {
     public static boolean initializeDrive = true;
 
     // ODOMETRY
-    private static String leftName = "left";
-    private static String centerName = "frontRight";
-    private static String rightName = "right";
+    private static String leftName = "backLeft";
+    private static String centerName = "frontLeft";
+    private static String rightName = "backRight";
 
     private static DcMotorSimple.Direction leftDirection = DcMotorSimple.Direction.REVERSE;
     private static DcMotorSimple.Direction centerDirection = DcMotorSimple.Direction.REVERSE;
@@ -33,7 +32,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
     private static double ODOMETRY_TICKS_PER_INCH = 505.3169;
     public static double FORWARD_OFFSET = -1.565;
-    public static double ODOMETRY_WIDTH = 13.567;
+    public static double ODOMETRY_WIDTH = 9.1188;
 
     public static double FORWARD_VELOCITY = 76;
     public static double STRAFE_VELOCITY = 61;
@@ -49,10 +48,10 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double INDEXER_BLOCK = 0.24;
 
     // HOOD
-    public static double HOOD_CLOSE = 0.070;
-    public static double HOOD_MID = 0.1;
-    public static double HOOD_FAR = 0.1131;
-    public static double HOOD_AUTO_FAR = 0.115;
+    public static double HOOD_CLOSE = 0.01;
+    public static double HOOD_MID = 0.04;
+    public static double HOOD_FAR = 0.01;
+    public static double HOOD_AUTO_FAR = 0.01;
 
     // SHOOTER
     public static double SHOOTER_CLOSE = 0.70;
@@ -84,12 +83,12 @@ public class PestoFTCConfig implements ConfigInterface {
                 DcMotorSimple.Direction.FORWARD
         });
 
-        driveController.setPowerVectors(new Vector2D[]{
-                new Vector2D(Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0)),
-                new Vector2D(-Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0)),
-                new Vector2D(-Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0)),
-                new Vector2D(Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0))
-        });
+//        driveController.setPowerVectors(new Vector2D[]{
+//                new Vector2D(Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0)),
+//                new Vector2D(-Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0)),
+//                new Vector2D(-Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0)),
+//                new Vector2D(Math.min(FORWARD_VELOCITY / STRAFE_VELOCITY, 1.0), Math.min(STRAFE_VELOCITY / FORWARD_VELOCITY, 1.0))
+//        });
 
         driveController.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        driveController.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

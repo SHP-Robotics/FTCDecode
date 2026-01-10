@@ -56,31 +56,26 @@ public class IntakeSubsystem {
     public void update() {
         if (state == INTAKE) {
             intake.setPowerResult(1.0);
-//            dropdown.setPositionResult(DROPDOWN_INTAKE);
             dropdownTarget = DROPDOWN_INTAKE;
         }
 
         if (state == NEUTRAL) {
             intake.setPowerResult(0.15);
-//            dropdown.setPositionResult(DROPDOWN_DRIVE);
             dropdownTarget = DROPDOWN_DRIVE;
         }
 
         if (state == REJECT) {
             intake.setPowerResult(-1.0);
-//            dropdown.setPositionResult(DROPDOWN_INTAKE);
             dropdownTarget = DROPDOWN_INTAKE;
         }
 
         if (state == OUTTAKE) {
             intake.setPowerResult(1.0);
-//            dropdown.setPositionResult(DROPDOWN_PUSH);
             dropdownTarget = DROPDOWN_PUSH;
         }
 
         if (state == OUTTAKE_AUTO) {
             intake.setPowerResult(1.0);
-//            dropdown.setPositionResult(DROPDOWN_PUSH_AUTO);
             dropdownTarget = DROPDOWN_PUSH_AUTO;
         }
 

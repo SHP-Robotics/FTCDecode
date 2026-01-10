@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.shprobotics.pestocore.devices.GamepadInterface;
@@ -51,7 +50,7 @@ public class BaseRobot extends LinearOpMode {
         hoodSubsystem = new HoodSubsystem();
         intakeSubsystem = new IntakeSubsystem();
         outtakeSubsystem = new OuttakeSubsystem();
-        indexerSubsystem = new IndexerSubsystem();
+//        indexerSubsystem = new IndexerSubsystem();
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
@@ -64,27 +63,6 @@ public class BaseRobot extends LinearOpMode {
         state = RobotState.NEUTRAL;
 
         // MACRO initialization
-
-        FrontalLobe.addMacro("auto_outtake", new FrontalLobe.Macro() {
-            @Override
-            public void start() {
-                FrontalLobe.removeOtherMacros(this);
-                outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.OUTTAKE);
-            }
-
-            @Override
-            public boolean loop(double v) {
-                // how long (seconds) before starting to move other components
-                if (v < 1.2)
-                    return false;
-
-                feederSubsystem.setState(FeederSubsystem.FeederState.FORWARD);
-                intakeSubsystem.setState(IntakeSubsystem.IntakeState.OUTTAKE);
-                indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUTTAKE);
-
-                return true;
-            }
-        });
 
         FrontalLobe.addMacro("outtake", new FrontalLobe.Macro() {
             @Override
@@ -101,39 +79,39 @@ public class BaseRobot extends LinearOpMode {
 
                 feederSubsystem.setState(FeederSubsystem.FeederState.FORWARD);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.OUTTAKE);
-                indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUTTAKE);
+//                indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUTTAKE);
 
                 return true;
             }
         });
 
-        FrontalLobe.addMacro("limelight - align", new FrontalLobe.Macro() {
-            @Override
-            public void start() {
-
-            }
-
-            @Override
-            public boolean loop(double v) {
-                LLResult result = limelight.getLatestResult();
-                if (result != null && result.isValid()) {
-                    telemetry.addData("tx", result.getTx());
-                    telemetry.update();
-
-                    double rotate = -result.getTx() * PestoFTCConfig.KP;
-                    rotate = Math.min(1, Math.max(-1, rotate));
-
-                    if (rotate < 0)
-                        rotate -= PestoFTCConfig.STATIC_DRIVE;
-                    else
-                        rotate += PestoFTCConfig.STATIC_DRIVE;
-
-                    teleOpController.driveRobotCentric(0, 0, rotate);
-                }
-
-                return v > 2.0;
-            }
-        });
+//        FrontalLobe.addMacro("limelight - align", new FrontalLobe.Macro() {
+//            @Override
+//            public void start() {
+//
+//            }
+//
+//            @Override
+//            public boolean loop(double v) {
+//                LLResult result = limelight.getLatestResult();
+//                if (result != null && result.isValid()) {
+//                    telemetry.addData("tx", result.getTx());
+//                    telemetry.update();
+//
+//                    double rotate = -result.getTx() * PestoFTCConfig.KP;
+//                    rotate = Math.min(1, Math.max(-1, rotate));
+//
+//                    if (rotate < 0)
+//                        rotate -= PestoFTCConfig.STATIC_DRIVE;
+//                    else
+//                        rotate += PestoFTCConfig.STATIC_DRIVE;
+//
+//                    teleOpController.driveRobotCentric(0, 0, rotate);
+//                }
+//
+//                return v > 2.0;
+//            }
+//        });
     }
 
     @Override
