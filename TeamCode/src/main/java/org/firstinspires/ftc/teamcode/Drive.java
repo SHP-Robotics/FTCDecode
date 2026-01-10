@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.shprobotics.pestocore.devices.GamepadKey;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
@@ -26,29 +27,28 @@ public class Drive extends BaseRobot {
             FrontalLobe.update();
             MotorCortex.update();
             gamepadInterface1.update();
-//            tracker.update();
+            tracker.update();
 
             if (gamepad1.x) {
-//                tracker.reset();
+                brake = !brake;
+                mecanumController.setZeroPowerBehavior(brake ? DcMotor.ZeroPowerBehavior.BRAKE : DcMotor.ZeroPowerBehavior.FLOAT);
+            }
+
+            if (gamepad1.x) {
+                tracker.reset();
                 teleOpController.resetIMU();
             }
 
-            teleOpController.driveRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
             boolean intaking = gamepad1.right_trigger > 0.05;
             boolean outtaking = !intaking && gamepad1.left_trigger > 0.05;
             boolean rejecting = !intaking && !outtaking && gamepad1.a;
             boolean neutralizing = !intaking && !outtaking && !rejecting;
 
-            // TOUCHPAD - SHOOTER, HOOD, TURRET
-            // GREEN - CLOSE, BLUE - MIDDLE, RED - FAR
-            // GREEN and BLUE are straight forward, RED is aligned
-
-            // DPAD DOWN - BRAKE TOGGLE, DEFAULT FLOAT
-
-//            if (!outtaking && state == RobotState.OUTTAKE) {
-//                FrontalLobe.removeMacros("outtake");
-//            }
+            if (!outtaking && state == RobotState.OUTTAKE) {
+                FrontalLobe.removeMacros("outtake");
+            }
 
             if (gamepad1.dpad_left) {
                 turretSubsystem.setState(TurretSubsystem.TurretState.MANUAL);

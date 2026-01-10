@@ -1,16 +1,18 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
+import com.shprobotics.pestocore.drivebases.trackers.DeterministicTracker;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
 public class BaseRobot extends LinearOpMode {
     public MecanumController mecanumController;
-//    public DeterministicTracker tracker;
+    public DeterministicTracker tracker;
     public TeleOpController teleOpController;
 
     public BlockerSubsystem blockerSubsystem;
@@ -23,6 +25,7 @@ public class BaseRobot extends LinearOpMode {
     public GamepadInterface gamepadInterface1;
 
     public RobotState state;
+    public boolean brake;
 
     public enum RobotState {
         INTAKE,
@@ -35,9 +38,11 @@ public class BaseRobot extends LinearOpMode {
         FrontalLobe.initialize(hardwareMap);
 
         mecanumController = (MecanumController) FrontalLobe.driveController;
+        mecanumController.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
         if (PestoFTCConfig.initializePinpoint) {
-//            tracker = FrontalLobe.tracker;
-//            tracker.reset();
+            tracker = FrontalLobe.tracker;
+            tracker.reset();
 
             teleOpController = FrontalLobe.teleOpController;
         }
@@ -53,6 +58,7 @@ public class BaseRobot extends LinearOpMode {
 
         // State initialization
         state = RobotState.NEUTRAL;
+        brake = false;
 
         // MACRO initialization
 
