@@ -10,7 +10,7 @@ import com.shprobotics.pestocore.processing.FrontalLobe;
 
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
-public class TestAutoPaths {
+public class TestAutoPathsBlue {
     public enum PathState {
         FIRST_PATH (FIRST_MOVE, 2.25),
         SECOND_PATH (SECOND_MOVE, 1.5),
@@ -89,7 +89,7 @@ public class TestAutoPaths {
             .addCurve(new BezierCurve(
                     new Pose[]{ //goes to human player
                             new Pose(-29, 50),
-                            new Pose(-15, 0)
+                            new Pose(-6, 40)
                     }
             ), new ParametricHeading(v -> 0.0))
             .build();
@@ -99,8 +99,8 @@ public class TestAutoPaths {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //intakes human player
-                            new Pose(-29, 50),
-                            new Pose(-15, 0)
+                            new Pose(-6, 40),
+                            new Pose(0, 45)
                     }
             ), new ParametricHeading(v -> 0.0))
             .build();
@@ -110,7 +110,7 @@ public class TestAutoPaths {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //back to shoot
-                            new Pose(-29, 50),
+                            new Pose(-0, 45),
                             new Pose(-15, 0)
 
                     }
@@ -121,8 +121,8 @@ public class TestAutoPaths {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //leave
-                            new Pose(-29, 50),
-                            new Pose(-15, 0)
+                            new Pose(-15, 0),
+                            new Pose(-15, 10)
                     }
             ), new ParametricHeading(v -> 0.0))
             .build();

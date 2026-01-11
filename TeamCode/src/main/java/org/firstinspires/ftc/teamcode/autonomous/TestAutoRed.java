@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPaths.PathState.DONE;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPaths.PathState.EIGHTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPaths.PathState.FIFTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPaths.PathState.FOURTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPaths.PathState.SECOND_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPaths.PathState.SEVENTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPaths.PathState.SIXTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPaths.PathState.THIRD_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.DONE;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.EIGHTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.FIFTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.FOURTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SECOND_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SEVENTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SIXTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.THIRD_PATH;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.shprobotics.pestocore.geometries.PathFollower;
@@ -22,9 +22,9 @@ import org.firstinspires.ftc.teamcode.subsystems.HoodSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
-@Autonomous(name = "Test Auto")
-public class TestAuto extends BaseRobot {
-    TestAutoPaths.PathState state;
+@Autonomous(name = "Test Auto red")
+public class TestAutoRed extends BaseRobot {
+    TestAutoPathsRed.PathState state;
     PathFollower pathFollower;
     double start;
 
@@ -69,17 +69,17 @@ public class TestAuto extends BaseRobot {
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
                 state = SECOND_PATH;
-                pathFollower = TestAutoPaths.getPathFollower(state);
+                pathFollower = TestAutoPathsRed.getPathFollower(state);
                 Utils.clear();
                 break;
             case SECOND_PATH:
                 state = THIRD_PATH;
-                pathFollower = TestAutoPaths.getPathFollower(state);
+                pathFollower = TestAutoPathsRed.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 break;
             case THIRD_PATH:
                 state = FOURTH_PATH;
-                pathFollower = TestAutoPaths.getPathFollower(state);
+                pathFollower = TestAutoPathsRed.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 break;
             case FOURTH_PATH:
@@ -112,25 +112,25 @@ public class TestAuto extends BaseRobot {
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
                 state = FIFTH_PATH;
-                pathFollower = TestAutoPaths.getPathFollower(state);
+                pathFollower = TestAutoPathsRed.getPathFollower(state);
                 Utils.clear();
                 break;
 
             case FIFTH_PATH:
                 state = SIXTH_PATH;
-                pathFollower = TestAutoPaths.getPathFollower(state);
+                pathFollower = TestAutoPathsRed.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 break;
 
             case SIXTH_PATH:
                 state = SEVENTH_PATH;
-                pathFollower = TestAutoPaths.getPathFollower(state);
+                pathFollower = TestAutoPathsRed.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 break;
                 
             case SEVENTH_PATH:
                 state = EIGHTH_PATH;
-                pathFollower = TestAutoPaths.getPathFollower(state);
+                pathFollower = TestAutoPathsRed.getPathFollower(state);
 
                 break;
 
@@ -176,8 +176,8 @@ public class TestAuto extends BaseRobot {
         Utils.clear();
         super.initialize();
 
-        state = TestAutoPaths.PathState.FIRST_PATH;
-        pathFollower = TestAutoPaths.getPathFollower(state);
+        state = TestAutoPathsRed.PathState.FIRST_PATH;
+        pathFollower = TestAutoPathsRed.getPathFollower(state);
 
         hoodSubsystem.setState(HoodSubsystem.HoodState.FAR);
         outtakeSubsystem.setRPM(PestoFTCConfig.SHOOTER_AUTO);
