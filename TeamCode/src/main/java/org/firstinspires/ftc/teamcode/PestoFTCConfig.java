@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.shprobotics.pestocore.algorithms.Constants;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
 import com.shprobotics.pestocore.drivebases.trackers.DeterministicTracker;
@@ -19,7 +20,10 @@ import com.shprobotics.pestocore.processing.PestoConfig;
 public class PestoFTCConfig implements ConfigInterface {
     private static boolean initialized = false; // don't mess with this :O
     public static boolean initializePinpoint = true;
-    public static boolean initializeDrive = true;
+
+    public static double mass = 21.7; // lbs
+    public static double MAX_FORCE = 2220;
+    public static double DECELERATION = 76;
 
     // ODOMETRY
     private static String leftName = "backLeft";
@@ -32,10 +36,8 @@ public class PestoFTCConfig implements ConfigInterface {
 
     private static double ODOMETRY_TICKS_PER_INCH = 505.3169;
     public static double FORWARD_OFFSET = -1.565;
-    public static double ODOMETRY_WIDTH = 9.1188;
+    public static double ODOMETRY_WIDTH = 9.102;
 
-    public static double FORWARD_VELOCITY = 76;
-    public static double STRAFE_VELOCITY = 61;
 
     // DROPDOWN
     public static double DROPDOWN_DRIVE = 35; // 0.29;
@@ -44,7 +46,7 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double DROPDOWN_PUSH_AUTO = 35; // 0.29;
 
     // INDEXER
-    public static double INDEXER_OUTTAKE = 0.08;
+    public static double INDEXER_OUTTAKE = 0.10;
     public static double INDEXER_BLOCK = 0.24;
 
     // HOOD
@@ -62,8 +64,6 @@ public class PestoFTCConfig implements ConfigInterface {
     // CAMERA
     public static double STATIC_DRIVE = 0.05;
     public static double KP = 0.015;
-
-    public static double DECELERATION = 45.0;
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);
@@ -124,12 +124,13 @@ public class PestoFTCConfig implements ConfigInterface {
 
             teleOpController.setSpeedController(gamepad -> gamepad.left_bumper ? 0.6 : 1.0);
 
-//            teleOpController.counteractCentripetalForce(tracker, Math.min(STRAFE_VELOCITY, FORWARD_VELOCITY));
+            teleOpController.counteractCentripetalForce(tracker, MAX_FORCE);
 
             FrontalLobe.teleOpController = teleOpController;
             FrontalLobe.tracker = tracker;
         }
 
         FrontalLobe.driveController = driveController;
+        Constants.mass = mass;
     }
 }

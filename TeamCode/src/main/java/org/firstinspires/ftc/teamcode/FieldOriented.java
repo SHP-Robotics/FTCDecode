@@ -3,14 +3,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.shprobotics.pestocore.devices.GamepadKey;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
-import com.shprobotics.pestocore.processing.PestoTelemetry;
 
+import org.apache.commons.math3.util.MathUtils;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HoodSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
@@ -18,13 +20,12 @@ import java.util.List;
 
 @TeleOp(name = "Field Oriented")
 public class FieldOriented extends BaseRobot {
-    PestoTelemetry pestoTelemetry;
-
     @Override
     public void runOpMode() {
         PestoFTCConfig.initializePinpoint = true;
-        PestoFTCConfig.initializeDrive = true;
-        pestoTelemetry = FrontalLobe.pestoTelemetry;
+        boolean braking = false;
+        boolean rotationLocked = false;
+        double angle = 0.0;
 
         super.initialize();
 
@@ -35,20 +36,46 @@ public class FieldOriented extends BaseRobot {
             MotorCortex.update();
             gamepadInterface1.update();
             tracker.update();
-            pestoTelemetry.clear();
             teleOpController.updateSpeed(gamepad1);
 
-            if (gamepad1.b) {
+            if (gamepadInterface1.isKeyDown(GamepadKey.B)) {
+                braking = !braking;
+                mecanumController.setZeroPowerBehavior(braking ? DcMotor.ZeroPowerBehavior.BRAKE : DcMotor.ZeroPowerBehavior.FLOAT);
+            }
+
+            if (gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER)) {
+                rotationLocked = !rotationLocked;
+
+                double[] angles = new double[]{0.0, Math.PI / 2, Math.PI, 3 * Math.PI / 2};
+                double bestDist = Double.POSITIVE_INFINITY;
+
+                for (double x : angles) {
+                    double dist = Math.abs(x - MathUtils.normalizeAngle(tracker.getCurrentPosition().getHeadingRadians(), x));
+
+                    if (dist < bestDist) {
+                        bestDist = dist;
+                        angle = x;
+                    }
+                }
+            }
+
+            if (gamepad1.x) {
                 tracker.reset();
                 teleOpController.resetIMU();
             }
 
-            boolean intaking = gamepad1.right_trigger > 0.05 && -gamepad1.left_stick_y >= -0.1;
+            boolean intaking = gamepad1.right_trigger > 0.05;
             boolean outtaking = !intaking && gamepad1.left_trigger > 0.05;
-            boolean rejecting = !intaking && !outtaking && gamepad1.right_bumper;
+            boolean rejecting = !intaking && !outtaking && gamepad1.a;
             boolean neutralizing = !intaking && !outtaking && !rejecting;
 
-            if (outtaking) {
+            if (rotationLocked) {
+                double correction = angle - MathUtils.normalizeAngle(tracker.getCurrentPosition().getHeadingRadians(), angle);
+                correction = correction * -0.6; // 0.6 == headingKP
+                correction += Math.signum(correction) * PestoFTCConfig.STATIC_DRIVE;
+
+                teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, correction);
+            } else if (outtaking) {
                 LLResult result = limelight.getLatestResult();
 
                 List<LLResultTypes.FiducialResult> results = result.getFiducialResults();
@@ -81,7 +108,7 @@ public class FieldOriented extends BaseRobot {
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 feederSubsystem.setState(FeederSubsystem.FeederState.FORWARD);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
-//                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
+                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
             }
 
             if (outtaking && state != RobotState.OUTTAKE) {
@@ -96,7 +123,7 @@ public class FieldOriented extends BaseRobot {
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.REJECT);
                 feederSubsystem.setState(FeederSubsystem.FeederState.REVERSE);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
-//                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
+                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
             }
 
             if (neutralizing) {
@@ -105,7 +132,7 @@ public class FieldOriented extends BaseRobot {
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 feederSubsystem.setState(FeederSubsystem.FeederState.STOPPED);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
-//                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
+                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
             }
 
 
@@ -137,24 +164,13 @@ public class FieldOriented extends BaseRobot {
             hoodSubsystem.update();
             intakeSubsystem.update();
             outtakeSubsystem.update();
-//            indexerSubsystem.update();
-
-//            double x = Math.round(tracker.getCurrentPosition().getX() * 100) / 100.0;
-//            double y = Math.round(tracker.getCurrentPosition().getY() * 100) / 100.0;
-//            double r = Math.round(tracker.getCurrentPosition().getHeadingRadians() * 100) / 100.0;
-
-//            pestoTelemetry.addToDash(new QualitativeData("x, y, r", String.format("%.2f, %.2f, %.2f", x, y, r)));
-//            pestoTelemetry.addToDash(new QualitativeData("d", String.format("%.2f", hoodSubsystem.getDistance())));
-//            pestoTelemetry.update();
+            indexerSubsystem.update();
 
             telemetry.addData("x", tracker.getCurrentPosition().getX());
             telemetry.addData("y", tracker.getCurrentPosition().getY());
             telemetry.addData("r", tracker.getCurrentPosition().getHeadingRadians());
             telemetry.addData("target", intakeSubsystem.dropdownTarget);
             telemetry.addData("pitch", intakeSubsystem.imu.getRobotYawPitchRollAngles().getPitch());
-//            telemetry.addData("dx", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).xRotationRate);
-//            telemetry.addData("dy", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).yRotationRate);
-//            telemetry.addData("dz", intakeSubsystem.imu.getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate);
             telemetry.update();
         }
     }

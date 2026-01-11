@@ -91,7 +91,7 @@ public class IntakeSubsystem {
             return;
         }
 
-        double error = 0.01 * (dropdownTarget - pitch) - 0.003 * pitchVelocity;
+        double error = 0.008 * (dropdownTarget - pitch) - 0.003 * pitchVelocity;
 
         power = Math.min(1.0, Math.max(-1.0, error));
 
