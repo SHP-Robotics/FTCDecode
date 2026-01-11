@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleops;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,6 +7,7 @@ import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
 import org.apache.commons.math3.util.MathUtils;
+import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.BrakeSubsystem;
@@ -34,6 +35,9 @@ public class Drive extends BaseRobot {
             MotorCortex.update();
             gamepadInterface1.update();
             tracker.update();
+
+            boolean isStatic = tracker.getRobotVelocity().getMagnitude() < 1.0;
+            mecanumController.setIsStatic(isStatic);
 
             if (gamepad1.x) {
                 brake = !brake;
@@ -197,6 +201,7 @@ public class Drive extends BaseRobot {
 //            telemetry.addData("x", tracker.getCurrentPosition().getX());
 //            telemetry.addData("y", tracker.getCurrentPosition().getY());
 //            telemetry.addData("r", tracker.getCurrentPosition().getHeadingRadians());
+            telemetry.addData("turret", turretSubsystem.getPosition());
             telemetry.addData("shooter", outtakeSubsystem.getRPM());
             telemetry.addData("target", outtakeSubsystem.getTargetRPM());
             telemetry.update();

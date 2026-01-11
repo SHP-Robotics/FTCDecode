@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 
+import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.CUSTOM_POSITION;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.LEFT;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.MANUAL;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.RIGHT;
@@ -21,11 +22,14 @@ public class TurretSubsystem {
 
     private TurretState state;
 
+    private double customPosition;
+
     public enum TurretState {
         LEFT,
         STRAIGHT,
         RIGHT,
 
+        CUSTOM_POSITION,
         MANUAL
     }
 
@@ -46,6 +50,11 @@ public class TurretSubsystem {
     public void setPower(double power) {
         assert state == MANUAL;
         turret.setPowerResult(power);
+    }
+
+    public void setPosition(double position) {
+        this.customPosition = position;
+        this.state = CUSTOM_POSITION;
     }
 
     public double getPosition() {
@@ -72,6 +81,9 @@ public class TurretSubsystem {
 
         if (this.state == RIGHT)
             targetPosition = PestoFTCConfig.TURRET_RIGHT;
+
+        if (this.state == CUSTOM_POSITION)
+            targetPosition = customPosition;
 
         if (Math.abs(turret.getCurrentPosition() - targetPosition) < 6) {
             turret.setPowerResult(0.0);
