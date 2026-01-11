@@ -6,10 +6,12 @@ import com.shprobotics.pestocore.devices.GamepadKey;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
+import org.apache.commons.math3.util.MathUtils;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.BrakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HoodSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
@@ -21,6 +23,9 @@ public class Drive extends BaseRobot {
         PestoFTCConfig.initializePinpoint = true;
 
         super.initialize();
+
+        boolean rotationLocked = false;
+        double angle = 0.0;
 
         waitForStart();
 
@@ -40,12 +45,43 @@ public class Drive extends BaseRobot {
                 teleOpController.resetIMU();
             }
 
-            teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            if (gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER)) {
+                rotationLocked = !rotationLocked;
+
+                double[] angles = new double[]{0.0, Math.PI / 2, Math.PI, 3 * Math.PI / 2};
+                double bestDist = Double.POSITIVE_INFINITY;
+
+                for (double x : angles) {
+                    double dist = Math.abs(x - MathUtils.normalizeAngle(tracker.getCurrentPosition().getHeadingRadians(), x));
+
+                    if (dist < bestDist) {
+                        bestDist = dist;
+                        angle = x;
+                    }
+                }
+            }
+
+            if (rotationLocked) {
+                double correction = angle - MathUtils.normalizeAngle(tracker.getCurrentPosition().getHeadingRadians(), angle);
+                correction = correction * -0.6; // 0.6 == headingKP
+                correction += Math.signum(correction) * PestoFTCConfig.STATIC_DRIVE;
+
+                teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, correction);
+            } else {
+                teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            }
 
             boolean intaking = gamepad1.right_trigger > 0.05;
             boolean outtaking = !intaking && gamepad1.left_trigger > 0.05;
             boolean rejecting = !intaking && !outtaking && gamepad1.a;
             boolean neutralizing = !intaking && !outtaking && !rejecting;
+
+            if (state == RobotState.OUTTAKE) {
+                if (outtakeSubsystem.isBusy())
+                    intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
+                else
+                    intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
+            }
 
             if (!outtaking && state == RobotState.OUTTAKE) {
                 FrontalLobe.removeMacros("outtake");
@@ -53,9 +89,9 @@ public class Drive extends BaseRobot {
                 if (hoodSubsystem.getState() == HoodSubsystem.HoodState.CLOSE)
                     turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
                 else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.MID)
-                    turretSubsystem.setState(TurretSubsystem.TurretState.LEFT);
-                else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.FAR)
                     turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
+                else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.FAR)
+                    turretSubsystem.setState(TurretSubsystem.TurretState.RIGHT);
             }
 
             if (gamepad1.dpad_left) {
@@ -129,18 +165,26 @@ public class Drive extends BaseRobot {
             if (gamepadInterface1.isKeyDown(GamepadKey.TOUCHPAD)) {
                 if (hoodSubsystem.getState() == HoodSubsystem.HoodState.CLOSE) {
                     hoodSubsystem.setState(HoodSubsystem.HoodState.MID);
-                    outtakeSubsystem.setPower(PestoFTCConfig.SHOOTER_MIDDLE);
+                    outtakeSubsystem.setRPM(PestoFTCConfig.SHOOTER_MIDDLE);
+                    outtakeSubsystem.setFFPower(PestoFTCConfig.SHOOTER_FF_MIDDLE);
                     turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
                 } else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.MID) {
                     hoodSubsystem.setState(HoodSubsystem.HoodState.FAR);
-                    outtakeSubsystem.setPower(PestoFTCConfig.SHOOTER_FAR);
-                    turretSubsystem.setState(TurretSubsystem.TurretState.LEFT);
+                    outtakeSubsystem.setRPM(PestoFTCConfig.SHOOTER_FAR);
+                    outtakeSubsystem.setFFPower(PestoFTCConfig.SHOOTER_FF_FAR);
+                    turretSubsystem.setState(TurretSubsystem.TurretState.RIGHT);
                 } else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.FAR) {
                     hoodSubsystem.setState(HoodSubsystem.HoodState.CLOSE);
-                    outtakeSubsystem.setPower(PestoFTCConfig.SHOOTER_CLOSE);
+                    outtakeSubsystem.setRPM(PestoFTCConfig.SHOOTER_CLOSE);
+                    outtakeSubsystem.setFFPower(PestoFTCConfig.SHOOTER_FF_CLOSE);
                     turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
                 }
             }
+
+            if (gamepad1.b)
+                indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUTISH);
+            else
+                indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUT);
 
             blockerSubsystem.update();
             hoodSubsystem.update();
@@ -153,8 +197,8 @@ public class Drive extends BaseRobot {
 //            telemetry.addData("x", tracker.getCurrentPosition().getX());
 //            telemetry.addData("y", tracker.getCurrentPosition().getY());
 //            telemetry.addData("r", tracker.getCurrentPosition().getHeadingRadians());
-            telemetry.addData("turret", turretSubsystem.getPosition());
-            telemetry.addData("state", turretSubsystem.getState());
+            telemetry.addData("shooter", outtakeSubsystem.getRPM());
+            telemetry.addData("target", outtakeSubsystem.getTargetRPM());
             telemetry.update();
         }
     }

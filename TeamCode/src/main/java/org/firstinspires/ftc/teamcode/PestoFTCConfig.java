@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.shprobotics.pestocore.algorithms.PID;
+import com.shprobotics.pestocore.algorithms.Constants;
 import com.shprobotics.pestocore.drivebases.controllers.DriveController;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
@@ -22,6 +22,10 @@ public class PestoFTCConfig implements ConfigInterface {
     public static boolean initialized = false; // don't mess with this :O
     public static boolean initializePinpoint = true;
 
+    public static double mass = 23.7; // lbs
+    public static double MAX_FORCE = 2170;
+    public static double DECELERATION = 58;
+
     // ODOMETRY
     public static String leftName = "backL";
     public static String centerName = "backR";
@@ -32,8 +36,10 @@ public class PestoFTCConfig implements ConfigInterface {
     public static DcMotorSimple.Direction rightDirection = DcMotorSimple.Direction.FORWARD;
 
     public static double ODOMETRY_TICKS_PER_INCH = 505.3169;
-    public static double FORWARD_OFFSET = -10;
-    public static double ODOMETRY_WIDTH = 4.2247;
+    public static double FORWARD_OFFSET = -1.9;
+    public static double ODOMETRY_WIDTH = 4.1789;
+
+    public static double STATIC_DRIVE = 0.1;
 
     // DROPDOWN
     public static double DROPDOWN_DRIVE = 0.4;
@@ -46,23 +52,32 @@ public class PestoFTCConfig implements ConfigInterface {
 
     // INDEXER
     public static double INDEXER_IN = 0.20;
+    public static double INDEXER_OUTISH = 0.52;
     public static double INDEXER_OUT = 0.62;
 
     // HOOD
     public static double HOOD_CLOSE = 0.72;
     public static double HOOD_MID = 0.635;
-    public static double HOOD_FAR = 0.52;
+    public static double HOOD_FAR = 0.55;
 
     // SHOOTER
-    public static double SHOOTER_CLOSE = 0.35;
-    public static double SHOOTER_MIDDLE = 0.9;
-    public static double SHOOTER_FAR = 1.0;
+    public static double SHOOTER_KP = 0.3;
+
+    public static double SHOOTER_FF_CLOSE = 0.32;
+    public static double SHOOTER_FF_MIDDLE = 0.5;
+    public static double SHOOTER_FF_FAR = 0.5;
+
+    public static double SHOOTER_CLOSE = 1.8;
+    public static double SHOOTER_MIDDLE = 3.5;
+    public static double SHOOTER_FAR = 3.1;
+
+    public static double SHOOTER_RPM_TOLERANCE = 0.15;
 
     // TURRET
     public static double TURRET_LEFT = 100;
     public static double TURRET_RIGHT = -100;
     public static double TURRET_STATIC = 0.1;
-    public static double TURRET_KP = 0.002;
+    public static double TURRET_KP = 0.006;
 
     // BRAKE
     public static double BRAKE_DOWN = 0.3;
@@ -104,16 +119,17 @@ public class PestoFTCConfig implements ConfigInterface {
                     .build();
 
             TeleOpController teleOpController = new TeleOpController(driveController, hardwareMap);
-//            teleOpController.useTrackerIMU(tracker);
+            teleOpController.useTrackerIMU(tracker);
 
             teleOpController.setSpeedController(gamepad -> gamepad.left_bumper ? 0.6 : 1.0);
 
-//            teleOpController.counteractCentripetalForce(tracker, Math.min(STRAFE_VELOCITY, FORWARD_VELOCITY));
+            teleOpController.counteractCentripetalForce(tracker, MAX_FORCE);
 
             FrontalLobe.teleOpController = teleOpController;
             FrontalLobe.tracker = tracker;
         }
 
         FrontalLobe.driveController = driveController;
+        Constants.mass = mass;
     }
 }

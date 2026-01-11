@@ -8,8 +8,8 @@ import com.shprobotics.pestocore.hardware.CortexLinkedMotor;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
-@TeleOp(name = "Test")
-public class Test extends LinearOpMode {
+@TeleOp(name = "Turret Static Test", group = "Static Tests")
+public class TurretStaticTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         FrontalLobe.initialize(hardwareMap);

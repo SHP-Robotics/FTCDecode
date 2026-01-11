@@ -73,7 +73,7 @@ public class TurretSubsystem {
         if (this.state == RIGHT)
             targetPosition = PestoFTCConfig.TURRET_RIGHT;
 
-        if (Math.abs(turret.getCurrentPosition() - targetPosition) < 2) {
+        if (Math.abs(turret.getCurrentPosition() - targetPosition) < 6) {
             turret.setPowerResult(0.0);
             return;
         }
