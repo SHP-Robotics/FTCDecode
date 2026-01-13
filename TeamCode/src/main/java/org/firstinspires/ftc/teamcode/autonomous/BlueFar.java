@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.teamcode.autonomous.RedFarPaths.PathState.DONE;
+import static org.firstinspires.ftc.teamcode.autonomous.BlueFarPaths.PathState.DONE;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.shprobotics.pestocore.geometries.PathFollower;
@@ -15,9 +15,9 @@ import org.firstinspires.ftc.teamcode.subsystems.HoodSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
-@Autonomous(name = "Red Far")
-public class RedFar extends BaseRobot {
-    RedFarPaths.PathState state;
+@Autonomous(name = "Blue Far")
+public class BlueFar extends BaseRobot {
+    BlueFarPaths.PathState state;
     PathFollower pathFollower;
     double start;
 
@@ -54,8 +54,8 @@ public class RedFar extends BaseRobot {
         Utils.clear();
         super.initialize();
 
-        state = RedFarPaths.PathState.FIRST_PATH;
-        pathFollower = RedFarPaths.getPathFollower(state);
+        state = BlueFarPaths.PathState.FIRST_PATH;
+        pathFollower = BlueFarPaths.getPathFollower(state);
 
         hoodSubsystem.setState(HoodSubsystem.HoodState.AUTO_FAR);
         outtakeSubsystem.setPower(PestoFTCConfig.SHOOTER_FAR);

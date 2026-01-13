@@ -10,7 +10,7 @@ import com.shprobotics.pestocore.processing.FrontalLobe;
 
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
-public class RedFarPaths {
+public class BlueFarPaths {
     public enum PathState {
         FIRST_PATH (FIRST_MOVE, 5.0),
         DONE (null, Double.POSITIVE_INFINITY);
@@ -39,7 +39,7 @@ public class RedFarPaths {
                             new Pose(0, 0),
                             new Pose(0, 9)
                     }
-            ), new ParametricHeading(v -> -.4))
+            ), new ParametricHeading(v -> .4))
             .build();
 
     public static PathFollower getPathFollower(PathState state) {
