@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.DONE;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.EIGHTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.FIFTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.FOURTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SECOND_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SEVENTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SIXTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.THIRD_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsBlue.PathState.DONE;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsBlue.PathState.EIGHTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsBlue.PathState.FIFTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsBlue.PathState.FOURTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsBlue.PathState.SECOND_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsBlue.PathState.SEVENTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsBlue.PathState.SIXTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsBlue.PathState.THIRD_PATH;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.shprobotics.pestocore.geometries.PathFollower;
@@ -24,14 +24,14 @@ import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 @Autonomous(name = "Test Auto blue")
 public class TestAutoBlue extends BaseRobot {
-    TestAutoPathsRed.PathState state;
+    TestAutoPathsBlue.PathState state;
     PathFollower pathFollower;
     double start;
 
     public void nextState() {
         switch (state) {
             case FIRST_PATH:
-                turretSubsystem.setPosition(450);//increase for more to the left- stays the same entire auto
+                turretSubsystem.setPosition(-445);//increase for more to the left- stays the same entire auto
 
                 FrontalLobe.driveController.drive(0, 0, 0);
 
@@ -69,17 +69,17 @@ public class TestAutoBlue extends BaseRobot {
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
                 state = SECOND_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = TestAutoPathsBlue.getPathFollower(state);
                 Utils.clear();
                 break;
             case SECOND_PATH:
                 state = THIRD_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = TestAutoPathsBlue.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 break;
             case THIRD_PATH:
                 state = FOURTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = TestAutoPathsBlue.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 break;
             case FOURTH_PATH:
@@ -112,25 +112,25 @@ public class TestAutoBlue extends BaseRobot {
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
                 state = FIFTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = TestAutoPathsBlue.getPathFollower(state);
                 Utils.clear();
                 break;
 
             case FIFTH_PATH:
                 state = SIXTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = TestAutoPathsBlue.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 break;
 
             case SIXTH_PATH:
                 state = SEVENTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = TestAutoPathsBlue.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 break;
                 
             case SEVENTH_PATH:
                 state = EIGHTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = TestAutoPathsBlue.getPathFollower(state);
 
                 break;
 
@@ -176,8 +176,8 @@ public class TestAutoBlue extends BaseRobot {
         Utils.clear();
         super.initialize();
 
-        state = TestAutoPathsRed.PathState.FIRST_PATH;
-        pathFollower = TestAutoPathsRed.getPathFollower(state);
+        state = TestAutoPathsBlue.PathState.FIRST_PATH;
+        pathFollower = TestAutoPathsBlue.getPathFollower(state);
 
         hoodSubsystem.setState(HoodSubsystem.HoodState.FAR);
         outtakeSubsystem.setRPM(PestoFTCConfig.SHOOTER_AUTO);

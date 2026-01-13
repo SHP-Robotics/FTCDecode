@@ -45,87 +45,89 @@ public class TestAutoPathsBlue {
             .addCurve(new BezierCurve(
                     new Pose[]{ //goes to shoot preloads
                             new Pose(0, 0),
-                            new Pose(-15, 0)
+                            new Pose(15, 0)
                     }
             ), new ParametricHeading(v -> 0.0))
             .build();
 
     public static PathContainer SECOND_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-15, 0))
+            .setStartPosition(new Pose(15, 0))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //goes to intake spike
-                            new Pose(-15, 0),
-                            new Pose(-29, 13)
+                            new Pose(15, 0),
+                            new Pose(29, 13)
                     }
             ), new ParametricHeading(v -> 0.0))
             .build();
 
     public static PathContainer THIRD_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 13))
+            .setStartPosition(new Pose(29, 13))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //does the intake
-                            new Pose(-29, 13),
-                            new Pose(-29, 50)
+                            new Pose(29, 13),
+                            new Pose(29, 50)
                     }
             ), new ParametricHeading(v -> 0.0))
             .build();
 
     public static PathContainer FOURTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 50))
+            .setStartPosition(new Pose(29, 50))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ // goes back to shoot
-                            new Pose(-29, 50),
-                            new Pose(-15, 0)
+                            new Pose(29, 50),
+                            new Pose(15, 0)
                     }
             ), new ParametricHeading(v -> 0.0))
             .build();
 
     public static PathContainer FIFTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 50))
+            .setStartPosition(new Pose(29, 50))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //goes to human player
-                            new Pose(-29, 50),
-                            new Pose(-6, 40)
+                            new Pose(29, 50),
+                            new Pose(6, 40)
                     }
             ), new ParametricHeading(v -> 0.0))
             .build();
 
     public static PathContainer SIXTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 50))
+            .setStartPosition(new Pose(29, 50))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //intakes human player
-                            new Pose(-6, 40),
+                            new Pose(6, 40),
                             new Pose(0, 45)
                     }
             ), new ParametricHeading(v -> 0.0))
             .build();
 
     public static PathContainer SEVENTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 50))
+            .setStartPosition(new Pose(29, 50))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //back to shoot
-                            new Pose(-0, 45),
-                            new Pose(-15, 0)
+                            new Pose(0, 45),
+                            new Pose(15, 0)
 
                     }
             ), new ParametricHeading(v -> 0.0))
             .build();
     public static PathContainer EIGHTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 50))
+            .setStartPosition(new Pose(29, 50))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //leave
-                            new Pose(-15, 0),
-                            new Pose(-15, 10)
+                            new Pose(29, 50),
+                            new Pose(15, 10)
                     }
             ), new ParametricHeading(v -> 0.0))
             .build();
+
+
 
     public static PathFollower getPathFollower(PathState state) {
         // TODO: create secondary
