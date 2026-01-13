@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.shprobotics.pestocore.algorithms.PID;
 import com.shprobotics.pestocore.geometries.BezierCurve;
-import com.shprobotics.pestocore.geometries.ParametricHeading;
 import com.shprobotics.pestocore.geometries.PathContainer;
 import com.shprobotics.pestocore.geometries.PathFollower;
 import com.shprobotics.pestocore.geometries.Pose;
@@ -40,91 +39,83 @@ public class TestAutoPathsRed {
     }
 
     public static PathContainer FIRST_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(0, 0))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //goes to shoot preloads
-                            new Pose(0, 0),
-                            new Pose(-15, 0)
+                            new Pose(0, 0, 0.0),
+                            new Pose(-15, 0, 0.0)
                     }
-            ), new ParametricHeading(v -> 0.0))
+            ))
             .build();
 
     public static PathContainer SECOND_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-15, 0))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //goes to intake spike
-                            new Pose(-15, 0),
-                            new Pose(-29, 13)
+                            new Pose(-15, 0, 0.0),
+                            new Pose(-29, 13, 0.0)
                     }
-            ), new ParametricHeading(v -> 0.0))
+            ))
             .build();
 
     public static PathContainer THIRD_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 13))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //does the intake
-                            new Pose(-29, 13),
-                            new Pose(-29, 50)
+                            new Pose(-29, 13, 0.0),
+                            new Pose(-29, 50, 0.0)
                     }
-            ), new ParametricHeading(v -> 0.0))
+            ))
             .build();
 
     public static PathContainer FOURTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 50))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ // goes back to shoot
-                            new Pose(-29, 50),
-                            new Pose(-15, 0)
+                            new Pose(-29, 50, 0.0),
+                            new Pose(-15, 0, 0.0)
                     }
-            ), new ParametricHeading(v -> 0.0))
+            ))
             .build();
 
     public static PathContainer FIFTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 50))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //goes to human player
-                            new Pose(-29, 50),
-                            new Pose(-6, 40)
+                            new Pose(-29, 50, 0.0),
+                            new Pose(-6, 40, 0.0)
                     }
-            ), new ParametricHeading(v -> 0.0))
+            ))
             .build();
 
     public static PathContainer SIXTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 50))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //intakes human player
-                            new Pose(-6, 40),
-                            new Pose(0, 45)
+                            new Pose(-6, 40, 0.0),
+                            new Pose(0, 45, 0.0)
                     }
-            ), new ParametricHeading(v -> 0.0))
+            ))
             .build();
 
     public static PathContainer SEVENTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 50))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //back to shoot
-                            new Pose(-0, 45),
-                            new Pose(-15, 0)
+                            new Pose(-0, 45, 0.0),
+                            new Pose(-15, 0, 0.0)
 
                     }
-            ), new ParametricHeading(v -> 0.0))
+            ))
             .build();
     public static PathContainer EIGHTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setStartPosition(new Pose(-29, 50))
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //leave
-                            new Pose(-15, 0),
-                            new Pose(-15, 10)
+                            new Pose(-15, 0, 0.0),
+                            new Pose(-15, 10, 0.0)
                     }
-            ), new ParametricHeading(v -> 0.0))
+            ))
             .build();
 
     public static PathFollower getPathFollower(PathState state) {
@@ -132,7 +123,10 @@ public class TestAutoPathsRed {
         PathFollower pathFollower = new PathFollower.PathFollowerBuilder(
                 FrontalLobe.driveController,
                 FrontalLobe.tracker,
-                state.getPath()
+                state.getPath(),
+                0.2,
+                0.05,
+                0.2
         )
                 .setDeceleration(PestoFTCConfig.DECELERATION)
                 .setLookAhead(1.5)

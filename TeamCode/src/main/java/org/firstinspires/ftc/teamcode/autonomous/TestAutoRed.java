@@ -66,7 +66,7 @@ public class TestAutoRed extends BaseRobot {
 
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
-                blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
+                blockerSubsystem.setState(org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem.BlockerState.BLOCK);
 
                 state = SECOND_PATH;
                 pathFollower = TestAutoPathsRed.getPathFollower(state);
@@ -213,7 +213,7 @@ public class TestAutoRed extends BaseRobot {
                 continue;
             }
 
-            if (pathFollower.isFinished(0.2, 0.05) || (currentTime - start) > state.getTimer())
+            if (pathFollower.isFinished() || (currentTime - start) > state.getTimer())
                 nextState();
 
             if (pathFollower != null)
