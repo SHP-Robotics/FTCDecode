@@ -85,7 +85,7 @@ public class RedFar extends BaseRobot {
                 continue;
             }
 
-            if (pathFollower.isFinished(0.2, 0.05) || (currentTime - start) > state.getTimer())
+            if (pathFollower.isFinished() || (currentTime - start) > state.getTimer())
                 nextState();
 
             if (pathFollower != null)

@@ -23,7 +23,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
     public static double mass = 21.7; // lbs
     public static double MAX_FORCE = 2220;
-    public static double DECELERATION = 76;
+    public static double DECELERATION = 35;
 
     // ODOMETRY
     private static String leftName = "backLeft";
@@ -41,7 +41,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
     // DROPDOWN
     public static double DROPDOWN_DRIVE = 35; // 0.29;
-    public static double DROPDOWN_INTAKE = 80; // 0.47;
+    public static double DROPDOWN_INTAKE = 85; // 0.47;
     public static double DROPDOWN_PUSH = 35; // 0.29;
     public static double DROPDOWN_PUSH_AUTO = 35; // 0.29;
 
@@ -64,6 +64,10 @@ public class PestoFTCConfig implements ConfigInterface {
     // CAMERA
     public static double STATIC_DRIVE = 0.1;
     public static double KP = 0.015;
+
+    // AUTO
+    public static double HEADING_KP = 4;
+    public static double ENDPOINT_KP = 0.7;
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);

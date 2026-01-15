@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.shprobotics.pestocore.algorithms.PID;
 import com.shprobotics.pestocore.geometries.BezierCurve;
-import com.shprobotics.pestocore.geometries.ParametricHeading;
 import com.shprobotics.pestocore.geometries.PathContainer;
 import com.shprobotics.pestocore.geometries.PathFollower;
 import com.shprobotics.pestocore.geometries.Pose;
@@ -36,18 +35,20 @@ public class RedFarPaths {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{
-                            new Pose(0, 0),
-                            new Pose(0, 9)
+                            new Pose(0, 0, -0.4),
+                            new Pose(0, 9, -0.4)
                     }
-            ), new ParametricHeading(v -> -.4))
+            ))
             .build();
 
     public static PathFollower getPathFollower(PathState state) {
-        // TODO: create secondary
         PathFollower pathFollower = new PathFollower.PathFollowerBuilder(
                 FrontalLobe.driveController,
                 FrontalLobe.tracker,
-                state.getPath()
+                state.getPath(),
+                0.2,
+                0.05,
+                0.2
         )
                 .setDeceleration(PestoFTCConfig.DECELERATION)
                 .setLookAhead(1.5)

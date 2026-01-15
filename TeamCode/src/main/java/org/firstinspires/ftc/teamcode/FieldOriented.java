@@ -38,6 +38,9 @@ public class FieldOriented extends BaseRobot {
             tracker.update();
             teleOpController.updateSpeed(gamepad1);
 
+            boolean isStatic = tracker.getRobotVelocity().getMagnitude() < 1.0;
+            mecanumController.setIsStatic(isStatic);
+
             if (gamepadInterface1.isKeyDown(GamepadKey.B)) {
                 braking = !braking;
                 mecanumController.setZeroPowerBehavior(braking ? DcMotor.ZeroPowerBehavior.BRAKE : DcMotor.ZeroPowerBehavior.FLOAT);
