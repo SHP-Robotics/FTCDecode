@@ -11,10 +11,11 @@ import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
 public class BlueFarPaths {
     public enum PathState {
-        FIRST_PATH (FIRST_MOVE, 2.0),
-        SECOND_PATH (SECOND_MOVE, 4.0),
-        THIRD_PATH (THIRD_MOVE, 5.0),
-        FOURTH_PATH (FOURTH_MOVE, 5.0),
+        FIRST_PATH (FIRST_MOVE, 0.5),
+        SECOND_PATH (SECOND_MOVE, 6.0),
+        THIRD_PATH (THIRD_MOVE, 3.5),
+        FOURTH_PATH (FOURTH_MOVE, 3),
+        FIFTH_PATH (FIFTH_MOVE, 3.5),
         DONE (null, Double.POSITIVE_INFINITY);
 
         PathState(PathContainer pathContainer, double timer) {
@@ -38,7 +39,7 @@ public class BlueFarPaths {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{
-                            new Pose(0, 0, Math.toRadians(0)),
+                            new Pose(0, 0, -0.7068),
                             new Pose(-14.711, -7.6111, -0.7068)
                     }
             ))
@@ -52,10 +53,6 @@ public class BlueFarPaths {
                             new Pose(-9.37, -18.48, Math.toRadians(0))
                     }
             ))
-            .build();
-
-    static PathContainer THIRD_MOVE = new PathContainer.PathContainerBuilder()
-            .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{
                             new Pose(-9.37, -18.48, Math.toRadians(0)),
@@ -64,12 +61,32 @@ public class BlueFarPaths {
             ))
             .build();
 
-    static PathContainer FOURTH_MOVE = new PathContainer.PathContainerBuilder()
+    static PathContainer THIRD_MOVE = new PathContainer.PathContainerBuilder()
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{
                             new Pose(-66.21, -7.83, -0.23),
                             new Pose(-58.21, 19.41, -0.23)
+                    }
+            ))
+            .build();
+
+    static PathContainer FOURTH_MOVE = new PathContainer.PathContainerBuilder()
+            .setIncrement(0.01)
+            .addCurve(new BezierCurve(
+                    new Pose[]{
+                            new Pose(-58.21, 19.41, -0.23),
+                            new Pose(-66.21, -7.83, -0.23),
+                    }
+            ))
+            .build();
+
+    static PathContainer FIFTH_MOVE = new PathContainer.PathContainerBuilder()
+            .setIncrement(0.01)
+            .addCurve(new BezierCurve(
+                    new Pose[]{
+                            new Pose(-66.21, -7.83, -0.23),
+                            new Pose(-14.711, -7.6111, -0.7068),
                     }
             ))
             .build();
@@ -85,7 +102,7 @@ public class BlueFarPaths {
                 0.2
         )
                 .setDeceleration(PestoFTCConfig.DECELERATION)
-                .setLookAhead(2.0)
+                .setLookAhead(1.0)
                 .setSpeed(0.6)
                 .setHeadingPID(new PID(PestoFTCConfig.HEADING_KP, 0, 0))
                 .setEndpointPID(new PID(PestoFTCConfig.ENDPOINT_KP, 0, 0))

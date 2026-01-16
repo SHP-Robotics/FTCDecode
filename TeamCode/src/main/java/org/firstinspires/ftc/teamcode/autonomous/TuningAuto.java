@@ -16,10 +16,10 @@ import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 @Config
 @Autonomous(name = "Tuning Auto")
 public class TuningAuto extends BaseRobot {
-    public static double endpoint_kp = 0;
+    public static double endpoint_kp = 0.3;
     public static double heading_kp = 0;
-    public static double deceleration = 0.01;
-    public static double speed = 0.5;
+    public static double deceleration = 35;
+    public static double speed = 0.6;
     public static double look_ahead = 1;
 
     @Override
