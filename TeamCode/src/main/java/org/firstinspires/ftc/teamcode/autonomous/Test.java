@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.teamcode.autonomous.BlueFarPaths.PathState.SECOND_PATH;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.shprobotics.pestocore.drivebases.trackers.ThreeWheelOdometryTracker;
+import com.shprobotics.pestocore.processing.MotorCortex;
 
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.Utils;
@@ -16,16 +16,29 @@ public class Test extends BaseRobot {
         Utils.clear();
         super.initialize();
 
-        BlueFarPaths.PathState state = SECOND_PATH;
-
-        telemetry.addData("endpoint", state.getPath().getEndpoint());
-        telemetry.addData("point 1", state.getPath().curves.get(0).getPose(1.0));
-        telemetry.update();
-
         waitForStart();
 
-        while (opModeIsActive() && !isStopRequested()) {
+        double dL = 0.0;
+        double dC = 0.0;
+        double dR = 0.0;
 
+        while (opModeIsActive() && !isStopRequested()) {
+            MotorCortex.update();
+
+            if (gamepad1.b) {
+                dL = 0.0;
+                dC = 0.0;
+                dR = 0.0;
+            }
+
+            dL += ((ThreeWheelOdometryTracker) tracker).leftOdometry.getInchesTravelled();
+            dC += ((ThreeWheelOdometryTracker) tracker).centerOdometry.getInchesTravelled();
+            dR += ((ThreeWheelOdometryTracker) tracker).rightOdometry.getInchesTravelled();
+
+            telemetry.addData("dL", dL);
+            telemetry.addData("dC", dC);
+            telemetry.addData("dR", dR);
+            telemetry.update();
         }
     }
 }

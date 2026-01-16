@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.Utils;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HoodSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
@@ -30,7 +31,7 @@ public class BlueFar extends BaseRobot {
             case FIRST_PATH:
                 mecanumController.drive(0, 0, 0);
                 FrontalLobe.useMacro("outtake");
-                while (Utils.timer(15, "outtake")) {
+                while (Utils.timer(9, "outtake")) {
                     FrontalLobe.update();
                     MotorCortex.update();
 
@@ -47,19 +48,25 @@ public class BlueFar extends BaseRobot {
 
                 state = SECOND_PATH;
                 start = System.nanoTime() / 1E9;
+                pathFollower = BlueFarPaths.getPathFollower(state);
                 break;
             case SECOND_PATH:
                 state = THIRD_PATH;
                 start = System.nanoTime() / 1E9;
+                pathFollower = BlueFarPaths.getPathFollower(state);
                 break;
             case THIRD_PATH:
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
+                feederSubsystem.setState(FeederSubsystem.FeederState.FORWARD);
+                indexerSubsystem.setState(IndexerSubsystem.IndexerState.NEUTRAL);
 
                 state = FOURTH_PATH;
                 start = System.nanoTime() / 1E9;
+                pathFollower = BlueFarPaths.getPathFollower(state, 0.2);
                 break;
             case FOURTH_PATH:
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
+                feederSubsystem.setState(FeederSubsystem.FeederState.STOPPED);
 
                 state = DONE;
                 start = System.nanoTime() / 1E9;
@@ -67,8 +74,6 @@ public class BlueFar extends BaseRobot {
             case DONE:
                 break;
         }
-
-        pathFollower = BlueFarPaths.getPathFollower(state);
     }
 
     @Override
@@ -108,11 +113,16 @@ public class BlueFar extends BaseRobot {
                 continue;
             }
 
+            if (pathFollower == null)
+                continue;
+
+            pathFollower.update();
+
+            telemetry.addData("target", pathFollower.getPathContainer().getCurrentPosition());
+            telemetry.update();
+
             if (pathFollower.isFinished() || (currentTime - start) > state.getTimer())
                 nextState();
-
-            if (pathFollower != null)
-                pathFollower.update();
         }
     }
 }

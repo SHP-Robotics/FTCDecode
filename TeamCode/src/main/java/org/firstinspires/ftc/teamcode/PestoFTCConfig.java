@@ -34,9 +34,11 @@ public class PestoFTCConfig implements ConfigInterface {
     private static DcMotorSimple.Direction centerDirection = DcMotorSimple.Direction.REVERSE;
     private static DcMotorSimple.Direction rightDirection = DcMotorSimple.Direction.REVERSE;
 
-    private static double ODOMETRY_TICKS_PER_INCH = 505.3169;
+    private static double ODOMETRY_TICKS_PER_INCH_CENTER = 505.3169;
+    private static double ODOMETRY_TICKS_PER_INCH_LEFT = 505.3169;
+    private static double ODOMETRY_TICKS_PER_INCH_RIGHT = 505.3169;
     public static double FORWARD_OFFSET = -1.565;
-    public static double ODOMETRY_WIDTH = 9.102;
+    public static double ODOMETRY_WIDTH = 9.1474;
 
 
     // DROPDOWN
@@ -66,12 +68,14 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double KP = 0.015;
 
     // AUTO
-    public static double HEADING_KP = 4;
-    public static double ENDPOINT_KP = 0.7;
+    public static double HEADING_KP = 8;
+    public static double ENDPOINT_KP = 0.5;
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);
         Cerebrum.initialize();
+
+        MotorCortex.getMotor("3");
 
         MecanumController driveController = new MecanumController(
                 MotorCortex.getMotor("frontLeft"),
@@ -111,7 +115,9 @@ public class PestoFTCConfig implements ConfigInterface {
         if (initializePinpoint) {
             DeterministicTracker tracker = new ThreeWheelOdometryTracker.TrackerBuilder(
                     hardwareMap,
-                    ODOMETRY_TICKS_PER_INCH,
+                    ODOMETRY_TICKS_PER_INCH_LEFT,
+                    ODOMETRY_TICKS_PER_INCH_RIGHT,
+                    ODOMETRY_TICKS_PER_INCH_CENTER,
                     FORWARD_OFFSET,
                     ODOMETRY_WIDTH,
                     leftName,
