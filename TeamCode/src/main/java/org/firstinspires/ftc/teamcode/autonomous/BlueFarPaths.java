@@ -54,12 +54,12 @@ public class BlueFarPaths {
             .addCurve(new BezierCurve(
                     new Pose[]{
                             new Pose(-14.711, -7.6111, Math.toRadians(0)),
-                            new Pose(-9.37, -24, Math.toRadians(0))
+                            new Pose(-9.37, -30, Math.toRadians(0))
                     }
             ))
             .addCurve(new BezierCurve(
                     new Pose[]{
-                            new Pose(-9.37, -27, -0.23),
+                            new Pose(-9.37, -30, -0.23),
                             new Pose(-66.21, -7.83, -0.23)
                     }
             ))
@@ -70,7 +70,7 @@ public class BlueFarPaths {
             .addCurve(new BezierCurve(
                     new Pose[]{
                             new Pose(-66.21, -7.83, -0.23),
-                            new Pose(-58.21, 19.41, -0.23)
+                            new Pose(-58.21, 22, -0.23)
                     }
             ))
             .build();

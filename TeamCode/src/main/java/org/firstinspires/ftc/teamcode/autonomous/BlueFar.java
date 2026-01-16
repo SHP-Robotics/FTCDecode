@@ -43,7 +43,8 @@ public class BlueFar extends BaseRobot {
                     tracker.update();
                     pathFollower.update();
 
-                    mecanumController.setIsStatic(tracker.getRobotVelocity().getMagnitude() < 1.0);
+                    double distanceToEndpoint = Pose.dist(tracker.getCurrentPosition(), pathFollower.getPathContainer().getEndpoint());
+                    mecanumController.setIsStatic(distanceToEndpoint > 0.3 && tracker.getRobotVelocity().getMagnitude() < 0.5);
 
                     feederSubsystem.update();
                     hoodSubsystem.update();
@@ -52,7 +53,6 @@ public class BlueFar extends BaseRobot {
                     outtakeSubsystem.update();
                 }
 
-                intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 feederSubsystem.setState(FeederSubsystem.FeederState.STOPPED);
 
                 state = SECOND_PATH;
@@ -70,7 +70,6 @@ public class BlueFar extends BaseRobot {
                 pathFollower = BlueFarPaths.getPathFollower(state, 0.2);
                 break;
             case THIRD_PATH:
-                intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 feederSubsystem.setState(FeederSubsystem.FeederState.STOPPED);
 
                 state = FOURTH_PATH;
