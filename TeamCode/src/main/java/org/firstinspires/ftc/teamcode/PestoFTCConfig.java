@@ -23,7 +23,9 @@ public class PestoFTCConfig implements ConfigInterface {
 
     public static double mass = 23.7; // lbs
     public static double MAX_FORCE = 2170;
-    public static double DECELERATION = 110;
+    public static double DECELERATION = 100;
+    public static double ENDPOINT_KP = 0.3;
+    public static double HEADING_KP = 4;
 
     // ODOMETRY
     public static String leftName = "backL";
@@ -52,12 +54,12 @@ public class PestoFTCConfig implements ConfigInterface {
     // INDEXER
     public static double INDEXER_IN = 0.20;
     public static double INDEXER_OUTISH = 0.52;
-    public static double INDEXER_OUT = 0.6;
+    public static double INDEXER_OUT = 0.589;
 
     // HOOD
     public static double HOOD_CLOSE = 0.72;
     public static double HOOD_MID = 0.635;
-    public static double HOOD_FAR = 0.455;
+    public static double HOOD_FAR = 0.33;
 
     // SHOOTER
     public static double SHOOTER_KP = 0.3;
@@ -69,7 +71,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
     public static double SHOOTER_CLOSE = 1.8;
     public static double SHOOTER_MIDDLE = 3.5;
-    public static double SHOOTER_FAR = 3.1;
+    public static double SHOOTER_FAR = 2.6;
     public static double SHOOTER_AUTO = 2.6;
 
     public static double SHOOTER_RPM_TOLERANCE = 0.15;
@@ -109,6 +111,8 @@ public class PestoFTCConfig implements ConfigInterface {
         if (initializePinpoint) {
             DeterministicTracker tracker = new ThreeWheelOdometryTracker.TrackerBuilder(
                     hardwareMap,
+                    ODOMETRY_TICKS_PER_INCH,
+                    ODOMETRY_TICKS_PER_INCH,
                     ODOMETRY_TICKS_PER_INCH,
                     FORWARD_OFFSET,
                     ODOMETRY_WIDTH,

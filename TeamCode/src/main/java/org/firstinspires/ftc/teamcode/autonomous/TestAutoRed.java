@@ -4,9 +4,11 @@ import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathSta
 import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.EIGHTH_PATH;
 import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.FIFTH_PATH;
 import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.FOURTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.NINETH_PATH;
 import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SECOND_PATH;
 import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SEVENTH_PATH;
 import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SIXTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.TENTH_PATH;
 import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.THIRD_PATH;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -31,14 +33,15 @@ public class TestAutoRed extends BaseRobot {
     public void nextState() {
         switch (state) {
             case FIRST_PATH:
-                turretSubsystem.setPosition(450);//increase for more to the left- stays the same entire auto
-
-                FrontalLobe.driveController.drive(0, 0, 0);
+                turretSubsystem.setPosition(465.67);//increase for more to the left- stays the same entire auto
 
                 while (Utils.timer(1.0, "turret") && opModeIsActive() && !isStopRequested()) {
-                    assert Utils.hasTimer("turret");
+                    FrontalLobe.update();
                     MotorCortex.update();
+
                     turretSubsystem.update();
+                    tracker.update();
+                    pathFollower.update();
 
                     telemetry.addData("time", (System.nanoTime() / 1E9) - Utils.getTime("turret"));
                     telemetry.update();
@@ -46,10 +49,11 @@ public class TestAutoRed extends BaseRobot {
 
                 FrontalLobe.useMacro("outtake");
                 while (Utils.timer(3.0, "outtake") && opModeIsActive() && !isStopRequested()) {
-                    telemetry.addLine("here");
-                    telemetry.update();
                     FrontalLobe.update();
                     MotorCortex.update();
+
+                    tracker.update();
+                    pathFollower.update();
 
                     blockerSubsystem.update();
                     hoodSubsystem.update();
@@ -83,16 +87,13 @@ public class TestAutoRed extends BaseRobot {
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 break;
             case FOURTH_PATH:
-
-
-                FrontalLobe.driveController.drive(0, 0, 0);
-
                 FrontalLobe.useMacro("outtake");
                 while (Utils.timer(3.0, "outtake") && opModeIsActive() && !isStopRequested()) {
-                    telemetry.addLine("here");
-                    telemetry.update();
                     FrontalLobe.update();
                     MotorCortex.update();
+
+                    tracker.update();
+                    pathFollower.update();
 
                     blockerSubsystem.update();
                     hoodSubsystem.update();
@@ -127,22 +128,16 @@ public class TestAutoRed extends BaseRobot {
                 pathFollower = TestAutoPathsRed.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 break;
-                
+
             case SEVENTH_PATH:
-                state = EIGHTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
-
-                break;
-
-            case EIGHTH_PATH:
-                FrontalLobe.driveController.drive(0, 0, 0);
 
                 FrontalLobe.useMacro("outtake");
                 while (Utils.timer(3.0, "outtake") && opModeIsActive() && !isStopRequested()) {
-                    telemetry.addLine("here");
-                    telemetry.update();
                     FrontalLobe.update();
                     MotorCortex.update();
+
+                    tracker.update();
+                    pathFollower.update();
 
                     blockerSubsystem.update();
                     hoodSubsystem.update();
@@ -157,15 +152,66 @@ public class TestAutoRed extends BaseRobot {
                         intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 }
 
+                intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
+                outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
+                blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
+
+                state = EIGHTH_PATH;
+                pathFollower = TestAutoPathsRed.getPathFollower(state);
+
+                break;
+
+            case EIGHTH_PATH:
+                state = NINETH_PATH;
+                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
+                break;
+
+            case NINETH_PATH:
+                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                FrontalLobe.useMacro("outtake");
+                while (Utils.timer(3.0, "outtake") && opModeIsActive() && !isStopRequested()) {
+                    FrontalLobe.update();
+                    MotorCortex.update();
+
+                    tracker.update();
+                    pathFollower.update();
+
+                    blockerSubsystem.update();
+                    hoodSubsystem.update();
+                    intakeSubsystem.update();
+                    outtakeSubsystem.update();
+                    indexerSubsystem.update();
+                    turretSubsystem.update();
+
+                    if (outtakeSubsystem.isBusy())
+                        intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
+                    else
+                        intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
+
+                }
+
+
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
+                state = TENTH_PATH;
+                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                break;
+
+            case TENTH_PATH:
+                intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 state = DONE;
                 pathFollower = null;
                 Utils.clear();
                 break;
+
         }
+
+
+
+
 
         start = System.nanoTime() / 1E9;
     }
@@ -194,11 +240,9 @@ public class TestAutoRed extends BaseRobot {
 
             FrontalLobe.update();
             MotorCortex.update();
+
             gamepadInterface1.update();
             tracker.update();
-
-            boolean isStatic = tracker.getRobotVelocity().getMagnitude() < 1.0;
-            mecanumController.setIsStatic(isStatic);
 
             blockerSubsystem.update();
             hoodSubsystem.update();
@@ -213,12 +257,14 @@ public class TestAutoRed extends BaseRobot {
                 continue;
             }
 
-            if (pathFollower.isFinished(0.2, 0.05) || (currentTime - start) > state.getTimer())
+            if (pathFollower.isFinished() || (currentTime - start) > state.getTimer())
                 nextState();
 
             if (pathFollower != null)
                 pathFollower.update();
 
+            telemetry.addData("R", tracker.getCurrentPosition().getHeadingRadians());
+            telemetry.addData("target pose", pathFollower.getPathContainer().getCurrentPosition());
             telemetry.addData("shooter", outtakeSubsystem.getRPM());
             telemetry.addData("target", outtakeSubsystem.getTargetRPM());
             telemetry.update();

@@ -31,6 +31,7 @@ public class TestAutoBlue extends BaseRobot {
     public void nextState() {
         switch (state) {
             case FIRST_PATH:
+                FrontalLobe.driveController.drive(0, 0, 0);
                 turretSubsystem.setPosition(-445);//increase for more to the left- stays the same entire auto
 
                 FrontalLobe.driveController.drive(0, 0, 0);
@@ -83,8 +84,6 @@ public class TestAutoBlue extends BaseRobot {
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 break;
             case FOURTH_PATH:
-
-
                 FrontalLobe.driveController.drive(0, 0, 0);
 
                 FrontalLobe.useMacro("outtake");
@@ -213,7 +212,7 @@ public class TestAutoBlue extends BaseRobot {
                 continue;
             }
 
-            if (pathFollower.isFinished(0.2, 0.05) || (currentTime - start) > state.getTimer())
+            if (pathFollower.isFinished() || (currentTime - start) > state.getTimer())
                 nextState();
 
             if (pathFollower != null)
