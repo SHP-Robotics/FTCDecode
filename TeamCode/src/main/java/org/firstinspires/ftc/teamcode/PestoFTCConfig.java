@@ -68,8 +68,8 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double KP = 0.015;
 
     // AUTO
-    public static double HEADING_KP = 8;
-    public static double ENDPOINT_KP = 0.5;
+    public static double HEADING_KP = 4;
+    public static double ENDPOINT_KP = 0.3;
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);
