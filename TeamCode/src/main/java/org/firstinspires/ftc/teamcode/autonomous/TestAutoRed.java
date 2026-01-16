@@ -70,7 +70,7 @@ public class TestAutoRed extends BaseRobot {
 
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
-                blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
+                blockerSubsystem.setState(org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem.BlockerState.BLOCK);
 
                 state = SECOND_PATH;
                 pathFollower = TestAutoPathsRed.getPathFollower(state);
