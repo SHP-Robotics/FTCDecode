@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -131,6 +132,9 @@ public class PestoFTCConfig implements ConfigInterface {
                     .build();
 
             TeleOpController teleOpController = new TeleOpController(driveController, hardwareMap);
+
+            teleOpController.configureIMU(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.UP));
+
             teleOpController.useTrackerIMU(tracker);
 
             teleOpController.setSpeedController(gamepad -> gamepad.left_bumper ? 0.6 : 1.0);

@@ -27,6 +27,8 @@ public class FieldOriented extends BaseRobot {
         boolean rotationLocked = false;
         double angle = 0.0;
 
+        boolean usingOdometry = true;
+
         super.initialize();
 
         waitForStart();
@@ -40,6 +42,14 @@ public class FieldOriented extends BaseRobot {
 
             boolean isStatic = tracker.getRobotVelocity().getMagnitude() < 1.0;
             mecanumController.setIsStatic(isStatic);
+
+            if (gamepadInterface1.isKeyDown(GamepadKey.Y)) {
+                usingOdometry = !usingOdometry;
+                if (usingOdometry)
+                    teleOpController.useTrackerIMU(tracker);
+                else
+                    teleOpController.useIMU();
+            }
 
             if (gamepadInterface1.isKeyDown(GamepadKey.B)) {
                 braking = !braking;
@@ -172,6 +182,8 @@ public class FieldOriented extends BaseRobot {
             telemetry.addData("x", tracker.getCurrentPosition().getX());
             telemetry.addData("y", tracker.getCurrentPosition().getY());
             telemetry.addData("r", tracker.getCurrentPosition().getHeadingRadians());
+            telemetry.addData("teleop r", teleOpController.getHeading());
+            telemetry.addData("using odometry", !usingOdometry);
             telemetry.addData("target", intakeSubsystem.dropdownTarget);
             telemetry.addData("pitch", intakeSubsystem.imu.getRobotYawPitchRollAngles().getPitch());
             telemetry.update();
