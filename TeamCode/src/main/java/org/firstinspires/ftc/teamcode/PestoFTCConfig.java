@@ -77,8 +77,6 @@ public class PestoFTCConfig implements ConfigInterface {
         MotorCortex.initialize(hardwareMap);
         Cerebrum.initialize();
 
-        MotorCortex.getMotor("3");
-
         MecanumController driveController = new MecanumController(
                 MotorCortex.getMotor("frontLeft"),
                 MotorCortex.getMotor("frontRight"),
