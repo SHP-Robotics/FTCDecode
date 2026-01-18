@@ -63,25 +63,6 @@ public class BaseRobot extends LinearOpMode {
         brake = false;
 
         // MACRO initialization
-
-        FrontalLobe.addMacro("outtake", new FrontalLobe.Macro() {
-            @Override
-            public void start() {
-                FrontalLobe.removeOtherMacros(this);
-                outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.OUTTAKE);
-            }
-
-            @Override
-            public boolean loop(double v) {
-                // how long (seconds) before starting to move other components
-                if (v < 0.3)
-                    return false;
-
-                blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
-
-                return true;
-            }
-        });
     }
 
     @Override

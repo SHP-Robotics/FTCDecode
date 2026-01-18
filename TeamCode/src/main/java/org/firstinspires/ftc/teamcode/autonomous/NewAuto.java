@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.subsystems.HoodSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
-@Autonomous(name = "Test Auto blue")
-public class TestAutoBlue extends BaseRobot {
+@Autonomous(name = "New auto")
+public class NewAuto extends BaseRobot {
     TestAutoPathsBlue.PathState state;
     PathFollower pathFollower;
     double start;
@@ -24,7 +24,7 @@ public class TestAutoBlue extends BaseRobot {
     public void nextState() {
             switch (state) {
                 case FIRST_PATH:
-                    turretSubsystem.setPosition(-444.67);//increase for more to the left- stays the same entire auto
+                    turretSubsystem.setPosition(465.67);//increase for more to the left- stays the same entire auto
 
                     while (Utils.timer(1.0, "turret") && opModeIsActive() && !isStopRequested()) {
                         FrontalLobe.update();
@@ -38,6 +38,7 @@ public class TestAutoBlue extends BaseRobot {
                         telemetry.update();
                     }
 
+                    outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.OUTTAKE);
                     blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
                     while (Utils.timer(3.0, "outtake") && opModeIsActive() && !isStopRequested()) {
                         FrontalLobe.update();
@@ -60,6 +61,7 @@ public class TestAutoBlue extends BaseRobot {
                     }
 
                     intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
+                    outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
                     blockerSubsystem.setState(org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem.BlockerState.BLOCK);
 
                     state = TestAutoPathsBlue.PathState.SECOND_PATH;
@@ -77,6 +79,7 @@ public class TestAutoBlue extends BaseRobot {
                     intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                     break;
                 case FOURTH_PATH:
+                    outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.OUTTAKE);
                     blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
                     while (Utils.timer(3.0, "outtake") && opModeIsActive() && !isStopRequested()) {
                         FrontalLobe.update();
@@ -99,6 +102,7 @@ public class TestAutoBlue extends BaseRobot {
                     }
 
                     intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
+                    outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
                     blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
                     state = TestAutoPathsBlue.PathState.FIFTH_PATH;
@@ -119,6 +123,7 @@ public class TestAutoBlue extends BaseRobot {
                     break;
 
                 case SEVENTH_PATH:
+                    outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.OUTTAKE);
                     blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
                     while (Utils.timer(3.0, "outtake") && opModeIsActive() && !isStopRequested()) {
                         FrontalLobe.update();
@@ -141,6 +146,7 @@ public class TestAutoBlue extends BaseRobot {
                     }
 
                     intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
+                    outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
                     blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
                     state = TestAutoPathsBlue.PathState.EIGHTH_PATH;
@@ -155,7 +161,8 @@ public class TestAutoBlue extends BaseRobot {
                     break;
 
                 case NINETH_PATH:
-
+                    pathFollower = TestAutoPathsBlue.getPathFollower(state);
+                    outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.OUTTAKE);
                     blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
                     while (Utils.timer(3.0, "outtake") && opModeIsActive() && !isStopRequested()) {
                         FrontalLobe.update();
@@ -180,6 +187,7 @@ public class TestAutoBlue extends BaseRobot {
 
 
                     intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
+                    outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
                     blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
                     state = TestAutoPathsBlue.PathState.TENTH_PATH;
@@ -188,7 +196,6 @@ public class TestAutoBlue extends BaseRobot {
 
                 case TENTH_PATH:
                     intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
-                    outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
                     state = TestAutoPathsBlue.PathState.DONE;
                     pathFollower = null;
                     Utils.clear();
@@ -214,8 +221,6 @@ public class TestAutoBlue extends BaseRobot {
         outtakeSubsystem.setFFPower(PestoFTCConfig.SHOOTER_FF_AUTO);
 
         waitForStart();
-
-        outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.OUTTAKE);
 
         turretSubsystem.rezero();
 

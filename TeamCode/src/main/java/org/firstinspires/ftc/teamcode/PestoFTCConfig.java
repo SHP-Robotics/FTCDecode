@@ -25,7 +25,7 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double MAX_FORCE = 2170;
     public static double DECELERATION = 100;
     public static double ENDPOINT_KP = 0.3;
-    public static double HEADING_KP = 4;
+    public static double HEADING_KP = 3.5;
 
     // ODOMETRY
     public static String leftName = "backL";
@@ -58,27 +58,27 @@ public class PestoFTCConfig implements ConfigInterface {
 
     // HOOD
     public static double HOOD_CLOSE = 0.72;
-    public static double HOOD_MID = 0.635;
-    public static double HOOD_FAR = 0.33;
+    public static double HOOD_MID = 0.45;
+    public static double HOOD_FAR = 0.37;
 
     // SHOOTER
     public static double SHOOTER_KP = 0.3;
+    public static double SHOOTER_KD = 0.05;
 
-    public static double SHOOTER_FF_CLOSE = 0.32;
-    public static double SHOOTER_FF_MIDDLE = 0.5;
-    public static double SHOOTER_FF_FAR = 0.5;
-    public static double SHOOTER_FF_AUTO = 0.5;
+    public static double SHOOTER_FF_CLOSE = 0.34;
+    public static double SHOOTER_FF_MIDDLE = 0.41;
+    public static double SHOOTER_FF_FAR = 0.54;
+    public static double SHOOTER_FF_AUTO = 0.5;//0.5 red || 0.56 blue
 
-    public static double SHOOTER_CLOSE = 1.8;
-    public static double SHOOTER_MIDDLE = 3.5;
-    public static double SHOOTER_FAR = 2.6;
-    public static double SHOOTER_AUTO = 2.6;
-
+    public static double SHOOTER_CLOSE = 2.0;
+    public static double SHOOTER_MIDDLE = 2.4;
+    public static double SHOOTER_FAR = 2.7;
+    public static double SHOOTER_AUTO = 2.6; //0.26 for red 2.7
     public static double SHOOTER_RPM_TOLERANCE = 0.15;
 
     // TURRET
-    public static double TURRET_LEFT = 100;
-    public static double TURRET_RIGHT = -100;
+    public static double TURRET_LEFT = 500;
+    public static double TURRET_RIGHT = -500;
     public static double TURRET_STATIC = 0.12; //increase when its a little off
     public static double TURRET_KP = 0.006;
 

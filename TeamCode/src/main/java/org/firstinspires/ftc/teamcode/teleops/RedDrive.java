@@ -17,11 +17,13 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 
-@TeleOp(name = "Thanks Andrew")
-public class Drive extends BaseRobot {
+@TeleOp(name = "Red Drive")
+public class RedDrive extends BaseRobot {
     @Override
     public void runOpMode() {
         PestoFTCConfig.initializePinpoint = true;
+        boolean revving = false;
+        boolean outtaking = false;
 
         super.initialize();
 
@@ -76,9 +78,20 @@ public class Drive extends BaseRobot {
             }
 
             boolean intaking = gamepad1.right_trigger > 0.05;
-            boolean outtaking = !intaking && gamepad1.left_trigger > 0.05;
+            outtaking = !intaking && gamepadInterface1.getTimeDown(GamepadKey.LEFT_TRIGGER) > 0.3;
+            revving = (revving != gamepadInterface1.isClicked(GamepadKey.LEFT_TRIGGER, 0.3)) || outtaking;
+            telemetry.addData("outtaking", outtaking);
+            telemetry.addData("revving", revving);
+            telemetry.addData("held", gamepadInterface1.isHeld(GamepadKey.LEFT_TRIGGER, 0.3));
+            telemetry.addData("clicked", gamepadInterface1.isClicked(GamepadKey.LEFT_TRIGGER, 0.3));
             boolean rejecting = !intaking && !outtaking && gamepad1.a;
             boolean neutralizing = !intaking && !outtaking && !rejecting;
+
+            if (revving) {
+                outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.OUTTAKE);
+            } else {
+                outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
+            }
 
             if (state == RobotState.OUTTAKE) {
                 if (outtakeSubsystem.isBusy())
@@ -88,14 +101,12 @@ public class Drive extends BaseRobot {
             }
 
             if (!outtaking && state == RobotState.OUTTAKE) {
-                FrontalLobe.removeMacros("outtake");
-
                 if (hoodSubsystem.getState() == HoodSubsystem.HoodState.CLOSE)
                     turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
                 else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.MID)
                     turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
                 else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.FAR)
-                    turretSubsystem.setState(TurretSubsystem.TurretState.RIGHT);
+                    turretSubsystem.setState(TurretSubsystem.TurretState.LEFT);
             }
 
             if (gamepad1.dpad_left) {
@@ -128,13 +139,12 @@ public class Drive extends BaseRobot {
 
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
-                outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
             }
 
             if (outtaking && state != RobotState.OUTTAKE) {
                 state = RobotState.OUTTAKE;
 
-                FrontalLobe.useMacro("outtake");
+                blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
             }
 
             if (rejecting) {
@@ -142,7 +152,6 @@ public class Drive extends BaseRobot {
 
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.REJECT);
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
-                outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
             }
 
             if (neutralizing) {
@@ -150,7 +159,6 @@ public class Drive extends BaseRobot {
 
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
-                outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
             }
 
 
@@ -176,7 +184,7 @@ public class Drive extends BaseRobot {
                     hoodSubsystem.setState(HoodSubsystem.HoodState.FAR);
                     outtakeSubsystem.setRPM(PestoFTCConfig.SHOOTER_FAR);
                     outtakeSubsystem.setFFPower(PestoFTCConfig.SHOOTER_FF_FAR);
-                    turretSubsystem.setState(TurretSubsystem.TurretState.RIGHT);
+                    turretSubsystem.setState(TurretSubsystem.TurretState.LEFT);
                 } else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.FAR) {
                     hoodSubsystem.setState(HoodSubsystem.HoodState.CLOSE);
                     outtakeSubsystem.setRPM(PestoFTCConfig.SHOOTER_CLOSE);

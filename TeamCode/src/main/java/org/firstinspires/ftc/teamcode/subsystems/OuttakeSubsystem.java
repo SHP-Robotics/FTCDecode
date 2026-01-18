@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.PestoFTCConfig.SHOOTER_KD;
 import static org.firstinspires.ftc.teamcode.PestoFTCConfig.SHOOTER_KP;
 import static org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem.OuttakeState.OUTTAKE;
 
@@ -36,7 +37,7 @@ public class OuttakeSubsystem {
         upperShooter.setMode(RUN_USING_ENCODER);
         upperShooter.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        pidController = new PID(SHOOTER_KP, 0, 0);
+        pidController = new PID(SHOOTER_KP, 0, SHOOTER_KD);
 
         state = OuttakeState.NEUTRAL;
     }

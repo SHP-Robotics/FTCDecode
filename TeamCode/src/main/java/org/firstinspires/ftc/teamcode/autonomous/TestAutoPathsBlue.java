@@ -10,117 +10,137 @@ import com.shprobotics.pestocore.processing.FrontalLobe;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
 public class TestAutoPathsBlue {
-    public enum PathState {
-        FIRST_PATH (FIRST_MOVE, 1.8),
-        SECOND_PATH (SECOND_MOVE, 1.2),
-        THIRD_PATH (THIRD_MOVE, 1.8),
-        FOURTH_PATH (FOURTH_MOVE, 2.0),
-        FIFTH_PATH (FIFTH_MOVE, 2.0),
-        SIXTH_PATH(SIXTH_MOVE, 2.5),
-        SEVENTH_PATH(SEVENTH_MOVE,1),
-        EIGHTH_PATH(EIGHTH_MOVE, 2.3),
-        DONE (null, Double.POSITIVE_INFINITY);
+        public enum PathState {
+            FIRST_PATH (FIRST_MOVE, 0.55),
+            SECOND_PATH (SECOND_MOVE, 0.9),
+            THIRD_PATH (THIRD_MOVE, 1.2),
+            FOURTH_PATH (FOURTH_MOVE, 1.8),
+            FIFTH_PATH (FIFTH_MOVE, 2.0),
+            SIXTH_PATH(SIXTH_MOVE, 2.5),
+            SEVENTH_PATH(SEVENTH_MOVE,2.5),
+            EIGHTH_PATH(EIGHTH_MOVE, 1.8),
+            NINETH_PATH(NINETH_MOVE, 5),
+            TENTH_PATH(TENTH_MOVE, 3),
+            DONE (null, Double.POSITIVE_INFINITY);
 
-        PathState(PathContainer path, double timer) {
-            this.path = path;
-            this.timer = timer;
+            PathState(PathContainer path, double timer) {
+                this.path = path;
+                this.timer = timer;
+            }
+
+            final PathContainer path;
+            final double timer;
+
+            PathContainer getPath() {
+                return path;
+            }
+
+            double getTimer() {
+                return timer;
+            }
         }
 
-        final PathContainer path;
-        final double timer;
+        public static PathContainer FIRST_MOVE = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(new BezierCurve(
+                        new Pose[]{ //goes to shoot preloads
+                                new Pose(0, 0, Math.toRadians(0.0)),
+                                new Pose(15, 0, Math.toRadians(0.0))
+                        }
+                ))
+                .build();
 
-        PathContainer getPath() {
-            return path;
-        }
+        public static PathContainer SECOND_MOVE = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(new BezierCurve(
+                        new Pose[]{ //goes to intake spike
+                                new Pose(15, 0, Math.toRadians(0.0)),
+                                new Pose(29, 13, Math.toRadians(0.0))
+                        }
+                ))
+                .build();
 
-        double getTimer() {
-            return timer;
-        }
-    }
+        public static PathContainer THIRD_MOVE = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(new BezierCurve(
+                        new Pose[]{ //does the intake
+                                new Pose(29, 13, Math.toRadians(0.0)),
+                                new Pose(29, 50, Math.toRadians(0.0))
+                        }
+                ))
+                .build();
 
-    public static PathContainer FIRST_MOVE = new PathContainer.PathContainerBuilder()
-            .setIncrement(0.01)
-            .addCurve(new BezierCurve(
-                    new Pose[]{ //goes to shoot preloads
-                            new Pose(0, 0, Math.toRadians(0.0)),
-                            new Pose(15, 0, Math.toRadians(0.0))
-                    }
-            ))
-            .build();
+        public static PathContainer FOURTH_MOVE = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(new BezierCurve(
+                        new Pose[]{ // goes back to shoot
+                                new Pose(29, 50, Math.toRadians(0.0)),
+                                new Pose(15, 0, Math.toRadians(0.0))
+                        }
+                ))
+                .build();
 
-    public static PathContainer SECOND_MOVE = new PathContainer.PathContainerBuilder()
-            .setIncrement(0.01)
-            .addCurve(new BezierCurve(
-                    new Pose[]{ //goes to intake spike
-                            new Pose(15, 0, Math.toRadians(0.0)),
-                            new Pose(29, 13, Math.toRadians(0.0))
-                    }
-            ))
-            .build();
+        public static PathContainer FIFTH_MOVE = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(new BezierCurve(
+                        new Pose[]{ //goes to human player
+                                new Pose(15, 0, Math.toRadians(90)),
+                                new Pose(18, 47, Math.toRadians(90))
+                        }
+                ))
+                .build();
 
-    public static PathContainer THIRD_MOVE = new PathContainer.PathContainerBuilder()
-            .setIncrement(0.01)
-            .addCurve(new BezierCurve(
-                    new Pose[]{ //does the intake
-                            new Pose(29, 13, Math.toRadians(0.0)),
-                            new Pose(29, 50, Math.toRadians(0.0))
-                    }
-            ))
-            .build();
+        public static PathContainer SIXTH_MOVE = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(new BezierCurve(
+                        new Pose[]{ //intakes human player
+                                new Pose(18, 47, Math.toRadians(90)),
+                                new Pose(0, 47, Math.toRadians(90))
+                        }
+                ))
+                .build();
 
-    public static PathContainer FOURTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setIncrement(0.01)
-            .addCurve(new BezierCurve(
-                    new Pose[]{ // goes back to shoot
-                            new Pose(29, 50, Math.toRadians(0.0)),
-                            new Pose(15, 0, Math.toRadians(0.0))
-                    }
-            ))
-            .build();
+        public static PathContainer SEVENTH_MOVE = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(new BezierCurve(
+                        new Pose[]{ //back to shoot
+                                new Pose(0, 47, Math.toRadians(0.0)),
+                                new Pose(15, 0, Math.toRadians(0.0))
 
-    public static PathContainer FIFTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setIncrement(0.01)
-            .addCurve(new BezierCurve(
-                    new Pose[]{ //goes to human player
-                            new Pose(29, 50, Math.toRadians(0.0)),
-                            new Pose(6, 40, Math.toRadians(0.0))
-                    }
-            ))
-            .build();
-
-    public static PathContainer SIXTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setIncrement(0.01)
-            .addCurve(new BezierCurve(
-                    new Pose[]{ //intakes human player
-                            new Pose(6, 40, Math.toRadians(0.0)),
-                            new Pose(0, 45, Math.toRadians(0.0))
-                    }
-            ))
-            .build();
-
-    public static PathContainer SEVENTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setIncrement(0.01)
-            .addCurve(new BezierCurve(
-                    new Pose[]{ //back to shoot
-                            new Pose(0, 45, Math.toRadians(0.0)),
-                            new Pose(15, 0, Math.toRadians(0.0))
-
-                    }
-            ))
-            .build();
-    public static PathContainer EIGHTH_MOVE = new PathContainer.PathContainerBuilder()
-            .setIncrement(0.01)
-            .addCurve(new BezierCurve(
-                    new Pose[]{ //leave
-                            new Pose(29, 50, Math.toRadians(0.0)),
-                            new Pose(15, 10, Math.toRadians(0.0))
-                    }
-            ))
-            .build();
-
+                        }
+                ))
+                .build();
+        public static PathContainer EIGHTH_MOVE = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(new BezierCurve(
+                        new Pose[]{ //goto pickup
+                                new Pose(15, 0, Math.toRadians(0.)),
+                                new Pose(7, 47 , Math.toRadians(0.0))
+                        }
+                ))
+                .build();
+        public static PathContainer NINETH_MOVE = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(new BezierCurve(
+                        new Pose[]{ //back to shoot
+                                new Pose(7, 47, Math.toRadians(0.0)),
+                                new Pose(15, 0 , Math.toRadians(0.0))
+                        }
+                ))
+                .build();
+        public static PathContainer TENTH_MOVE = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(new BezierCurve(
+                        new Pose[]{ //leave
+                                new Pose(15, 0, Math.toRadians(0.0)),
+                                new Pose(15, 10 , Math.toRadians(0.0))
+                        }
+                ))
+                .build();
 
 
-    public static PathFollower getPathFollower(PathState state) {
+
+        public static PathFollower getPathFollower(PathState state) {
         // TODO: create secondary
         PathFollower pathFollower = new PathFollower.PathFollowerBuilder(
                 FrontalLobe.driveController,
