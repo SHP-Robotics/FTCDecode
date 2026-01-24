@@ -115,9 +115,9 @@ public class PestoFTCConfig implements ConfigInterface {
                 ODOMETRY_TICKS_PER_INCH,
                 0.0,
                 0.0,
-                "left",
-                "center",
-                "right",
+                "backRight",
+                "frontRight",
+                "backLeft",
                 DcMotorSimple.Direction.FORWARD,
                 DcMotorSimple.Direction.FORWARD,
                 DcMotorSimple.Direction.FORWARD

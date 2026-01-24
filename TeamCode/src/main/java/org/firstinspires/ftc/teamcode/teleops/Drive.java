@@ -24,7 +24,7 @@ public class Drive extends BaseRobot {
 
         waitForStart();
 
-       tracker.reset();
+        tracker.reset();
 
         while (opModeIsActive() && !isStopRequested()) {
             FrontalLobe.update();
