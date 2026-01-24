@@ -129,6 +129,22 @@ public class PestoFTCConfig implements ConfigInterface {
         FrontalLobe.teleOpController = teleOpController;
         teleOpController.useTrackerIMU(tracker);
 
+        // TODO: set speed controller lambda
+        // b is circle
+        // a is cross
+        // x is square
+        // y is triangle
+        // left_bumper
+        // right_bumper
+        // left_trigger > 0.05
+        // right_trigger > 0.05
+        // dpad_down
+        // dpad_left
+        // dpad_right
+        // dpad_up
+        // touchpad
+        teleOpController.setSpeedController(gamepad -> gamepad.x ? 0.6 : 1.0);
+
         FrontalLobe.driveController = mecanumController;
         Constants.mass = mass;
     }

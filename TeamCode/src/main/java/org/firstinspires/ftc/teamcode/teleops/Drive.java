@@ -32,6 +32,9 @@ public class Drive extends BaseRobot {
             gamepadInterface1.update();
             tracker.update();
 
+            // use lambda
+            teleOpController.updateSpeed(gamepad1);
+
             if (gamepad1.b) {
                 tracker.reset();
                 teleOpController.resetIMU();
