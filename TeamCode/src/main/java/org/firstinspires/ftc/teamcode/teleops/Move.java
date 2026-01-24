@@ -22,7 +22,7 @@ public class Move extends BaseRobot {
 
         waitForStart();
 
-        mecanumController.drive(0.5, 0, 0);
+        mecanumController.drive(0.65, 0, 0);
         sleep(500);
         mecanumController.drive(0, 0, 0);
     }
