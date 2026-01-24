@@ -113,7 +113,7 @@ public class PestoFTCConfig implements ConfigInterface {
                 ODOMETRY_TICKS_PER_INCH,
                 ODOMETRY_TICKS_PER_INCH,
                 -2.0,
-                5.0,
+                4.9299,
                 "backRight",
                 "frontRight",
                 "backLeft",

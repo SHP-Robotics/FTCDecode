@@ -32,10 +32,10 @@ public class Drive extends BaseRobot {
             gamepadInterface1.update();
             tracker.update();
 
-//            if (gamepad1.x) {
-//                tracker.reset();
-//                teleOpController.resetIMU();
-//            }
+            if (gamepad1.b) {
+                tracker.reset();
+                teleOpController.resetIMU();
+            }
 
 //            if (gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER)) {
 //                rotationLocked = !rotationLocked;
