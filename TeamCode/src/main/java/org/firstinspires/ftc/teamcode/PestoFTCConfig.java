@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.shprobotics.pestocore.algorithms.Constants;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
-import com.shprobotics.pestocore.drivebases.trackers.DeterministicTracker;
 import com.shprobotics.pestocore.drivebases.trackers.ThreeWheelOdometryTracker;
 import com.shprobotics.pestocore.processing.Cerebrum;
 import com.shprobotics.pestocore.processing.ConfigInterface;
@@ -113,8 +112,8 @@ public class PestoFTCConfig implements ConfigInterface {
                 ODOMETRY_TICKS_PER_INCH,
                 ODOMETRY_TICKS_PER_INCH,
                 ODOMETRY_TICKS_PER_INCH,
-                0.0,
-                0.0,
+                -2.0,
+                5.0,
                 "backRight",
                 "frontRight",
                 "backLeft",

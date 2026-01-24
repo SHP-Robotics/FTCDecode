@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
 import com.shprobotics.pestocore.drivebases.trackers.DeterministicTracker;
 import com.shprobotics.pestocore.processing.FrontalLobe;
-
-import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
 public class BaseRobot extends LinearOpMode {
     public MecanumController mecanumController;
@@ -40,6 +37,7 @@ public class BaseRobot extends LinearOpMode {
         teleOpController = FrontalLobe.teleOpController;
 
         tracker = FrontalLobe.tracker;
+        tracker.reset();
 
         blockerSubsystem = new BlockerSubsystem();
         hoodSubsystem = new HoodSubsystem();
