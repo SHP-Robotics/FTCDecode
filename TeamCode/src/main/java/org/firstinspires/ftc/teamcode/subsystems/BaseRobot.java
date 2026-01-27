@@ -86,6 +86,27 @@ public class BaseRobot extends LinearOpMode {
                 return true;
             }
         });
+
+        FrontalLobe.addMacro("auto - outtake", new FrontalLobe.Macro() {
+            @Override
+            public void start() {
+                FrontalLobe.removeOtherMacros(this);
+                outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.OUTTAKE);
+            }
+
+            @Override
+            public boolean loop(double v) {
+                // how long (seconds) before starting to move other components
+                if (v < 2.0)
+                    return false;
+
+                feederSubsystem.setState(FeederSubsystem.FeederState.FORWARD);
+                intakeSubsystem.setState(IntakeSubsystem.IntakeState.OUTTAKE);
+                indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUTTAKE);
+
+                return true;
+            }
+        });
     }
 
     @Override

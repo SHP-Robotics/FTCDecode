@@ -60,7 +60,7 @@ public class BlueFarPaths {
             .addCurve(new BezierCurve(
                     new Pose[]{
                             new Pose(-9.37, -30, -0.23),
-                            new Pose(-66.21, -7.83, -0.23)
+                            new Pose(-66.21, -15, -0.23)
                     }
             ))
             .build();
@@ -69,7 +69,7 @@ public class BlueFarPaths {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{
-                            new Pose(-66.21, -7.83, -0.23),
+                            new Pose(-66.21, -15, -0.23),
                             new Pose(-58.21, 22, -0.23)
                     }
             ))

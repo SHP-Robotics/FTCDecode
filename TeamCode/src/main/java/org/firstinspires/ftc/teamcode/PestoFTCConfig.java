@@ -62,7 +62,6 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double SHOOTER_CLOSE = 0.65;
     public static double SHOOTER_MIDDLE = 0.87;
     public static double SHOOTER_FAR = 1.0;
-    public static double AUTO_FAR = 1.0;
 
     // CAMERA
     public static double STATIC_DRIVE = 0.1;
@@ -70,7 +69,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
     // AUTO
     public static double DRIVE_STATIC = 0.25;
-    public static double HEADING_KP = 0.5;
+    public static double HEADING_KP = 1.0;
     public static double ENDPOINT_KP = 0.3;
 
     public static void initialize(HardwareMap hardwareMap) {
