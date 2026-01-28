@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
-@TeleOp(name = "Drive")
-public class Drive extends BaseRobot {
+@TeleOp(name = "TestB_F")
+public class TestB_F extends BaseRobot {
     DcMotor lI;
     DcMotor rI;
 
@@ -51,47 +51,47 @@ public class Drive extends BaseRobot {
 
         super.runOpMode();
 
-    waitForStart();
+        waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
 
-                MotorCortex.update();
-                gamepadInterface1.update();
+            MotorCortex.update();
+            gamepadInterface1.update();
 
-                teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, rotationSpeedMultiplier*gamepad1.right_stick_x);
+            teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, rotationSpeedMultiplier*gamepad1.right_stick_x);
 
-                if (gamepad1.b) {
-                    teleOpController.resetIMU(0);
+            if (gamepad1.b) {
+                teleOpController.resetIMU(0);
+            }
+
+            if (gamepad1.right_trigger < 0.3) {
+                lI.setPower(0.3);
+                rI.setPower(-0.3);
+            } else {
+                lI.setPower(gamepad1.right_trigger);
+                rI.setPower(-gamepad1.right_trigger);
+            }
+
+
+            if (gamepad1.left_trigger > 0.05) {
+                Out.setPower(0.7);
+            } else {
+                Out.setPower(0.0);
+            }
+
+            if (gamepad1.left_trigger > 0.95) {
+                Boost.setPower(0.6);
+            } else {
+                Boost.setPower(0.0);
+            }
+
+            if (gamepad1.right_bumper && !rBumperStateCheck) {
+                if (rotationSpeedMultiplier == 1) {
+                    rotationSpeedMultiplier = 0.5;
+                }else{
+                    rotationSpeedMultiplier = 1;
                 }
-
-                if (gamepad1.right_trigger < 0.3) {
-                    lI.setPower(0.3);
-                    rI.setPower(-0.3);
-                } else {
-                    lI.setPower(gamepad1.right_trigger);
-                    rI.setPower(-gamepad1.right_trigger);
-                }
-
-
-                if (gamepad1.left_trigger > 0.05) {
-                    Out.setPower(0.7);
-                } else {
-                    Out.setPower(0.0);
-                }
-
-                if (gamepad1.left_trigger > 0.95) {
-                    Boost.setPower(0.6);
-                } else {
-                    Boost.setPower(0.0);
-                }
-
-                if (gamepad1.right_bumper && !rBumperStateCheck) {
-                    if (rotationSpeedMultiplier == 1) {
-                        rotationSpeedMultiplier = 0.5;
-                    }else{
-                        rotationSpeedMultiplier = 1;
-                    }
-                }
+            }
 
 //                if (gamepad1.dpad_left) {
 //                    telemetry.addLine("You drive like you used to have a brain eating ameba, but it died of hunger.");
@@ -123,9 +123,9 @@ public class Drive extends BaseRobot {
 //                    telemetry.update();
 //                }
 
-                rBumperStateCheck = gamepad1.right_bumper;
-                lBumperStateCheck = gamepad1.left_bumper;
-            }
+            rBumperStateCheck = gamepad1.right_bumper;
+            lBumperStateCheck = gamepad1.left_bumper;
         }
     }
+}
 //}
