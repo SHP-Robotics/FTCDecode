@@ -34,6 +34,6 @@ dependencies {
 
     implementation 'org.ejml:ejml-all:0.43'
 
-    implementation "dev.frozenmilk.sinister:Sloth:0.2.4"
+//    implementation "dev.frozenmilk.sinister:Sloth:0.2.4"
 }
 
