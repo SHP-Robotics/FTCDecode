@@ -1,15 +1,15 @@
-/*package org.firstinspires.ftc.teamcode.autonomous;
+package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.DONE;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.EIGHTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.FIFTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.FOURTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.NINETH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SECOND_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SEVENTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.SIXTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.TENTH_PATH;
-import static org.firstinspires.ftc.teamcode.autonomous.TestAutoPathsRed.PathState.THIRD_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState.DONE;
+import static org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState.EIGHTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState.FIFTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState.FOURTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState.NINETH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState.SECOND_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState.SEVENTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState.SIXTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState.TENTH_PATH;
+import static org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState.THIRD_PATH;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.shprobotics.pestocore.geometries.PathFollower;
@@ -24,16 +24,16 @@ import org.firstinspires.ftc.teamcode.subsystems.HoodSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
-@Autonomous(name = "Test Auto red")
-public class TestAutoRed extends BaseRobot {
-    TestAutoPathsRed.PathState state;
+@Autonomous(name = "Red Auto Close")
+public class RedAutoClose extends BaseRobot {
+    AutoPathsRedClose.PathState state;
     PathFollower pathFollower;
     double start;
 
     public void nextState() {
         switch (state) {
             case FIRST_PATH:
-                turretSubsystem.setPosition(461.67);//increase for more to the left- stays the same entire auto
+                turretSubsystem.setPosition(465.67);//increase for more to the left- stays the same entire auto
 
                 while (Utils.timer(1.0, "turret") && opModeIsActive() && !isStopRequested()) {
                     FrontalLobe.update();
@@ -71,20 +71,20 @@ public class TestAutoRed extends BaseRobot {
 
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
-                blockerSubsystem.setState(org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem.BlockerState.BLOCK);
+                blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
                 state = SECOND_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = AutoPathsRedClose.getPathFollower(state);
                 Utils.clear();
                 break;
             case SECOND_PATH:
                 state = THIRD_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = AutoPathsRedClose.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 break;
             case THIRD_PATH:
                 state = FOURTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = AutoPathsRedClose.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 break;
             case FOURTH_PATH:
@@ -115,19 +115,19 @@ public class TestAutoRed extends BaseRobot {
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
                 state = FIFTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = AutoPathsRedClose.getPathFollower(state);
                 Utils.clear();
                 break;
 
             case FIFTH_PATH:
                 state = SIXTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = AutoPathsRedClose.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 break;
 
             case SIXTH_PATH:
                 state = SEVENTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = AutoPathsRedClose.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 break;
 
@@ -154,25 +154,23 @@ public class TestAutoRed extends BaseRobot {
                         intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 }
 
-
-
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
                 state = EIGHTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = AutoPathsRedClose.getPathFollower(state);
 
                 break;
 
             case EIGHTH_PATH:
                 state = NINETH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = AutoPathsRedClose.getPathFollower(state);
                 intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
                 break;
 
             case NINETH_PATH:
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = AutoPathsRedClose.getPathFollower(state);
                 outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.OUTTAKE);
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
                 while (Utils.timer(3.0, "outtake") && opModeIsActive() && !isStopRequested()) {
@@ -202,7 +200,7 @@ public class TestAutoRed extends BaseRobot {
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
 
                 state = TENTH_PATH;
-                pathFollower = TestAutoPathsRed.getPathFollower(state);
+                pathFollower = AutoPathsRedClose.getPathFollower(state);
                 break;
 
             case TENTH_PATH:
@@ -227,8 +225,8 @@ public class TestAutoRed extends BaseRobot {
         Utils.clear();
         super.initialize();
 
-        state = TestAutoPathsRed.PathState.FIRST_PATH;
-        pathFollower = TestAutoPathsRed.getPathFollower(state);
+        state = AutoPathsRedClose.PathState.FIRST_PATH;
+        pathFollower = AutoPathsRedClose.getPathFollower(state);
 
         hoodSubsystem.setState(HoodSubsystem.HoodState.FAR);
         outtakeSubsystem.setRPM(PestoFTCConfig.SHOOTER_AUTO);
@@ -276,6 +274,3 @@ public class TestAutoRed extends BaseRobot {
         }
     }
 }
-
-
-*/

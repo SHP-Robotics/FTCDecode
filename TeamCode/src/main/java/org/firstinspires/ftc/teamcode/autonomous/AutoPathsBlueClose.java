@@ -9,7 +9,7 @@ import com.shprobotics.pestocore.processing.FrontalLobe;
 
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
-public class TestAutoPathsRedClose {
+public class AutoPathsBlueClose {
     public enum PathState {
         FIRST_PATH (FIRST_MOVE, 2),
         SECOND_PATH (SECOND_MOVE, 2),
@@ -45,7 +45,7 @@ public class TestAutoPathsRedClose {
             .addCurve(new BezierCurve(
                     new Pose[]{ //goes to shoot preloads
                             new Pose(0, 0, Math.toRadians(0.0)),
-                            new Pose(-15, 0, Math.toRadians(0.0))
+                            new Pose(15, 0, Math.toRadians(0.0))
                     }
             ))
             .build();
@@ -54,8 +54,8 @@ public class TestAutoPathsRedClose {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //goes to human
-                            new Pose(-15, 0, Math.toRadians(0.0)),
-                            new Pose(-15, 50, Math.toRadians(-90))
+                            new Pose(15, 0, Math.toRadians(0.0)),
+                            new Pose(15, 50, Math.toRadians(90))
                     }
             ))
             .build();
@@ -64,8 +64,8 @@ public class TestAutoPathsRedClose {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //picks up
-                            new Pose(-6, 50, Math.toRadians(-90)),
-                            new Pose(-4, 50, Math.toRadians(-90))
+                            new Pose(6, 50, Math.toRadians(90)),
+                            new Pose(4, 50, Math.toRadians(90))
                     }
             ))
             .build();
@@ -74,8 +74,8 @@ public class TestAutoPathsRedClose {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ // goes back to shoot
-                            new Pose(-4, 50, Math.toRadians(-90)),
-                            new Pose(-15, 0, Math.toRadians(0))
+                            new Pose(4, 50, Math.toRadians(90)),
+                            new Pose(15, 0, Math.toRadians(0))
                     }
             ))
             .build();
@@ -84,8 +84,8 @@ public class TestAutoPathsRedClose {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //goes to human player
-                            new Pose(-15, 0, Math.toRadians(0)),
-                            new Pose(-1, 45, Math.toRadians(0.0))
+                            new Pose(15, 0, Math.toRadians(0)),
+                            new Pose(1, 45, Math.toRadians(0.0))
                     }
             ))
             .build();
@@ -94,8 +94,8 @@ public class TestAutoPathsRedClose {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //intakes human player
-                            new Pose(-1, 45, Math.toRadians(0.0)),
-                            new Pose(-3, 45, Math.toRadians(0.0))
+                            new Pose(1, 45, Math.toRadians(0.0)),
+                            new Pose(3, 45, Math.toRadians(0.0))
                     }
             ))
             .build();
@@ -104,8 +104,8 @@ public class TestAutoPathsRedClose {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //back to shoot
-                            new Pose(-3, 45, Math.toRadians(0.0)),
-                            new Pose(-15, 0, Math.toRadians(0.0))
+                            new Pose(3, 45, Math.toRadians(0.0)),
+                            new Pose(15, 0, Math.toRadians(0.0))
 
                     }
             ))
@@ -114,8 +114,8 @@ public class TestAutoPathsRedClose {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //goto pickup
-                            new Pose(-15, 0, Math.toRadians(0.)),
-                            new Pose(5, 45 , Math.toRadians(0.0))
+                            new Pose(15, 0, Math.toRadians(0.)),
+                            new Pose(4, 30 , Math.toRadians(0.0))
                     }
             ))
             .build();
@@ -123,8 +123,8 @@ public class TestAutoPathsRedClose {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //back to shoot
-                            new Pose(5, 45, Math.toRadians(0.0)),
-                            new Pose(-15, 10 , Math.toRadians(0.0))
+                            new Pose(4, 30, Math.toRadians(0.0)),
+                            new Pose(4, 30 , Math.toRadians(0.0))
                     }
             ))
             .build();
@@ -132,8 +132,8 @@ public class TestAutoPathsRedClose {
             .setIncrement(0.01)
             .addCurve(new BezierCurve(
                     new Pose[]{ //leave
-                            new Pose(-15, 0, Math.toRadians(0.0)),
-                            new Pose(-15, 10 , Math.toRadians(0.0))
+                            new Pose(4, 30, Math.toRadians(0.0)),
+                            new Pose(4, 30 , Math.toRadians(0.0))
                     }
             ))
             .build();
