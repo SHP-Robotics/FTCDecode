@@ -9,12 +9,13 @@ import com.shprobotics.pestocore.algorithms.Constants;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
 import com.shprobotics.pestocore.drivebases.trackers.DeterministicTracker;
-import com.shprobotics.pestocore.drivebases.trackers.ThreeWheelOdometryTracker;
-import com.shprobotics.pestocore.processing.Cerebrum;
+import com.shprobotics.pestocore.drivebases.trackers.NotEnoughOdometryTracker;
 import com.shprobotics.pestocore.processing.ConfigInterface;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 import com.shprobotics.pestocore.processing.PestoConfig;
+
+import org.ejml.simple.SimpleMatrix;
 
 @Config
 @PestoConfig()
@@ -35,12 +36,25 @@ public class PestoFTCConfig implements ConfigInterface {
     private static DcMotorSimple.Direction centerDirection = DcMotorSimple.Direction.REVERSE;
     private static DcMotorSimple.Direction rightDirection = DcMotorSimple.Direction.REVERSE;
 
-    private static double ODOMETRY_TICKS_PER_INCH_CENTER = 505.3169;
-    private static double ODOMETRY_TICKS_PER_INCH_LEFT = 505.3169;
-    private static double ODOMETRY_TICKS_PER_INCH_RIGHT = 505.3169;
-    public static double FORWARD_OFFSET = -1.565;
-    public static double ODOMETRY_WIDTH = 9.1474;
+    private static double ODOMETRY_TICKS_PER_INCH = 505.3169;
 
+    public static SimpleMatrix ODOMETRY_PARAMETERS_X = new SimpleMatrix(new double[][]{
+            new double[]{0.0},
+            new double[]{0.0},
+            new double[]{0.0},
+    });
+
+    public static SimpleMatrix ODOMETRY_PARAMETERS_Y = new SimpleMatrix(new double[][]{
+            new double[]{0.0},
+            new double[]{0.0},
+            new double[]{0.0},
+    });
+
+    public static SimpleMatrix ODOMETRY_PARAMETERS_R = new SimpleMatrix(new double[][]{
+            new double[]{-0.11201892953178422},
+            new double[]{-0.0034454197797296054},
+            new double[]{0.11231265526595093},
+    });
 
     // DROPDOWN
     public static double DROPDOWN_DRIVE = 35; // 0.29;
@@ -74,7 +88,6 @@ public class PestoFTCConfig implements ConfigInterface {
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);
-        Cerebrum.initialize();
 
         MecanumController driveController = new MecanumController(
                 MotorCortex.getMotor("frontLeft"),
@@ -112,21 +125,23 @@ public class PestoFTCConfig implements ConfigInterface {
         driveController.backRight.setAccelerationMax(Double.POSITIVE_INFINITY);
 
         if (initializePinpoint) {
-            DeterministicTracker tracker = new ThreeWheelOdometryTracker.TrackerBuilder(
+            DeterministicTracker tracker = new NotEnoughOdometryTracker.TrackerBuilder(
                     hardwareMap,
-                    ODOMETRY_TICKS_PER_INCH_LEFT,
-                    ODOMETRY_TICKS_PER_INCH_RIGHT,
-                    ODOMETRY_TICKS_PER_INCH_CENTER,
-                    FORWARD_OFFSET,
-                    ODOMETRY_WIDTH,
-                    leftName,
-                    centerName,
-                    rightName,
-                    leftDirection,
-                    centerDirection,
-                    rightDirection
-            )
-                    .build();
+                    ODOMETRY_TICKS_PER_INCH,
+                    ODOMETRY_PARAMETERS_X,
+                    ODOMETRY_PARAMETERS_Y,
+                    ODOMETRY_PARAMETERS_R,
+                    new String[]{
+                            leftName,
+                            centerName,
+                            rightName
+                    },
+                    new DcMotorSimple.Direction[]{
+                            leftDirection,
+                            centerDirection,
+                            rightDirection
+                    }
+            ).build();
 
             TeleOpController teleOpController = new TeleOpController(driveController, hardwareMap);
 
