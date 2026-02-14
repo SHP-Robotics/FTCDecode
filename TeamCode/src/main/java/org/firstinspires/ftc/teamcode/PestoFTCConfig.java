@@ -9,7 +9,6 @@ import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
 import com.shprobotics.pestocore.drivebases.trackers.DeterministicTracker;
 import com.shprobotics.pestocore.drivebases.trackers.ThreeWheelOdometryTracker;
-import com.shprobotics.pestocore.processing.Cerebrum;
 import com.shprobotics.pestocore.processing.ConfigInterface;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
@@ -88,7 +87,6 @@ public class PestoFTCConfig implements ConfigInterface {
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);
-        Cerebrum.initialize();
 
         MecanumController mecanumController = new MecanumController(
                 MotorCortex.getMotor("frontL"),
