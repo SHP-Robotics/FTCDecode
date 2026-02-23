@@ -17,7 +17,7 @@ import com.shprobotics.pestocore.processing.MotorCortex;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
 public class TurretSubsystem {
-    private final CortexLinkedMotor turret;
+    private CortexLinkedMotor turret;
     private PID pidController;
 
     private TurretState state;
@@ -41,6 +41,12 @@ public class TurretSubsystem {
         pidController = new PID(PestoFTCConfig.TURRET_KP, 0, 0);
 
         state = STRAIGHT;
+    }
+
+    public void reinitialize() {
+        turret = MotorCortex.getMotor(3, 2);
+        turret.setDirection(DcMotorSimple.Direction.REVERSE);
+        turret.setMode(RUN_USING_ENCODER);
     }
 
     public void setState(TurretState state) {

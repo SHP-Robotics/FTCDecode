@@ -1,27 +1,29 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.shprobotics.pestocore.algorithms.PID;
 import com.shprobotics.pestocore.devices.GamepadKey;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.BrakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.HoodSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-//@Disabled
-@TeleOp(name = "Red Drive")
-public class RedDrive extends BaseRobot {
+import java.util.List;
+
+@TeleOp(name = "New Red Drive")
+public class NewRedDrive extends BaseRobot {
     @Override
     public void runOpMode() {
         PestoFTCConfig.initializePinpoint = true;
@@ -32,13 +34,87 @@ public class RedDrive extends BaseRobot {
 
         Pose xModePosition = new Pose(0, 0, 0);
 
+        PID pidController = new PID(0.02, 0, 0);
+
+        turretSubsystem.setState(TurretSubsystem.TurretState.MANUAL);
+        boolean scanningLeft = true;
+
+        AprilTagProcessor aprilTag = AprilTagProcessor.easyCreateWithDefaults();
+
+        VisionPortal visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .addProcessors(aprilTag)
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
+                .build();
+
+        // Wait for the DS start button to be touched.
+        telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
+        telemetry.addData(">", "Touch START to start OpMode");
+        telemetry.update();
+
+        double cam_distance = 0.0;
+
         waitForStart();
 
+        turretSubsystem.rezero();
+
         while (opModeIsActive() && !isStopRequested()) {
+            PestoFTCConfig.recalculate_interpolators();
+
+            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+            telemetry.addData("# AprilTags Detected", currentDetections.size());
+
             FrontalLobe.update();
             MotorCortex.update();
             gamepadInterface1.update();
             tracker.update();
+
+            boolean detected = false;
+            for (AprilTagDetection detection : currentDetections) {
+                if (detection.metadata == null)
+                    continue;
+
+                if (detection.id != 24)
+                    continue;
+
+                detected = true;
+
+                double turretDegrees = turretSubsystem.getPosition() * 45 / 310;
+                double power = pidController.getOutput(turretDegrees, turretDegrees + detection.ftcPose.bearing);
+                scanningLeft = power < 0;
+
+                if (turretSubsystem.getPosition() < -620) {
+                    power = Math.max(power, 0);
+                }
+
+                if (turretSubsystem.getPosition() > 1860) {
+                    power = Math.min(power, 0);
+                }
+
+                turretSubsystem.setPower(power);
+
+                telemetry.addData("position", turretSubsystem.getPosition());
+                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                telemetry.addData("Bearing", detection.ftcPose.bearing);
+                telemetry.addData("Distance", detection.ftcPose.y);
+                cam_distance = detection.ftcPose.y;
+            }
+
+            if (!detected) {
+                if (turretSubsystem.getPosition() < -620) {
+                    scanningLeft = false;
+                }
+
+                if (turretSubsystem.getPosition() > 1860) {
+                    scanningLeft = true;
+                }
+
+                turretSubsystem.setPower(scanningLeft ? -0.2 : 0.2);
+            }
+
+
+
+
 
             boolean isStatic = tracker.getRobotVelocity().getMagnitude() < 1.0;
             mecanumController.setIsStatic(isStatic);
@@ -65,30 +141,11 @@ public class RedDrive extends BaseRobot {
             boolean rejecting = !intaking && !outtaking && gamepad1.a;
             boolean neutralizing = !intaking && !outtaking && !rejecting;
 
-            if (revving) {
-                outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.OUTTAKE);
-            } else {
-                outtakeSubsystem.setState(OuttakeSubsystem.OuttakeState.NEUTRAL);
-            }
-
             if (state == RobotState.OUTTAKE) {
-                if (outtakeSubsystem.isBusy())
-                    intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
-                else
-                    intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
-            }
-
-            if (!outtaking && state == RobotState.OUTTAKE) {
-                if (hoodSubsystem.getState() == HoodSubsystem.HoodState.CLOSE)
-                    turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
-                else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.MID)
-                    turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
-                else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.FAR)
-                    turretSubsystem.setState(TurretSubsystem.TurretState.LEFT);
+                intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
             }
 
             if (gamepad1.dpad_left) {
-                turretSubsystem.setState(TurretSubsystem.TurretState.MANUAL);
                 while (opModeIsActive() && !isStopRequested() && gamepad1.dpad_left) {
                     turretSubsystem.setPower(0.3);
                 }
@@ -96,7 +153,6 @@ public class RedDrive extends BaseRobot {
             }
 
             if (gamepad1.dpad_right) {
-                turretSubsystem.setState(TurretSubsystem.TurretState.MANUAL);
                 while (opModeIsActive() && !isStopRequested() && gamepad1.dpad_right) {
                     turretSubsystem.setPower(-0.3);
                 }
@@ -105,19 +161,18 @@ public class RedDrive extends BaseRobot {
 
             if (gamepad1.dpad_up && gamepad1.y) {
                 turretSubsystem.rezero();
-                turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
             } else if (gamepad1.y) {
-                PathChain pathChain = PestoFTCConfig.follower.pathBuilder()
-                        .addPath(new BezierLine(PestoFTCConfig.follower.getPose(), xModePosition))
-                        .setLinearHeadingInterpolation(PestoFTCConfig.follower.getPose().getHeading(), xModePosition.getHeading())
-                        .build();
-
-                PestoFTCConfig.follower.followPath(pathChain);
-                while (opModeIsActive() && !isStopRequested() && gamepad1.y) {
-                    MotorCortex.update();
-                    PestoFTCConfig.follower.update();
-                }
-                PestoFTCConfig.follower.breakFollowing();
+//                PathChain pathChain = PestoFTCConfig.follower.pathBuilder()
+//                        .addPath(new BezierLine(PestoFTCConfig.follower.getPose(), xModePosition))
+//                        .setLinearHeadingInterpolation(PestoFTCConfig.follower.getPose().getHeading(), xModePosition.getHeading())
+//                        .build();
+//
+//                PestoFTCConfig.follower.followPath(pathChain);
+//                while (opModeIsActive() && !isStopRequested() && gamepad1.y) {
+//                    MotorCortex.update();
+//                    PestoFTCConfig.follower.update();
+//                }
+//                PestoFTCConfig.follower.breakFollowing();
             }
 
             if (gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER)) {
@@ -133,7 +188,7 @@ public class RedDrive extends BaseRobot {
 
             if (outtaking && state != RobotState.OUTTAKE) {
                 state = RobotState.OUTTAKE;
-                xModePosition = PestoFTCConfig.follower.getPose();
+//                xModePosition = PestoFTCConfig.follower.getPose();
 
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
             }
@@ -152,36 +207,11 @@ public class RedDrive extends BaseRobot {
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
             }
 
-
-
-//            // Nice little LED display on the gamepad
-            if (hoodSubsystem.getState() == HoodSubsystem.HoodState.CLOSE)
-                gamepad1.setLedColor(0, 255, 0, Integer.MAX_VALUE);
-
-            if (hoodSubsystem.getState() == HoodSubsystem.HoodState.MID)
-                gamepad1.setLedColor(0, 0, 255, Integer.MAX_VALUE);
-
-            if (hoodSubsystem.getState() == HoodSubsystem.HoodState.FAR)
-                gamepad1.setLedColor(255, 0, 0, Integer.MAX_VALUE);
-
-//            // Cycle hood modes
-            if (gamepadInterface1.isKeyDown(GamepadKey.TOUCHPAD)) {
-                if (hoodSubsystem.getState() == HoodSubsystem.HoodState.CLOSE) {
-                    hoodSubsystem.setState(HoodSubsystem.HoodState.MID);
-                    outtakeSubsystem.setRPM(PestoFTCConfig.SHOOTER_MIDDLE);
-                    outtakeSubsystem.setFFPower(PestoFTCConfig.SHOOTER_FF_MIDDLE);
-                    turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
-                } else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.MID) {
-                    hoodSubsystem.setState(HoodSubsystem.HoodState.FAR);
-                    outtakeSubsystem.setRPM(PestoFTCConfig.SHOOTER_FAR);
-                    outtakeSubsystem.setFFPower(PestoFTCConfig.SHOOTER_FF_FAR);
-                    turretSubsystem.setState(TurretSubsystem.TurretState.LEFT);
-                } else if (hoodSubsystem.getState() == HoodSubsystem.HoodState.FAR) {
-                    hoodSubsystem.setState(HoodSubsystem.HoodState.CLOSE);
-                    outtakeSubsystem.setRPM(PestoFTCConfig.SHOOTER_CLOSE);
-                    outtakeSubsystem.setFFPower(PestoFTCConfig.SHOOTER_FF_CLOSE);
-                    turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
-                }
+            if (revving) {
+                hoodSubsystem.setAngleDirect(PestoFTCConfig.interpolatorHood.getValue(cam_distance));
+                outtakeSubsystem.setPowerDirect(PestoFTCConfig.interpolatorShooter.getValue(cam_distance));
+            } else {
+                outtakeSubsystem.setPowerDirect(0.0);
             }
 
             if (gamepad1.b)
@@ -192,18 +222,15 @@ public class RedDrive extends BaseRobot {
             blockerSubsystem.update();
             hoodSubsystem.update();
             intakeSubsystem.update();
-            outtakeSubsystem.update();
             indexerSubsystem.update();
             turretSubsystem.update();
             brakeSubsystem.update();
 
-//            telemetry.addData("x", tracker.getCurrentPosition().getX());
-//            telemetry.addData("y", tracker.getCurrentPosition().getY());
-//            telemetry.addData("r", tracker.getCurrentPosition().getHeadingRadians());
-            telemetry.addData("turret", turretSubsystem.getPosition());
-            telemetry.addData("shooter", outtakeSubsystem.getRPM());
-            telemetry.addData("target", outtakeSubsystem.getTargetRPM());
+            telemetry.addData("hood", PestoFTCConfig.interpolatorHood.getValue(cam_distance));
+            telemetry.addData("shooter", PestoFTCConfig.interpolatorShooter.getValue(cam_distance));
             telemetry.update();
         }
+
+        visionPortal.close();
     }
 }

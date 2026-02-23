@@ -11,7 +11,7 @@ import com.shprobotics.pestocore.hardware.CortexLinkedServo;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
 public class IndexerSubsystem {
-    private final CortexLinkedServo indexer;
+    private CortexLinkedServo indexer;
 
     private IndexerState state;
 
@@ -26,6 +26,11 @@ public class IndexerSubsystem {
         indexer.setCachingTolerance(0.01);
 
         state = OUT;
+    }
+
+    public void reinitialize() {
+        indexer = MotorCortex.getServo(3, 4);
+        indexer.setCachingTolerance(0.01);
     }
 
     public void setState(IndexerState state) {

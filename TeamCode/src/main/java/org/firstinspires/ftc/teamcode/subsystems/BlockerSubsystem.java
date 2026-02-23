@@ -9,7 +9,7 @@ import com.shprobotics.pestocore.hardware.CortexLinkedServo;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
 public class BlockerSubsystem {
-    private final CortexLinkedServo blocker;
+    private CortexLinkedServo blocker;
     private BlockerState state;
 
     public enum BlockerState {
@@ -20,6 +20,10 @@ public class BlockerSubsystem {
     public BlockerSubsystem() {
         blocker = MotorCortex.getServo("block");
         state = BLOCK;
+    }
+
+    public void reinitialize() {
+        blocker = MotorCortex.getServo(2, 4);
     }
 
     public void setState(BlockerState state) {

@@ -11,7 +11,7 @@ import com.shprobotics.pestocore.hardware.CortexLinkedServo;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
 public class HoodSubsystem {
-    private final CortexLinkedServo hood;
+    private CortexLinkedServo hood;
 
     private HoodState state;
 
@@ -27,12 +27,20 @@ public class HoodSubsystem {
         state = CLOSE;
     }
 
+    public void reinitialize() {
+        hood = MotorCortex.getServo(1, 4);
+    }
+
     public HoodState getState() {
         return state;
     }
 
     public void setState(HoodState state) {
         this.state = state;
+    }
+
+    public void setAngleDirect(double angle) {
+        hood.setPositionResult(angle);
     }
 
     public void update() {

@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
 public class OuttakeSubsystem {
-    private final CortexLinkedMotor lowerShooter;
-    private final CortexLinkedMotor upperShooter;
+    private CortexLinkedMotor leftShooter;
+    private CortexLinkedMotor rightShooter;
     private final PID pidController;
 
     private OuttakeState state;
@@ -29,21 +29,36 @@ public class OuttakeSubsystem {
     }
 
     public OuttakeSubsystem() {
-        lowerShooter = MotorCortex.getMotor("lowerShooter");
-        lowerShooter.setMode(RUN_USING_ENCODER);
-        lowerShooter.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftShooter = MotorCortex.getMotor("leftShooter");
+        leftShooter.setMode(RUN_USING_ENCODER);
+        leftShooter.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        upperShooter = MotorCortex.getMotor("upperShooter");
-        upperShooter.setMode(RUN_USING_ENCODER);
-        upperShooter.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightShooter = MotorCortex.getMotor("rightShooter");
+        rightShooter.setMode(RUN_USING_ENCODER);
+        rightShooter.setDirection(DcMotorSimple.Direction.FORWARD);
 
         pidController = new PID(SHOOTER_KP, 0, SHOOTER_KD);
 
         state = OuttakeState.NEUTRAL;
     }
 
+    public void reinitialize() {
+        leftShooter = MotorCortex.getMotor(0, 2);
+        leftShooter.setMode(RUN_USING_ENCODER);
+        leftShooter.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        rightShooter = MotorCortex.getMotor(1, 2);
+        rightShooter.setMode(RUN_USING_ENCODER);
+        rightShooter.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
     public void setState(OuttakeState state) {
         this.state = state;
+    }
+
+    public void setPowerDirect(double power) {
+        leftShooter.setPowerResult(power);
+        rightShooter.setPowerResult(power);
     }
 
     public void setFFPower(double ffPower) {
@@ -55,7 +70,7 @@ public class OuttakeSubsystem {
     }
 
     public double getRPM() {
-        return lowerShooter.getVelocity(AngleUnit.RADIANS);
+        return leftShooter.getVelocity(AngleUnit.RADIANS);
     }
 
     public double getTargetRPM() {
@@ -66,17 +81,35 @@ public class OuttakeSubsystem {
         return Math.abs(this.getRPM() - expectedRPM) >= PestoFTCConfig.SHOOTER_RPM_TOLERANCE;
     }
 
+    public double getRadians(double metersPerSecond) {
+        return metersPerSecond * 10;
+    }
+
+    public double prepShooter(double distance, double targetHeight) {
+        double GRAVITY = -9.81;
+
+        // TODO: tune
+        double shootingAngle = Math.toRadians(50);
+        double cosAngle = Math.cos(shootingAngle);
+        double sinAngle = Math.sin(shootingAngle);
+        double tanAngle = Math.tan(shootingAngle);
+
+        double v = Math.sqrt((-GRAVITY * distance * distance) / (2 * cosAngle * cosAngle * (distance * tanAngle - targetHeight)));
+
+        return v;
+    }
+
     public void update() {
         if (state == OUTTAKE) {
             double rpm = getRPM();
             double power = ffPower + pidController.getOutput(rpm, expectedRPM);
             power = Math.max(power, 0);
 
-            lowerShooter.setPowerResult(power);
-            upperShooter.setPowerResult(power);
+            leftShooter.setPowerResult(power);
+            rightShooter.setPowerResult(power);
         } else {
-            lowerShooter.setPowerResult(0.0);
-            upperShooter.setPowerResult(0.0);
+            leftShooter.setPowerResult(0.0);
+            rightShooter.setPowerResult(0.0);
         }
     }
 }
