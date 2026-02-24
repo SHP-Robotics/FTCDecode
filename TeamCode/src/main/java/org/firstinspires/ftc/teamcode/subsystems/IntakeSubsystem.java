@@ -11,7 +11,6 @@ import com.shprobotics.pestocore.processing.MotorCortex;
 
 public class IntakeSubsystem {
     private CortexLinkedMotor intake;
-//    private CortexLinkedServo dropdown;
 
     private IntakeState state;
 
@@ -26,17 +25,12 @@ public class IntakeSubsystem {
         intake = MotorCortex.getMotor("intake");
         intake.setDirection(FORWARD);
 
-//        dropdown = MotorCortex.getServo("dropdown");
-
         state = NEUTRAL;
     }
 
     public void reinitialize() {
         intake = MotorCortex.getMotor(2, 2);
         intake.setDirection(FORWARD);
-
-        // TODO: unassigned
-//        dropdown = MotorCortex.getServo(0, 0);
     }
 
     public void setState(IntakeState state) {
@@ -48,24 +42,16 @@ public class IntakeSubsystem {
     }
 
     public void update() {
-        if (state == INTAKE) {
+        if (state == INTAKE)
             intake.setPowerResult(1.0);
-//            dropdown.setPositionResult(DROPDOWN_INTAKE);
-        }
 
-        if (state == NEUTRAL) {
+        if (state == NEUTRAL)
             intake.setPowerResult(0.0);
-//            dropdown.setPositionResult(DROPDOWN_DRIVE);
-        }
 
-        if (state == REJECT) {
+        if (state == REJECT)
             intake.setPowerResult(-1.0);
-//            dropdown.setPositionResult(DROPDOWN_INTAKE);
-        }
 
-        if (state == OUTTAKE) {
+        if (state == OUTTAKE)
             intake.setPowerResult(1.0);
-//            dropdown.setPositionResult(DROPDOWN_PUSH);
-        }
     }
 }

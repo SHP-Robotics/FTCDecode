@@ -18,6 +18,9 @@ import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 import com.shprobotics.pestocore.processing.PestoConfig;
 
+import java.util.Collections;
+import java.util.List;
+
 @Config
 @PestoConfig()
 public class PestoFTCConfig implements ConfigInterface {
@@ -26,31 +29,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
     public static Follower follower;
 
-//    public static double mass = 23.7; // lbs
-//    public static double MAX_FORCE = 2170;
-//    public static double DECELERATION = 100;
-//    public static double ENDPOINT_KP = 0.3;
-//    public static double HEADING_KP = 3.5;
-//
-//    // ODOMETRY
-//    public static String leftName = "backL";
-//    public static String centerName = "backR";
-//    public static String rightName = "frontR";
-//
-//    public static DcMotorSimple.Direction leftDirection = DcMotorSimple.Direction.FORWARD;
-//    public static DcMotorSimple.Direction centerDirection = DcMotorSimple.Direction.REVERSE;
-//    public static DcMotorSimple.Direction rightDirection = DcMotorSimple.Direction.FORWARD;
-//
-//    public static double ODOMETRY_TICKS_PER_INCH = 505.3169;
-//    public static double FORWARD_OFFSET = -1.9;
-//    public static double ODOMETRY_WIDTH = 4.2768;
-
     public static double STATIC_DRIVE = 0.22;
-
-    // DROPDOWN
-//    public static double DROPDOWN_DRIVE = 0.4;
-//    public static double DROPDOWN_INTAKE = 0.25;
-//    public static double DROPDOWN_PUSH = 0.35;
 
     // BLOCKER
     public static double BLOCKER_BLOCK = 0.34;
@@ -154,6 +133,9 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double SHOOTER_RPM_TOLERANCE = 0.15;
 
     // TURRET
+    public static List<Integer> BLUE_TAGS = Collections.singletonList(20);
+    public static List<Integer> RED_TAGS = Collections.singletonList(24);
+
     public static double TURRET_LEFT = 500;
     public static double TURRET_RIGHT = -500;
     public static double TURRET_STATIC = 0.12; //increase when its a little off
@@ -185,34 +167,6 @@ public class PestoFTCConfig implements ConfigInterface {
         mecanumController.setStaticPower(PestoFTCConfig.STATIC_DRIVE);
 
         if (initializePinpoint) {
-//            DeterministicTracker tracker = new NotEnoughOdometryTracker.TrackerBuilder(
-//                    hardwareMap,
-//                    ODOMETRY_TICKS_PER_INCH,
-//                    // X Parameters
-//                    new SimpleMatrix(new double[][]{
-//                            new double[]{0, 0, 0}
-//                    }),
-//                    // Y Parameters
-//                    new SimpleMatrix(new double[][]{
-//                            new double[]{0, 0, 0}
-//                    }),
-//                    // R Parameters
-//                    new SimpleMatrix(new double[][]{
-//                            new double[]{-0.234178, -0.000776, 0.231725}
-//                    }),
-//                    new String[]{
-//                            leftName,
-//                            centerName,
-//                            rightName
-//                    },
-//                    new DcMotorSimple.Direction[]{
-//                            DcMotorSimple.Direction.FORWARD,
-//                            DcMotorSimple.Direction.FORWARD,
-//                            DcMotorSimple.Direction.FORWARD
-//                    }
-//            )
-//                    .build();
-
             follower = Constants.createFollower(hardwareMap);
 
             DeterministicTracker tracker = new DeterministicTracker() {
@@ -267,28 +221,10 @@ public class PestoFTCConfig implements ConfigInterface {
                 }
             };
 
-//            DeterministicTracker tracker = new ThreeWheelOdometryTracker.TrackerBuilder(
-//                    hardwareMap,
-//                    ODOMETRY_TICKS_PER_INCH,
-//                    ODOMETRY_TICKS_PER_INCH,
-//                    ODOMETRY_TICKS_PER_INCH,
-//                    FORWARD_OFFSET,
-//                    ODOMETRY_WIDTH,
-//                    leftName,
-//                    centerName,
-//                    rightName,
-//                    leftDirection,
-//                    centerDirection,
-//                    rightDirection
-//            )
-//                    .build();
-
             TeleOpController teleOpController = new TeleOpController(mecanumController, hardwareMap);
             teleOpController.useTrackerIMU(tracker);
 
             teleOpController.setSpeedController(gamepad -> gamepad.left_bumper ? 0.6 : 1.0);
-
-//            teleOpController.counteractCentripetalForce(tracker, MAX_FORCE);
 
             FrontalLobe.teleOpController = teleOpController;
             FrontalLobe.tracker = tracker;

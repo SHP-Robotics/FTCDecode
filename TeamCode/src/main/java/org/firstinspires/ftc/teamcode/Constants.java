@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
@@ -13,24 +14,25 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+@Config
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(23.7) // 23.7 lbs or 10.75 kg
-            .forwardZeroPowerAcceleration(-36.5)
+            .mass(10.75) // 23.7 lbs or 10.75 kg
+            .forwardZeroPowerAcceleration(-30)
             .lateralZeroPowerAcceleration(-58.4)
 
-            .useSecondaryTranslationalPIDF(true)
-            .useSecondaryHeadingPIDF(true)
-            .useSecondaryDrivePIDF(true)
+            .useSecondaryTranslationalPIDF(false)
+            .useSecondaryHeadingPIDF(false)
+            .useSecondaryDrivePIDF(false)
 
             .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0, 0))
-            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.3, 0, 0.01, 0.015))
+//            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.3, 0, 0.01, 0.015))
 
             .headingPIDFCoefficients(new PIDFCoefficients(1, 0, 0, 0.01))
-            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(4, 0, 0.08, 0.01))
+//            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(4, 0, 0.08, 0.01))
 
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025, 0, 0.00001, 0.6, 0.01))
-            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(4, 0, 0.08, 0.01, 0.01));
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.015, 0, 0.00001, 0.6, 0.01));
+//            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(4, 0, 0.08, 0.01, 0.01))
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
