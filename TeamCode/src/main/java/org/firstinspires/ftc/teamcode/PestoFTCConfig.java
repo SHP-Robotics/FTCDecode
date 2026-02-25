@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Pair;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Vector;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,7 +20,7 @@ import com.shprobotics.pestocore.processing.PestoConfig;
 import java.util.Collections;
 import java.util.List;
 
-@Config
+//@Config
 @PestoConfig()
 public class PestoFTCConfig implements ConfigInterface {
     public static boolean initialized = false; // don't mess with this :O
@@ -49,12 +48,13 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double SHOOTER_KP = 0.3;
     public static double SHOOTER_KD = 0.05;
 
-    public static double[] shooter040 = new double[]{040.0, -0.51};
-    public static double[] shooter050 = new double[]{050.0, -0.52};
-    public static double[] shooter060 = new double[]{060.0, -0.55};
-    public static double[] shooter070 = new double[]{070.0, -0.55};
-    public static double[] shooter080 = new double[]{080.0, -0.63};
+    public static double[] shooter040 = new double[]{040.0, -0.53};
+    public static double[] shooter050 = new double[]{050.0, -0.54};
+    public static double[] shooter060 = new double[]{060.0, -0.60};
+    public static double[] shooter070 = new double[]{070.0, -0.60};
+    public static double[] shooter080 = new double[]{080.0, -0.61};
     public static double[] shooter090 = new double[]{090.0, -0.61};
+    // STOPPED HERE
     public static double[] shooter100 = new double[]{100.0, -0.95};
     public static double[] shooter110 = new double[]{110.0, -1.00};
 
@@ -71,12 +71,13 @@ public class PestoFTCConfig implements ConfigInterface {
 
     public static Interpolator interpolatorShooter = new Interpolator(interpolatorShooterData);
 
-    public static double[] hood040 = new double[]{040.0, 0.45};
-    public static double[] hood050 = new double[]{050.0, 0.70};
-    public static double[] hood060 = new double[]{060.0, 0.80};
-    public static double[] hood070 = new double[]{070.0, 0.85};
-    public static double[] hood080 = new double[]{080.0, 0.85};
-    public static double[] hood090 = new double[]{090.0, 0.77};
+    public static double[] hood040 = new double[]{040.0, 0.35};
+    public static double[] hood050 = new double[]{050.0, 0.35};
+    public static double[] hood060 = new double[]{060.0, 0.60};
+    public static double[] hood070 = new double[]{070.0, 0.63};
+    public static double[] hood080 = new double[]{080.0, 0.63};
+    public static double[] hood090 = new double[]{090.0, 0.63};
+    // STOPPED HERE
     public static double[] hood100 = new double[]{100.0, 1.00};
     public static double[] hood110 = new double[]{110.0, 1.00};
 

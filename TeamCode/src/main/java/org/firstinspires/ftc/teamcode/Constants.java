@@ -21,15 +21,15 @@ public class Constants {
             .forwardZeroPowerAcceleration(-30)
             .lateralZeroPowerAcceleration(-58.4)
 
-            .useSecondaryTranslationalPIDF(false)
-            .useSecondaryHeadingPIDF(false)
+            .useSecondaryTranslationalPIDF(true)
+            .useSecondaryHeadingPIDF(true)
             .useSecondaryDrivePIDF(false)
 
             .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0, 0))
-//            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.3, 0, 0.01, 0.015))
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.3, 0, 0.01, 0.015))
 
             .headingPIDFCoefficients(new PIDFCoefficients(1, 0, 0, 0.01))
-//            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(4, 0, 0.08, 0.01))
+            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(4, 0, 0.08, 0.01))
 
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.015, 0, 0.00001, 0.6, 0.01));
 //            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(4, 0, 0.08, 0.01, 0.01))

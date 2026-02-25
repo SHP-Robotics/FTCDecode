@@ -9,7 +9,6 @@ import com.shprobotics.pestocore.processing.MotorCortex;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.BrakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
@@ -42,7 +41,7 @@ public class RedDrive extends BaseRobot {
 
         turretSubsystem.rezero();
 
-        while (opModeIsActive() && !isStopRequested()) {
+        while (opModeIsActive() && !isStopRequested() && !(gamepad1.left_bumper && gamepad1.right_bumper)) {
             // only for tuning purposes
             PestoFTCConfig.recalculate_interpolators();
 
@@ -98,10 +97,6 @@ public class RedDrive extends BaseRobot {
                 turretSubsystem.rezero();
             }
 
-            if (gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER)) {
-                brakeSubsystem.setState(brakeSubsystem.getState() == BrakeSubsystem.BrakeState.DOWN ? BrakeSubsystem.BrakeState.UP : BrakeSubsystem.BrakeState.DOWN);
-            }
-
             if (intaking) {
                 state = RobotState.INTAKE;
 
@@ -146,7 +141,6 @@ public class RedDrive extends BaseRobot {
             intakeSubsystem.update();
             indexerSubsystem.update();
             turretSubsystem.update();
-            brakeSubsystem.update();
 
             cam_distance = turretSubsystem.getAprilTagDistance();
 
@@ -154,6 +148,34 @@ public class RedDrive extends BaseRobot {
             telemetry.addData("hood", PestoFTCConfig.interpolatorHood.getValue(cam_distance));
             telemetry.addData("shooter", PestoFTCConfig.interpolatorShooter.getValue(cam_distance));
             telemetry.update();
+        }
+
+        dogGear.setPosition(0.75);
+
+        mecanumController.frontLeft.motor.setPower(0.0);
+        mecanumController.frontRight.motor.setPower(0.0);
+        mecanumController.backLeft.motor.setPower(0.0);
+        mecanumController.backRight.motor.setPower(0.0);
+
+        sleep(200);
+
+        blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
+        blockerSubsystem.update();
+
+        intakeSubsystem.setPowerDirect(0.0);
+
+        indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUT);
+        indexerSubsystem.update();
+
+        turretSubsystem.setState(TurretSubsystem.TurretState.MANUAL);
+        turretSubsystem.setPower(0.0);
+
+        mecanumController.frontLeft.motor.setPower(-1.0);
+        mecanumController.frontRight.motor.setPower(-1.0);
+        mecanumController.backLeft.motor.setPower(1.0);
+        mecanumController.backRight.motor.setPower(1.0);
+
+        while (opModeIsActive() && !isStopRequested()) {
         }
 
         turretSubsystem.visionPortal.close();

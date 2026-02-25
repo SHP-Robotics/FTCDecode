@@ -6,9 +6,11 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
+import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 
 @Autonomous(name = "Red Auto Far")
 public class RedAutoFar extends BaseRobot {
@@ -20,12 +22,22 @@ public class RedAutoFar extends BaseRobot {
         AutoPathsRedClose.initializePaths();
         PathState pathState = PathState.FIRST_PATH;
 
-        follower.setMaxPower(0.5);
-        follower.setStartingPose(new Pose(0, 0));
+        follower = Constants.createFollower(hardwareMap);
+
+        telemetry.addLine("ready");
+        telemetry.update();
+
+        blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
+        blockerSubsystem.update();
 
         waitForStart();
 
+        MotorCortex.update();
+        follower.update();
+
+        follower.setMaxPower(1.0);
         follower.setPose(new Pose(0, 0));
+        follower.setStartingPose(new Pose(0, 0));
         follower.followPath(pathState.getPath());
 
         long start = System.nanoTime();
@@ -40,27 +52,26 @@ public class RedAutoFar extends BaseRobot {
             if (pathState.getTimer() < elapsedTime) {
                 switch (pathState) {
                     case FIRST_PATH:
+                        intakeSubsystem.setPowerDirect(1.0);
+
                         pathState = PathState.SECOND_PATH;
                         break;
                     case SECOND_PATH:
+                        intakeSubsystem.setPowerDirect(0.0);
+
                         pathState = PathState.THIRD_PATH;
                         break;
                     case THIRD_PATH:
+                        intakeSubsystem.setPowerDirect(1.0);
+
                         pathState = PathState.FOURTH_PATH;
                         break;
                     case FOURTH_PATH:
+                        intakeSubsystem.setPowerDirect(0.0);
+
                         pathState = PathState.FIFTH_PATH;
                         break;
                     case FIFTH_PATH:
-                        pathState = PathState.SIXTH_PATH;
-                        break;
-                    case SIXTH_PATH:
-                        pathState = PathState.SEVENTH_PATH;
-                        break;
-                    case SEVENTH_PATH:
-                        pathState = PathState.EIGHTH_PATH;
-                        break;
-                    case EIGHTH_PATH:
                         return;
                 }
 

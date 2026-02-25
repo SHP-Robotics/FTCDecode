@@ -6,7 +6,9 @@ import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
 import com.shprobotics.pestocore.drivebases.trackers.DeterministicTracker;
+import com.shprobotics.pestocore.hardware.CortexLinkedServo;
 import com.shprobotics.pestocore.processing.FrontalLobe;
+import com.shprobotics.pestocore.processing.MotorCortex;
 
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 
@@ -21,7 +23,7 @@ public class BaseRobot extends LinearOpMode {
     public OuttakeSubsystem outtakeSubsystem;
     public IndexerSubsystem indexerSubsystem;
     public TurretSubsystem turretSubsystem;
-    public BrakeSubsystem brakeSubsystem;
+    public CortexLinkedServo dogGear;
 
     public GamepadInterface gamepadInterface1;
 
@@ -54,7 +56,8 @@ public class BaseRobot extends LinearOpMode {
         outtakeSubsystem = new OuttakeSubsystem();
         indexerSubsystem = new IndexerSubsystem();
         turretSubsystem = new TurretSubsystem();
-        brakeSubsystem = new BrakeSubsystem();
+        dogGear = MotorCortex.getServo("dog");
+        dogGear.setPosition(0.0);
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
 
