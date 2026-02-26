@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 
-@Autonomous(name = "Red Auto Far")
-public class RedAutoFar extends BaseRobot {
+@Autonomous(name = "Blue Auto Far")
+public class BlueAutoFar extends BaseRobot {
     Telemetry dashboardTelemetry;
 
     private void waitRPM(double rpm) {
@@ -104,7 +104,7 @@ public class RedAutoFar extends BaseRobot {
         turretSubsystem.rezero();
 
         // 60 degrees
-        turretSubsystem.setPosition(60 * 6.88);
+        turretSubsystem.setPosition(-60 * 6.88);
 
         while (!isStarted() && !isStopRequested()) {
             MotorCortex.update();
