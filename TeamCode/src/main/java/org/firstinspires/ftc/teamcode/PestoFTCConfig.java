@@ -139,8 +139,11 @@ public class PestoFTCConfig implements ConfigInterface {
 
     public static double TURRET_LEFT = 500;
     public static double TURRET_RIGHT = -500;
-    public static double TURRET_STATIC = 0.12; //increase when its a little off
-    public static double TURRET_KP = 0.006;
+
+    // 10 degrees switch
+    public static double TURRET_KP_SWITCH = 20.0 * 310 / 45;
+    public static double TURRET_KP_PRIMARY = 0.005;
+    public static double TURRET_KP_SECONDARY = 0.0015;
 
     // BRAKE
     public static double BRAKE_DOWN = 0.3;

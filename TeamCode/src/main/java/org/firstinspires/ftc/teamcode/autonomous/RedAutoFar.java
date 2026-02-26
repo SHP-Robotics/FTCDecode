@@ -2,27 +2,95 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import static org.firstinspires.ftc.teamcode.PestoFTCConfig.follower;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 
-@Autonomous(name = "Red Auto Far")
+@TeleOp(name = "Red Auto Far")
 public class RedAutoFar extends BaseRobot {
+    Telemetry dashboardTelemetry;
+
+    private void waitRPM(double rpm) {
+        while (opModeIsActive() && !isStopRequested() && Math.abs(outtakeSubsystem.getRPM()) < rpm) {
+            MotorCortex.update();
+            turretSubsystem.update();
+
+            dashboardTelemetry.addData("rpm", outtakeSubsystem.getRPM());
+            dashboardTelemetry.update();
+
+            telemetry.addData("rpm", outtakeSubsystem.getRPM());
+            telemetry.update();
+        }
+    }
+
+    private void shoot(double time, double power) {
+        blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
+        blockerSubsystem.update();
+        intakeSubsystem.setPowerDirect(1.0);
+        outtakeSubsystem.setPowerDirect(power);
+
+        long start = System.nanoTime();
+
+        while (opModeIsActive() && !isStopRequested()) {
+            MotorCortex.update();
+            turretSubsystem.update();
+
+            double elapsedTime = (System.nanoTime() - start) / 1E9;
+
+            if (outtakeSubsystem.isBusy(power))
+                intakeSubsystem.setPowerDirect(0.0);
+            else
+                intakeSubsystem.setPowerDirect(1.0);
+
+            if (elapsedTime > time)
+                break;
+
+            dashboardTelemetry.addData("velocity", outtakeSubsystem.getVelocity());
+            dashboardTelemetry.addData("expected velocity", outtakeSubsystem.getExpectedVelocity(power));
+            dashboardTelemetry.update();
+
+            telemetry.addData("velocity", outtakeSubsystem.getVelocity());
+            telemetry.addData("expected velocity", outtakeSubsystem.getExpectedVelocity(power));
+            telemetry.update();
+        }
+
+        blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
+        blockerSubsystem.update();
+        intakeSubsystem.setPowerDirect(0.0);
+    }
+
     @Override
     public void runOpMode() {
         PestoFTCConfig.initializePinpoint = true;
         super.initialize();
 
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        dashboardTelemetry = dashboard.getTelemetry();
+
+
         AutoPathsRedClose.initializePaths();
         PathState pathState = PathState.FIRST_PATH;
 
+        // create follower
         follower = Constants.createFollower(hardwareMap);
+        MotorCortex.update();
+
+        // zero follower
+        follower.update();
+        follower.setMaxPower(1.0);
+        follower.setPose(new Pose(0, 0));
+        follower.setStartingPose(new Pose(0, 0));
+        follower.followPath(pathState.getPath());
 
         telemetry.addLine("ready");
         telemetry.update();
@@ -30,15 +98,25 @@ public class RedAutoFar extends BaseRobot {
         blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
         blockerSubsystem.update();
 
+        hoodSubsystem.setAngleDirect(0.60);
+
+        turretSubsystem.setAcceptedTags(PestoFTCConfig.RED_TAGS);
+        turretSubsystem.rezero();
+
+        // 75 degrees
+        turretSubsystem.setPosition(60 * 6.88);
+
+        while (!isStarted() && !isStopRequested()) {
+            MotorCortex.update();
+            turretSubsystem.update();
+
+            if (turretSubsystem.getState() == TurretSubsystem.TurretState.CUSTOM_POSITION && turretSubsystem.getAprilTagBearing() != null)
+                    turretSubsystem.setState(TurretSubsystem.TurretState.AUTO);
+        }
+
         waitForStart();
-
-        MotorCortex.update();
-        follower.update();
-
-        follower.setMaxPower(1.0);
-        follower.setPose(new Pose(0, 0));
-        follower.setStartingPose(new Pose(0, 0));
-        follower.followPath(pathState.getPath());
+        double power = -0.77;
+        shoot(5.0, power);
 
         long start = System.nanoTime();
 
@@ -62,6 +140,7 @@ public class RedAutoFar extends BaseRobot {
                         pathState = PathState.THIRD_PATH;
                         break;
                     case THIRD_PATH:
+                        shoot(5.0, power);
                         intakeSubsystem.setPowerDirect(1.0);
 
                         pathState = PathState.FOURTH_PATH;
@@ -72,6 +151,7 @@ public class RedAutoFar extends BaseRobot {
                         pathState = PathState.FIFTH_PATH;
                         break;
                     case FIFTH_PATH:
+                        shoot(5.0, power);
                         return;
                 }
 
@@ -79,9 +159,20 @@ public class RedAutoFar extends BaseRobot {
                 start = System.nanoTime();
             }
 
+            turretSubsystem.turret.setPowerResult(0.0);
+
+            dashboardTelemetry.addData("X", follower.getPose().getX());
+            dashboardTelemetry.addData("Y", follower.getPose().getY());
+            dashboardTelemetry.addData("R", follower.getPose().getHeading());
+            dashboardTelemetry.addLine();
+            dashboardTelemetry.addData("rpm", outtakeSubsystem.getRPM());
+            dashboardTelemetry.update();
+
             telemetry.addData("X", follower.getPose().getX());
             telemetry.addData("Y", follower.getPose().getY());
             telemetry.addData("R", follower.getPose().getHeading());
+            telemetry.addLine();
+            telemetry.addData("rpm", outtakeSubsystem.getRPM());
             telemetry.update();
         }
     }

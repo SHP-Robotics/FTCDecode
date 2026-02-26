@@ -77,6 +77,21 @@ public class OuttakeSubsystem {
         return expectedRPM;
     }
 
+    public double getVelocity() {
+        return Math.abs(leftShooter.getVelocity());
+    }
+
+    public double getExpectedVelocity(double power) {
+        return leftShooter.getMotorType().getAchieveableMaxTicksPerSecondRounded() * Math.abs(power);
+    }
+
+    public boolean isBusy(double power) {
+        double expectedTPS = getExpectedVelocity(power);
+        double TPS = getVelocity();
+
+        return (expectedTPS - TPS) / expectedTPS > 0.10;
+    }
+
     public boolean isBusy() {
         return Math.abs(this.getRPM() - expectedRPM) >= PestoFTCConfig.SHOOTER_RPM_TOLERANCE;
     }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
+import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.AUTO;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.CUSTOM_POSITION;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.LEFT;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.MANUAL;
@@ -22,10 +23,11 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 public class TurretSubsystem {
-    private CortexLinkedMotor turret;
+    public CortexLinkedMotor turret;
 
-    private PID positionPIDController;
-    private PID cameraPIDController;
+    private final PID positionPIDControllerPrimary;
+    private final PID positionPIDControllerSecondary;
+    public final PID cameraPIDController;
 
     public AprilTagProcessor aprilTag;
     public VisionPortal visionPortal;
@@ -42,7 +44,8 @@ public class TurretSubsystem {
         RIGHT,
 
         CUSTOM_POSITION,
-        MANUAL
+        MANUAL,
+        AUTO
     }
 
     public TurretSubsystem() {
@@ -50,7 +53,8 @@ public class TurretSubsystem {
         turret.setDirection(DcMotorSimple.Direction.REVERSE);
         turret.setMode(RUN_USING_ENCODER);
 
-        positionPIDController = new PID(PestoFTCConfig.TURRET_KP, 0, 0);
+        positionPIDControllerPrimary = new PID(PestoFTCConfig.TURRET_KP_PRIMARY, 0, 0);
+        positionPIDControllerSecondary = new PID(PestoFTCConfig.TURRET_KP_SECONDARY, 0, 0);
         cameraPIDController = new PID(0.018, 0, 0);
 
         aprilTag = new AprilTagProcessor.Builder()
@@ -126,11 +130,11 @@ public class TurretSubsystem {
         return this.lastDistance;
     }
 
-    private double getDegrees() {
+    public double getDegrees() {
         return this.getPosition() * 45 / 310;
     }
 
-    private double getTargetPosition() {
+    public double getTargetPosition() {
         double targetPosition = 0;
 
         if (this.state == LEFT)
@@ -145,7 +149,7 @@ public class TurretSubsystem {
         return targetPosition;
     }
 
-    private void setBearing(double bearing) {
+    public void setBearing(double bearing) {
         double turretDegrees = this.getDegrees();
         double power = cameraPIDController.getOutput(turretDegrees, turretDegrees + bearing);
 
@@ -160,9 +164,28 @@ public class TurretSubsystem {
         turret.setPowerResult(power);
     }
 
+    public boolean useSecondary() {
+        double targetPosition = getTargetPosition();
+        return Math.abs(turret.getCurrentPosition() - targetPosition) < PestoFTCConfig.TURRET_KP_SWITCH;
+    }
+
     public void update() {
         if (this.state == MANUAL)
             return;
+
+        if (this.state == AUTO) {
+            Double bearing = getAprilTagBearing();
+
+            if (bearing != null) {
+                double turretDegrees = this.getDegrees();
+                double power = cameraPIDController.getOutput(turretDegrees + 3, turretDegrees + bearing);
+
+                turret.setPowerResult(power);
+            } else
+                turret.setPowerResult(0.0);
+
+            return;
+        }
 
         // Camera Processing Code
 
@@ -177,15 +200,12 @@ public class TurretSubsystem {
 
         double targetPosition = getTargetPosition();
 
-        if (Math.abs(turret.getCurrentPosition() - targetPosition) < 6) {
-            turret.setPowerResult(0.0);
-            return;
+        if (useSecondary()) {
+            double power = positionPIDControllerSecondary.getOutput(turret.getCurrentPosition(), targetPosition);
+            turret.setPowerResult(power);
+        } else {
+            double power = positionPIDControllerPrimary.getOutput(turret.getCurrentPosition(), targetPosition);
+            turret.setPowerResult(power);
         }
-
-        double power = positionPIDController.getOutput(turret.getCurrentPosition(), targetPosition);
-
-        power += Math.signum(power) * PestoFTCConfig.TURRET_STATIC;
-
-        turret.setPowerResult(power);
     }
 }
