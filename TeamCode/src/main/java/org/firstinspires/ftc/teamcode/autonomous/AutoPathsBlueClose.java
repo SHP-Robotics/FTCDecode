@@ -94,5 +94,8 @@ public class AutoPathsBlueClose {
         THIRD_MOVE.setConstantHeadingInterpolation(0.0);
         FOURTH_MOVE.setConstantHeadingInterpolation(0.0);
         FIFTH_MOVE.setConstantHeadingInterpolation(0.0);
+        SIXTH_MOVE.setConstantHeadingInterpolation(0.0);
+        SEVENTH_MOVE.setConstantHeadingInterpolation(0.0);
+        EIGHTH_MOVE.setConstantHeadingInterpolation(0.0);
     }
 }

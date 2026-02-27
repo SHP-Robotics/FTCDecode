@@ -10,39 +10,29 @@ import com.shprobotics.pestocore.processing.MotorCortex;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
-import org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState;
+import org.firstinspires.ftc.teamcode.autonomous.AutoPathsBlueClose.PathState;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 
 @Autonomous(name = "Blue Auto Far")
 public class BlueAutoFar extends BaseRobot {
     Telemetry dashboardTelemetry;
 
-    private void waitRPM(double rpm) {
-        while (opModeIsActive() && !isStopRequested() && Math.abs(outtakeSubsystem.getRPM()) < rpm) {
-            MotorCortex.update();
-            turretSubsystem.update();
-
-            dashboardTelemetry.addData("rpm", outtakeSubsystem.getRPM());
-            dashboardTelemetry.update();
-
-            telemetry.addData("rpm", outtakeSubsystem.getRPM());
-            telemetry.update();
-        }
-    }
-
     private void shoot(double time, double power) {
         blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
         blockerSubsystem.update();
         intakeSubsystem.setPowerDirect(1.0);
         outtakeSubsystem.setPowerDirect(power);
+        indexerSubsystem.setState(IndexerSubsystem.IndexerState.PULSE_OUT);
 
         long start = System.nanoTime();
 
         while (opModeIsActive() && !isStopRequested()) {
             MotorCortex.update();
             turretSubsystem.update();
+            indexerSubsystem.update();
 
             double elapsedTime = (System.nanoTime() - start) / 1E9;
 
@@ -66,6 +56,8 @@ public class BlueAutoFar extends BaseRobot {
         blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
         blockerSubsystem.update();
         intakeSubsystem.setPowerDirect(0.0);
+        indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUT);
+        indexerSubsystem.update();
     }
 
     @Override
@@ -78,7 +70,7 @@ public class BlueAutoFar extends BaseRobot {
         dashboardTelemetry = dashboard.getTelemetry();
 
 
-        AutoPathsRedClose.initializePaths();
+        AutoPathsBlueClose.initializePaths();
         PathState pathState = PathState.FIRST_PATH;
 
         // create follower
@@ -102,9 +94,10 @@ public class BlueAutoFar extends BaseRobot {
 
         turretSubsystem.setAcceptedTags(PestoFTCConfig.RED_TAGS);
         turretSubsystem.rezero();
+        turretSubsystem.setVisionOffset(-2);
 
         // 60 degrees
-        turretSubsystem.setPosition(-60 * 6.88);
+        turretSubsystem.setPosition(-70 * 6.88);
 
         while (!isStarted() && !isStopRequested()) {
             MotorCortex.update();
@@ -115,7 +108,7 @@ public class BlueAutoFar extends BaseRobot {
         }
 
         waitForStart();
-        double power = -0.77;
+        double power = -0.73;
         shoot(5.0, power);
 
         long start = System.nanoTime();
@@ -191,5 +184,7 @@ public class BlueAutoFar extends BaseRobot {
             telemetry.addData("rpm", outtakeSubsystem.getRPM());
             telemetry.update();
         }
+
+        turretSubsystem.visionPortal.close();
     }
 }

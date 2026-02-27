@@ -13,36 +13,28 @@ import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 
 @Autonomous(name = "Red Auto Far")
 public class RedAutoFar extends BaseRobot {
     Telemetry dashboardTelemetry;
 
-    private void waitRPM(double rpm) {
-        while (opModeIsActive() && !isStopRequested() && Math.abs(outtakeSubsystem.getRPM()) < rpm) {
-            MotorCortex.update();
-            turretSubsystem.update();
-
-            dashboardTelemetry.addData("rpm", outtakeSubsystem.getRPM());
-            dashboardTelemetry.update();
-
-            telemetry.addData("rpm", outtakeSubsystem.getRPM());
-            telemetry.update();
-        }
-    }
-
     private void shoot(double time, double power) {
         blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
         blockerSubsystem.update();
         intakeSubsystem.setPowerDirect(1.0);
         outtakeSubsystem.setPowerDirect(power);
+        indexerSubsystem.setState(IndexerSubsystem.IndexerState.PULSE_OUT);
 
         long start = System.nanoTime();
 
         while (opModeIsActive() && !isStopRequested()) {
             MotorCortex.update();
+            follower.update();
+
             turretSubsystem.update();
+            indexerSubsystem.update();
 
             double elapsedTime = (System.nanoTime() - start) / 1E9;
 
@@ -66,6 +58,8 @@ public class RedAutoFar extends BaseRobot {
         blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
         blockerSubsystem.update();
         intakeSubsystem.setPowerDirect(0.0);
+        indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUT);
+        indexerSubsystem.update();
     }
 
     @Override
@@ -79,7 +73,7 @@ public class RedAutoFar extends BaseRobot {
 
 
         AutoPathsRedClose.initializePaths();
-        PathState pathState = PathState.FIRST_PATH;
+        PathState pathState = PathState.SHOOT_PATH;
 
         // create follower
         follower = Constants.createFollower(hardwareMap);
@@ -102,9 +96,10 @@ public class RedAutoFar extends BaseRobot {
 
         turretSubsystem.setAcceptedTags(PestoFTCConfig.RED_TAGS);
         turretSubsystem.rezero();
+        turretSubsystem.setVisionOffset(2);
 
         // 60 degrees
-        turretSubsystem.setPosition(60 * 6.88);
+        turretSubsystem.setPosition(70 * 6.88);
 
         while (!isStarted() && !isStopRequested()) {
             MotorCortex.update();
@@ -112,14 +107,16 @@ public class RedAutoFar extends BaseRobot {
 
             if (turretSubsystem.getState() == TurretSubsystem.TurretState.CUSTOM_POSITION && turretSubsystem.getAprilTagBearing() != null)
                     turretSubsystem.setState(TurretSubsystem.TurretState.AUTO);
+
+            telemetry.addData("turret state", turretSubsystem.getState());
+            telemetry.update();
         }
 
         waitForStart();
-        double power = -0.77;
-        shoot(5.0, power);
+        double power = -0.675;
+//        outtakeSubsystem.setPowerDirect(power);
 
         long start = System.nanoTime();
-
         while (opModeIsActive() && !isStopRequested()) {
 
             MotorCortex.update();
@@ -129,6 +126,25 @@ public class RedAutoFar extends BaseRobot {
 
             if (pathState.getTimer() < elapsedTime) {
                 switch (pathState) {
+                    case SHOOT_PATH:
+                        outtakeSubsystem.setPowerDirect(power);
+                        start = System.nanoTime();
+                        while (opModeIsActive() && !isStopRequested() && (System.nanoTime() - start) / 1E9 < 2.5) {
+                            MotorCortex.update();
+                            turretSubsystem.update();
+                            follower.update();
+
+                            if (turretSubsystem.getState() == TurretSubsystem.TurretState.CUSTOM_POSITION && turretSubsystem.getAprilTagBearing() != null)
+                                turretSubsystem.setState(TurretSubsystem.TurretState.AUTO);
+
+                            telemetry.addData("turret state", turretSubsystem.getState());
+                            telemetry.update();
+                        }
+
+                        shoot(2.25, power);
+
+                        pathState = PathState.FIRST_PATH;
+                        break;
                     case FIRST_PATH:
                         intakeSubsystem.setPowerDirect(1.0);
 
@@ -140,29 +156,29 @@ public class RedAutoFar extends BaseRobot {
                         pathState = PathState.THIRD_PATH;
                         break;
                     case THIRD_PATH:
-                        shoot(5.0, power);
+                        shoot(2.25, power);
                         intakeSubsystem.setPowerDirect(1.0);
 
                         pathState = PathState.FOURTH_PATH;
                         break;
                     case FOURTH_PATH:
-                        intakeSubsystem.setPowerDirect(0.0);
+//                        intakeSubsystem.setPowerDirect(0.0);
 
                         pathState = PathState.FIFTH_PATH;
                         break;
                     case FIFTH_PATH:
-                        shoot(5.0, power);
+                        shoot(2.25, power);
                         intakeSubsystem.setPowerDirect(1.0);
 
                         pathState = PathState.SIXTH_PATH;
                         break;
                     case SIXTH_PATH:
-                        intakeSubsystem.setPowerDirect(0.0);
+//                        intakeSubsystem.setPowerDirect(0.0);
 
                         pathState = PathState.SEVENTH_PATH;
                         break;
                     case SEVENTH_PATH:
-                        shoot(5.0, power);
+                        shoot(2.25, power);
                         intakeSubsystem.setPowerDirect(0.0);
 
                         pathState = PathState.EIGHTH_PATH;
@@ -191,5 +207,7 @@ public class RedAutoFar extends BaseRobot {
             telemetry.addData("rpm", outtakeSubsystem.getRPM());
             telemetry.update();
         }
+
+        turretSubsystem.visionPortal.close();
     }
 }

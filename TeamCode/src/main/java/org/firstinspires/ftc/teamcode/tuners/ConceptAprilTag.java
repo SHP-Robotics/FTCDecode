@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.tuners;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.algorithms.PID;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -15,7 +13,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Disabled
+//@Disabled
 @TeleOp(name = "Concept: AprilTag", group = "Concept")
 public class ConceptAprilTag extends LinearOpMode {
     @Override
@@ -28,13 +26,16 @@ public class ConceptAprilTag extends LinearOpMode {
         turretSubsystem.setState(TurretSubsystem.TurretState.MANUAL);
         boolean scanningLeft = true;
 
-        AprilTagProcessor aprilTag = AprilTagProcessor.easyCreateWithDefaults();
+//        AprilTagProcessor aprilTag = AprilTagProcessor.easyCreateWithDefaults();
+//
+//        VisionPortal visionPortal = new VisionPortal.Builder()
+//                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+//                .addProcessors(aprilTag)
+//                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
+//                .build();
 
-        VisionPortal visionPortal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .addProcessors(aprilTag)
-                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
-                .build();
+        AprilTagProcessor aprilTag = turretSubsystem.aprilTag;
+        VisionPortal visionPortal = turretSubsystem.visionPortal;
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");

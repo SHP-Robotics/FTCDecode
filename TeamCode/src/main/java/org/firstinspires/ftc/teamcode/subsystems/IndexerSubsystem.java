@@ -6,6 +6,8 @@ import static org.firstinspires.ftc.teamcode.PestoFTCConfig.INDEXER_OUTISH;
 import static org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem.IndexerState.IN;
 import static org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem.IndexerState.OUT;
 import static org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem.IndexerState.OUTISH;
+import static org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem.IndexerState.PULSE_OUT;
+import static org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem.IndexerState.PULSE_OUTISH;
 
 import com.shprobotics.pestocore.hardware.CortexLinkedServo;
 import com.shprobotics.pestocore.processing.MotorCortex;
@@ -13,17 +15,23 @@ import com.shprobotics.pestocore.processing.MotorCortex;
 public class IndexerSubsystem {
     private CortexLinkedServo indexer;
 
+    private final double timer_max = 0.15;
+
     private IndexerState state;
+    private long timer;
 
     public enum IndexerState {
         IN,
         OUTISH,
-        OUT
+        OUT,
+        PULSE_OUTISH,
+        PULSE_OUT
     }
 
     public IndexerSubsystem() {
         indexer = MotorCortex.getServo("lindex");
         indexer.setCachingTolerance(0.01);
+        timer = 0;
 
         state = OUT;
     }
@@ -46,5 +54,23 @@ public class IndexerSubsystem {
 
         if (state == IN)
             indexer.setPositionResult(INDEXER_IN);
+
+        if (state == PULSE_OUT) {
+            indexer.setPositionResult(INDEXER_OUT);
+
+            if ((System.nanoTime() - timer) / 1E9 > timer_max) {
+                state = PULSE_OUTISH;
+                timer = System.nanoTime();
+            }
+        }
+
+        if (state == PULSE_OUTISH) {
+            indexer.setPositionResult(INDEXER_OUTISH);
+
+            if ((System.nanoTime() - timer) / 1E9 > timer_max) {
+                state = PULSE_OUT;
+                timer = System.nanoTime();
+            }
+        }
     }
 }

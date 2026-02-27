@@ -33,6 +33,7 @@ public class TurretSubsystem {
     public VisionPortal visionPortal;
     private List<Integer> acceptedTags;
     private double lastDistance = 0.0;
+    private double visionOffset = 0.0;
 
     private TurretState state;
 
@@ -76,6 +77,10 @@ public class TurretSubsystem {
         turret = MotorCortex.getMotor(3, 2);
         turret.setDirection(DcMotorSimple.Direction.REVERSE);
         turret.setMode(RUN_USING_ENCODER);
+    }
+
+    public void setVisionOffset(double visionOffset) {
+        this.visionOffset = visionOffset;
     }
 
     public void setAcceptedTags(List<Integer> tags) {
@@ -178,7 +183,7 @@ public class TurretSubsystem {
 
             if (bearing != null) {
                 double turretDegrees = this.getDegrees();
-                double power = cameraPIDController.getOutput(turretDegrees + 3, turretDegrees + bearing);
+                double power = cameraPIDController.getOutput(turretDegrees + visionOffset, turretDegrees + bearing);
 
                 turret.setPowerResult(power);
             } else

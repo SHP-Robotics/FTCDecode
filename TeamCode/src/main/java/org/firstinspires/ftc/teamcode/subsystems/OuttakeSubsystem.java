@@ -89,7 +89,7 @@ public class OuttakeSubsystem {
         double expectedTPS = getExpectedVelocity(power);
         double TPS = getVelocity();
 
-        return (expectedTPS - TPS) / expectedTPS > 0.10;
+        return (expectedTPS - TPS) / expectedTPS > 0.03;
     }
 
     public boolean isBusy() {
