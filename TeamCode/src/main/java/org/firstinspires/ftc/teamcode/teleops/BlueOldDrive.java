@@ -41,9 +41,12 @@ public class BlueOldDrive extends BaseRobot {
 
         turretSubsystem.rezero();
 
+        // 2 to the right
+        turretSubsystem.setVisionOffset(0);
+
         while (opModeIsActive() && !isStopRequested() && !(gamepad1.left_bumper && gamepad1.right_bumper)) {
             // INTERPOLATOR - only for tuning purposes
-            // PestoFTCConfig.recalculate_interpolators();
+            PestoFTCConfig.recalculate_interpolators();
 
             List<AprilTagDetection> currentDetections = turretSubsystem.aprilTag.getDetections();
             telemetry.addData("# AprilTags Detected", currentDetections.size());
@@ -60,8 +63,14 @@ public class BlueOldDrive extends BaseRobot {
 
             teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
-            if (gamepadInterface1.isKeyUp(GamepadKey.TOUCHPAD))
-                isClose = !isClose;
+            if (gamepadInterface1.isKeyUp(GamepadKey.TOUCHPAD)) {
+                if (isClose) {
+                    isClose = false;
+                    turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
+                } else {
+                    isClose = true;
+                }
+            }
 
             double outtake_power;
 
@@ -163,15 +172,16 @@ public class BlueOldDrive extends BaseRobot {
 
             dogGear.setPosition(0.00);
             blockerSubsystem.update();
-            hoodSubsystem.update();
             intakeSubsystem.update();
             indexerSubsystem.update();
             turretSubsystem.update();
 
-//            telemetry.addData("state", turretSubsystem.getState());
-//            telemetry.addData("distance", turretSubsystem.getAprilTagDistance());
-//            telemetry.addData("hood", PestoFTCConfig.interpolatorHood.getValue(cam_distance));
-//            telemetry.addData("shooter", PestoFTCConfig.interpolatorShooter.getValue(cam_distance));
+            turretSubsystem.getAprilTag();
+            cam_distance = turretSubsystem.getAprilTagDistance();
+            telemetry.addData("state", turretSubsystem.getState());
+            telemetry.addData("distance", turretSubsystem.getAprilTagDistance());
+            telemetry.addData("hood", PestoFTCConfig.interpolatorHood.getValue(cam_distance));
+            telemetry.addData("shooter", PestoFTCConfig.interpolatorShooter.getValue(cam_distance));
             telemetry.update();
         }
 
@@ -186,6 +196,13 @@ public class BlueOldDrive extends BaseRobot {
         mecanumController.backRight.motor.setPower(0.0);
 
         sleep(200);
+
+        mecanumController.frontLeft.motor.setPower(-0.4);
+        mecanumController.frontRight.motor.setPower(-0.4);
+        mecanumController.backLeft.motor.setPower(0.4);
+        mecanumController.backRight.motor.setPower(0.4);
+
+        sleep(500);
 
         blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
         blockerSubsystem.update();

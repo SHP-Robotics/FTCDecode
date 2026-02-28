@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.tuners;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.processing.FrontalLobe;
@@ -13,7 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 
-@Disabled
+//@Disabled
 @Config
 @TeleOp(name = "Interp Test", group = "Concept")
 public class InterpTest extends LinearOpMode {

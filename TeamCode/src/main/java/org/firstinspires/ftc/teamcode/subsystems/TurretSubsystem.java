@@ -5,6 +5,7 @@ import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENC
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.AUTO;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.BLUE;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.CUSTOM_POSITION;
+import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.CUSTOM_POSITION_SOLID;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.LEFT;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.MANUAL;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.RED;
@@ -36,7 +37,8 @@ public class TurretSubsystem {
     public AprilTagProcessor aprilTag;
     public VisionPortal visionPortal;
     private List<Integer> acceptedTags;
-    private AprilTagPoseFtc lastAprilTag = null;
+    public boolean detected;
+    private AprilTagPoseFtc lastAprilTag;
     private long lastAprilTagTimer = 0;
     private double visionOffset = 0.0;
 
@@ -53,6 +55,7 @@ public class TurretSubsystem {
         BLUE,
 
         CUSTOM_POSITION,
+        CUSTOM_POSITION_SOLID,
         MANUAL,
         AUTO
     }
@@ -77,6 +80,9 @@ public class TurretSubsystem {
 
         // BLUE GOAL, RED GOAL
         acceptedTags = asList(20, 24);
+
+        detected = false;
+        lastAprilTag = null;
 
         state = MANUAL;
     }
@@ -137,15 +143,16 @@ public class TurretSubsystem {
 
             lastAprilTag = detection.ftcPose;
             lastAprilTagTimer = System.nanoTime();
+            detected = true;
             return lastAprilTag;
         }
 
-        lastAprilTag = null;
+        detected = false;
         return null;
     }
 
     public Double getAprilTagBearing() {
-        if (lastAprilTag == null)
+        if (!detected)
             return 0.0;
 
         return lastAprilTag.bearing;
@@ -159,7 +166,7 @@ public class TurretSubsystem {
     }
 
     public Double getAprilTagYaw() {
-        if (lastAprilTag == null)
+        if (!detected)
             return 0.0;
 
         return -lastAprilTag.yaw;
@@ -208,6 +215,9 @@ public class TurretSubsystem {
             targetPosition = PestoFTCConfig.TURRET_RIGHT;
 
         if (this.state == CUSTOM_POSITION)
+            targetPosition = customPosition;
+
+        if (this.state == CUSTOM_POSITION_SOLID)
             targetPosition = customPosition;
 
         return targetPosition;
@@ -271,12 +281,26 @@ public class TurretSubsystem {
             return;
         }
 
+        if (state == CUSTOM_POSITION_SOLID) {
+            double targetPosition = getTargetPosition();
+
+            if (useSecondary()) {
+                double power = positionPIDControllerSecondary.getOutput(turret.getCurrentPosition(), targetPosition);
+                turret.setPowerResult(power);
+            } else {
+                double power = positionPIDControllerPrimary.getOutput(turret.getCurrentPosition(), targetPosition);
+                turret.setPowerResult(power);
+            }
+
+            return;
+        }
+
         // Camera Processing Code
 
         getAprilTag();
         if (lastAprilTag != null) {
             Double bearing = getAprilTagBearing(); //getTargetBearing();
-            this.setBearing(bearing);
+            this.setBearing(bearing - visionOffset);
             return;
         }
 

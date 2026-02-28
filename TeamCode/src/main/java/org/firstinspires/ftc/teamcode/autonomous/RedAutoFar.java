@@ -10,7 +10,7 @@ import com.shprobotics.pestocore.processing.MotorCortex;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
-import org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState;
+import org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedFar.PathState;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
@@ -72,7 +72,7 @@ public class RedAutoFar extends BaseRobot {
         dashboardTelemetry = dashboard.getTelemetry();
 
 
-        AutoPathsRedClose.initializePaths();
+        AutoPathsRedFar.initializePaths();
         PathState pathState = PathState.SHOOT_PATH;
 
         // create follower
@@ -96,17 +96,15 @@ public class RedAutoFar extends BaseRobot {
 
         turretSubsystem.setAcceptedTags(PestoFTCConfig.RED_TAGS);
         turretSubsystem.rezero();
-        turretSubsystem.setVisionOffset(2);
+//        turretSubsystem.setVisionOffset(3);
 
-        // 60 degrees
-        turretSubsystem.setPosition(70 * 6.88);
+        // 68 degrees
+        turretSubsystem.setPosition(63 * 6.88);
+        turretSubsystem.setState(TurretSubsystem.TurretState.CUSTOM_POSITION_SOLID);
 
         while (!isStarted() && !isStopRequested()) {
             MotorCortex.update();
             turretSubsystem.update();
-
-            if (turretSubsystem.getState() == TurretSubsystem.TurretState.CUSTOM_POSITION && turretSubsystem.getAprilTagBearing() != null)
-                    turretSubsystem.setState(TurretSubsystem.TurretState.AUTO);
 
             telemetry.addData("turret state", turretSubsystem.getState());
             telemetry.update();
@@ -116,8 +114,8 @@ public class RedAutoFar extends BaseRobot {
             return;
 
         waitForStart();
-        double power = -0.675;
-//        outtakeSubsystem.setPowerDirect(power);
+        double power = -0.72;
+        outtakeSubsystem.setPowerDirect(power);
 
         long start = System.nanoTime();
         while (opModeIsActive() && !isStopRequested()) {
@@ -132,19 +130,16 @@ public class RedAutoFar extends BaseRobot {
                     case SHOOT_PATH:
                         outtakeSubsystem.setPowerDirect(power);
                         start = System.nanoTime();
-                        while (opModeIsActive() && !isStopRequested() && (System.nanoTime() - start) / 1E9 < 2.5) {
+                        while (opModeIsActive() && !isStopRequested() && (System.nanoTime() - start) / 1E9 < 2.75) {
                             MotorCortex.update();
                             turretSubsystem.update();
                             follower.update();
-
-                            if (turretSubsystem.getState() == TurretSubsystem.TurretState.CUSTOM_POSITION && turretSubsystem.getAprilTagBearing() != null)
-                                turretSubsystem.setState(TurretSubsystem.TurretState.AUTO);
 
                             telemetry.addData("turret state", turretSubsystem.getState());
                             telemetry.update();
                         }
 
-                        shoot(2.25, power);
+                        shoot(2.5, power);
 
                         pathState = PathState.FIRST_PATH;
                         break;
@@ -194,7 +189,7 @@ public class RedAutoFar extends BaseRobot {
                 start = System.nanoTime();
             }
 
-            turretSubsystem.turret.setPowerResult(0.0);
+            turretSubsystem.update();
 
             dashboardTelemetry.addData("X", follower.getPose().getX());
             dashboardTelemetry.addData("Y", follower.getPose().getY());

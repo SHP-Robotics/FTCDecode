@@ -10,14 +10,14 @@ import com.shprobotics.pestocore.processing.MotorCortex;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
-import org.firstinspires.ftc.teamcode.autonomous.AutoPathsBlueClose.PathState;
+import org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 
-@Autonomous(name = "Blue Auto Far")
-public class BlueAutoFar extends BaseRobot {
+@Autonomous(name = "Red Auto Close")
+public class RedAutoClose extends BaseRobot {
     Telemetry dashboardTelemetry;
 
     private void shoot(double time, double power) {
@@ -31,6 +31,8 @@ public class BlueAutoFar extends BaseRobot {
 
         while (opModeIsActive() && !isStopRequested()) {
             MotorCortex.update();
+            follower.update();
+
             turretSubsystem.update();
             indexerSubsystem.update();
 
@@ -70,7 +72,7 @@ public class BlueAutoFar extends BaseRobot {
         dashboardTelemetry = dashboard.getTelemetry();
 
 
-        AutoPathsBlueClose.initializePaths();
+        AutoPathsRedClose.initializePaths();
         PathState pathState = PathState.FIRST_PATH;
 
         // create follower
@@ -94,25 +96,28 @@ public class BlueAutoFar extends BaseRobot {
 
         turretSubsystem.setAcceptedTags(PestoFTCConfig.RED_TAGS);
         turretSubsystem.rezero();
-        turretSubsystem.setVisionOffset(-2);
+//        turretSubsystem.setVisionOffset(3);
 
-        // 60 degrees
-        turretSubsystem.setPosition(-70 * 6.88);
+        // 68 degrees
+        turretSubsystem.setPosition(63 * 6.88);
+        turretSubsystem.setState(TurretSubsystem.TurretState.CUSTOM_POSITION_SOLID);
 
         while (!isStarted() && !isStopRequested()) {
             MotorCortex.update();
             turretSubsystem.update();
 
-            if (turretSubsystem.getState() == TurretSubsystem.TurretState.CUSTOM_POSITION && turretSubsystem.getAprilTagBearing() != null)
-                    turretSubsystem.setState(TurretSubsystem.TurretState.AUTO);
+            telemetry.addData("turret state", turretSubsystem.getState());
+            telemetry.update();
         }
 
+        if (isStopRequested())
+            return;
+
         waitForStart();
-        double power = -0.73;
-        shoot(5.0, power);
+        double power = -0.72;
+//        outtakeSubsystem.setPowerDirect(power);
 
         long start = System.nanoTime();
-
         while (opModeIsActive() && !isStopRequested()) {
 
             MotorCortex.update();
@@ -123,44 +128,22 @@ public class BlueAutoFar extends BaseRobot {
             if (pathState.getTimer() < elapsedTime) {
                 switch (pathState) {
                     case FIRST_PATH:
-                        intakeSubsystem.setPowerDirect(1.0);
+//                        intakeSubsystem.setPowerDirect(1.0);
 
                         pathState = PathState.SECOND_PATH;
                         break;
                     case SECOND_PATH:
-                        intakeSubsystem.setPowerDirect(0.0);
+//                        intakeSubsystem.setPowerDirect(0.0);
 
                         pathState = PathState.THIRD_PATH;
                         break;
                     case THIRD_PATH:
-                        shoot(5.0, power);
-                        intakeSubsystem.setPowerDirect(1.0);
+//                        shoot(2.25, power);
+//                        intakeSubsystem.setPowerDirect(1.0);
 
                         pathState = PathState.FOURTH_PATH;
                         break;
                     case FOURTH_PATH:
-                        intakeSubsystem.setPowerDirect(0.0);
-
-                        pathState = PathState.FIFTH_PATH;
-                        break;
-                    case FIFTH_PATH:
-                        shoot(5.0, power);
-                        intakeSubsystem.setPowerDirect(1.0);
-
-                        pathState = PathState.SIXTH_PATH;
-                        break;
-                    case SIXTH_PATH:
-                        intakeSubsystem.setPowerDirect(0.0);
-
-                        pathState = PathState.SEVENTH_PATH;
-                        break;
-                    case SEVENTH_PATH:
-                        shoot(5.0, power);
-                        intakeSubsystem.setPowerDirect(0.0);
-
-                        pathState = PathState.EIGHTH_PATH;
-                        break;
-                    case EIGHTH_PATH:
                         return;
                 }
 
@@ -168,7 +151,7 @@ public class BlueAutoFar extends BaseRobot {
                 start = System.nanoTime();
             }
 
-            turretSubsystem.turret.setPowerResult(0.0);
+            turretSubsystem.update();
 
             dashboardTelemetry.addData("X", follower.getPose().getX());
             dashboardTelemetry.addData("Y", follower.getPose().getY());

@@ -34,7 +34,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
     // INDEXER
     public static double INDEXER_IN = 0.20;
-    public static double INDEXER_OUTISH = 0.52;
+    public static double INDEXER_OUTISH = 0.54;
     public static double INDEXER_OUT = 0.589;
 
     // HOOD
@@ -46,12 +46,9 @@ public class PestoFTCConfig implements ConfigInterface {
     // SHOOTER
     public static double SHOOTER_CLOSE = -0.45;
 
-    public static double SHOOTER_KP = 0.3;
-    public static double SHOOTER_KD = 0.05;
-
     public static double[] shooter_close = new double[]{51.3, -0.5};
-    public static double[] shooter_mid = new double[]{92.5, -0.6};
-    public static double[] shooter_far = new double[]{100.0, -0.95};
+    public static double[] shooter_mid = new double[]{92.5, -0.65};
+    public static double[] shooter_far = new double[]{132.0, -0.95};
 
     public static Pair<Double, Double>[] interpolatorShooterData = new Pair[]{
             new Pair<Double, Double>(shooter_close[0], shooter_close[1]),
@@ -61,9 +58,9 @@ public class PestoFTCConfig implements ConfigInterface {
 
     public static Interpolator interpolatorShooter = new Interpolator(interpolatorShooterData);
 
-    public static double[] hood_close = new double[]{51.3, 0.7};
-    public static double[] hood_mid = new double[]{92.5, 0.7};
-    public static double[] hood_far = new double[]{100.0, 0.7};
+    public static double[] hood_close = new double[]{51.3, 0.73};
+    public static double[] hood_mid = new double[]{92.5, 0.73};
+    public static double[] hood_far = new double[]{132.0, 0.70};
 
     public static Pair<Double, Double>[] interpolatorHoodData = new Pair[]{
             new Pair<Double, Double>(hood_close[0], hood_close[1]),
@@ -101,7 +98,7 @@ public class PestoFTCConfig implements ConfigInterface {
     // 20 degrees switch
     public static double TURRET_KP_SWITCH = 20.0 * 310 / 45;
     public static double TURRET_KP_PRIMARY = 0.005;
-    public static double TURRET_KP_SECONDARY = 0.0015;
+    public static double TURRET_KP_SECONDARY = 0.003;
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);
