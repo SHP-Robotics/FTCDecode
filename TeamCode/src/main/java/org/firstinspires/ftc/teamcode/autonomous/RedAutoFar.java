@@ -112,6 +112,9 @@ public class RedAutoFar extends BaseRobot {
             telemetry.update();
         }
 
+        if (isStopRequested())
+            return;
+
         waitForStart();
         double power = -0.675;
 //        outtakeSubsystem.setPowerDirect(power);
@@ -179,7 +182,7 @@ public class RedAutoFar extends BaseRobot {
                         break;
                     case SEVENTH_PATH:
                         shoot(2.25, power);
-                        intakeSubsystem.setPowerDirect(0.0);
+                        intakeSubsystem.setPowerDirect(1.0);
 
                         pathState = PathState.EIGHTH_PATH;
                         break;

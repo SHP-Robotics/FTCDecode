@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.shprobotics.pestocore.devices.GamepadKey;
@@ -16,7 +17,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.util.List;
 
-@TeleOp(name = "Blue Drive")
+@Disabled
+@TeleOp(name = "Blue new Drive")
 public class BlueDrive extends BaseRobot {
     @Override
     public void runOpMode() {
@@ -136,6 +138,7 @@ public class BlueDrive extends BaseRobot {
             else
                 indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUT);
 
+            dogGear.setPosition(0.00);
             blockerSubsystem.update();
             hoodSubsystem.update();
             intakeSubsystem.update();

@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.shprobotics.pestocore.devices.GamepadKey;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
-import org.firstinspires.ftc.teamcode.RobotPose;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
@@ -18,9 +15,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.util.List;
 
-@Disabled
-@TeleOp(name = "Red New Drive")
-public class RedDrive extends BaseRobot {
+@TeleOp(name = "Red Drive")
+public class RedOldDrive extends BaseRobot {
     @Override
     public void runOpMode() {
         PestoFTCConfig.initializePinpoint = true;
@@ -46,7 +42,7 @@ public class RedDrive extends BaseRobot {
 
         while (opModeIsActive() && !isStopRequested() && !(gamepad1.left_bumper && gamepad1.right_bumper)) {
             // only for tuning purposes
-            PestoFTCConfig.recalculate_interpolators();
+//            PestoFTCConfig.recalculate_interpolators();
 
             List<AprilTagDetection> currentDetections = turretSubsystem.aprilTag.getDetections();
             telemetry.addData("# AprilTags Detected", currentDetections.size());
@@ -56,12 +52,14 @@ public class RedDrive extends BaseRobot {
             gamepadInterface1.update();
             tracker.update();
 
-            RobotPose.robotPosition = tracker.getCurrentPosition();
-
-            if (gamepad1.x) {
-                brake = !brake;
-                mecanumController.setZeroPowerBehavior(brake ? DcMotor.ZeroPowerBehavior.BRAKE : DcMotor.ZeroPowerBehavior.FLOAT);
+            if (gamepadInterface1.isKeyUp(GamepadKey.DPAD_DOWN)) {
+                turretSubsystem.setState(turretSubsystem.getState() == TurretSubsystem.TurretState.STRAIGHT ? TurretSubsystem.TurretState.RED : TurretSubsystem.TurretState.STRAIGHT);
             }
+
+//            if (gamepad1.x) {
+//                brake = !brake;
+//                mecanumController.setZeroPowerBehavior(brake ? DcMotor.ZeroPowerBehavior.BRAKE : DcMotor.ZeroPowerBehavior.FLOAT);
+//            }
 
             if (gamepad1.x) {
                 tracker.reset();
@@ -73,10 +71,6 @@ public class RedDrive extends BaseRobot {
             boolean intaking = gamepad1.right_trigger > 0.05;
             outtaking = !intaking && gamepadInterface1.getTimeDown(GamepadKey.LEFT_TRIGGER) > 0.3;
             revving = (revving != gamepadInterface1.isClicked(GamepadKey.LEFT_TRIGGER, 0.3)) || outtaking;
-            telemetry.addData("outtaking", outtaking);
-            telemetry.addData("revving", revving);
-            telemetry.addData("held", gamepadInterface1.isHeld(GamepadKey.LEFT_TRIGGER, 0.3));
-            telemetry.addData("clicked", gamepadInterface1.isClicked(GamepadKey.LEFT_TRIGGER, 0.3));
             boolean rejecting = !intaking && !outtaking && gamepad1.a;
             boolean neutralizing = !intaking && !outtaking && !rejecting;
 
@@ -92,6 +86,7 @@ public class RedDrive extends BaseRobot {
                     turretSubsystem.setPower(0.3);
                 }
                 turretSubsystem.setPower(0.0);
+                turretSubsystem.rezero();
             }
 
             if (gamepad1.dpad_right) {
@@ -99,11 +94,12 @@ public class RedDrive extends BaseRobot {
                     turretSubsystem.setPower(-0.3);
                 }
                 turretSubsystem.setPower(0.0);
-            }
-
-            if (gamepad1.dpad_up && gamepad1.y) {
                 turretSubsystem.rezero();
             }
+
+//            if (gamepad1.dpad_up && gamepad1.y) {
+//                turretSubsystem.rezero();
+//            }
 
             if (intaking) {
                 state = RobotState.INTAKE;
@@ -153,14 +149,15 @@ public class RedDrive extends BaseRobot {
 
             cam_distance = turretSubsystem.getAprilTagDistance();
 
-            telemetry.addData("theta", 90+turretSubsystem.getAprilTagBearing()+turretSubsystem.getDegrees());
-//            telemetry.addData("target", turretSubsystem.getTargetBearing());
-            telemetry.addData("degrees", turretSubsystem.getDegrees());
+            telemetry.addData("state", turretSubsystem.getState());
             telemetry.addData("distance", cam_distance);
             telemetry.addData("hood", PestoFTCConfig.interpolatorHood.getValue(cam_distance));
             telemetry.addData("shooter", PestoFTCConfig.interpolatorShooter.getValue(cam_distance));
             telemetry.update();
         }
+
+        if (isStopRequested())
+            return;
 
         dogGear.setPosition(0.75);
 

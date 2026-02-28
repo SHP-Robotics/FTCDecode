@@ -24,6 +24,7 @@ public class BaseRobot extends LinearOpMode {
     public IndexerSubsystem indexerSubsystem;
     public TurretSubsystem turretSubsystem;
     public CortexLinkedServo dogGear;
+    public CortexLinkedServo LED;
 
     public GamepadInterface gamepadInterface1;
 
@@ -56,8 +57,8 @@ public class BaseRobot extends LinearOpMode {
         outtakeSubsystem = new OuttakeSubsystem();
         indexerSubsystem = new IndexerSubsystem();
         turretSubsystem = new TurretSubsystem();
-        dogGear = MotorCortex.getServo("dog");
-        dogGear.setPosition(0.0);
+        dogGear = MotorCortex.getServo(0, 173); //MotorCortex.getServo("dog");
+        LED = MotorCortex.getServo(0, 2);
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
 

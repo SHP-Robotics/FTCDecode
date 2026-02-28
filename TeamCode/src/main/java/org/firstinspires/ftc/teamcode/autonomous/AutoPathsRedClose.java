@@ -94,7 +94,7 @@ public class AutoPathsRedClose {
     public static Path EIGHTH_MOVE = new Path(
             new BezierLine(
                     new Pose(-2, 15),
-                    new Pose(0.0, 27)
+                    new Pose(43.3, 15)
             )
     );
 

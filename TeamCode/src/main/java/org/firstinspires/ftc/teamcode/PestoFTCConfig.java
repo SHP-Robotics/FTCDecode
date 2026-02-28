@@ -28,11 +28,9 @@ public class PestoFTCConfig implements ConfigInterface {
 
     public static Follower follower;
 
-    public static double STATIC_DRIVE = 0.22;
-
     // BLOCKER
     public static double BLOCKER_BLOCK = 0.34;
-    public static double BLOCKER_OUTTAKE = 0.0;
+    public static double BLOCKER_OUTTAKE = 0.54;
 
     // INDEXER
     public static double INDEXER_IN = 0.20;
@@ -40,98 +38,58 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double INDEXER_OUT = 0.589;
 
     // HOOD
-    public static double HOOD_CLOSE = 0.72;
+    public static double HOOD_CLOSE = 0.45;
+
     public static double HOOD_MID = 0.45;
     public static double HOOD_FAR = 0.37;
 
     // SHOOTER
+    public static double SHOOTER_CLOSE = -0.45;
+
     public static double SHOOTER_KP = 0.3;
     public static double SHOOTER_KD = 0.05;
 
-    public static double[] shooter040 = new double[]{040.0, -0.53};
-    public static double[] shooter050 = new double[]{050.0, -0.54};
-    public static double[] shooter060 = new double[]{060.0, -0.60};
-    public static double[] shooter070 = new double[]{070.0, -0.60};
-    public static double[] shooter080 = new double[]{080.0, -0.61};
-    public static double[] shooter090 = new double[]{090.0, -0.61};
-    // STOPPED HERE
-    public static double[] shooter100 = new double[]{100.0, -0.95};
-    public static double[] shooter110 = new double[]{110.0, -1.00};
+    public static double[] shooter_close = new double[]{51.3, -0.5};
+    public static double[] shooter_mid = new double[]{92.5, -0.6};
+    public static double[] shooter_far = new double[]{100.0, -0.95};
 
     public static Pair<Double, Double>[] interpolatorShooterData = new Pair[]{
-            new Pair<Double, Double>(shooter040[0], shooter040[1]),
-            new Pair<Double, Double>(shooter050[0], shooter050[1]),
-            new Pair<Double, Double>(shooter060[0], shooter060[1]),
-            new Pair<Double, Double>(shooter070[0], shooter070[1]),
-            new Pair<Double, Double>(shooter080[0], shooter080[1]),
-            new Pair<Double, Double>(shooter090[0], shooter090[1]),
-            new Pair<Double, Double>(shooter100[0], shooter100[1]),
-            new Pair<Double, Double>(shooter110[0], shooter110[1]),
+            new Pair<Double, Double>(shooter_close[0], shooter_close[1]),
+            new Pair<Double, Double>(shooter_mid[0], shooter_mid[1]),
+            new Pair<Double, Double>(shooter_far[0], shooter_far[1]),
     };
 
     public static Interpolator interpolatorShooter = new Interpolator(interpolatorShooterData);
 
-    public static double[] hood040 = new double[]{040.0, 0.35};
-    public static double[] hood050 = new double[]{050.0, 0.35};
-    public static double[] hood060 = new double[]{060.0, 0.60};
-    public static double[] hood070 = new double[]{070.0, 0.63};
-    public static double[] hood080 = new double[]{080.0, 0.63};
-    public static double[] hood090 = new double[]{090.0, 0.63};
-    // STOPPED HERE
-    public static double[] hood100 = new double[]{100.0, 1.00};
-    public static double[] hood110 = new double[]{110.0, 1.00};
+    public static double[] hood_close = new double[]{51.3, 0.7};
+    public static double[] hood_mid = new double[]{92.5, 0.7};
+    public static double[] hood_far = new double[]{100.0, 0.7};
 
     public static Pair<Double, Double>[] interpolatorHoodData = new Pair[]{
-            new Pair<Double, Double>(hood040[0], hood040[1]),
-            new Pair<Double, Double>(hood050[0], hood050[1]),
-            new Pair<Double, Double>(hood060[0], hood060[1]),
-            new Pair<Double, Double>(hood070[0], hood070[1]),
-            new Pair<Double, Double>(hood080[0], hood080[1]),
-            new Pair<Double, Double>(hood090[0], hood090[1]),
-            new Pair<Double, Double>(hood100[0], hood100[1]),
-            new Pair<Double, Double>(hood110[0], hood110[1]),
+            new Pair<Double, Double>(hood_close[0], hood_close[1]),
+            new Pair<Double, Double>(hood_mid[0], hood_mid[1]),
+            new Pair<Double, Double>(hood_far[0], hood_far[1]),
     };
 
     public static Interpolator interpolatorHood = new Interpolator(interpolatorHoodData);
 
     public static void recalculate_interpolators() {
         interpolatorShooterData = new Pair[]{
-                new Pair<Double, Double>(shooter040[0], shooter040[1]),
-                new Pair<Double, Double>(shooter050[0], shooter050[1]),
-                new Pair<Double, Double>(shooter060[0], shooter060[1]),
-                new Pair<Double, Double>(shooter070[0], shooter070[1]),
-                new Pair<Double, Double>(shooter080[0], shooter080[1]),
-                new Pair<Double, Double>(shooter090[0], shooter090[1]),
-                new Pair<Double, Double>(shooter100[0], shooter100[1]),
-                new Pair<Double, Double>(shooter110[0], shooter110[1]),
+                new Pair<Double, Double>(shooter_close[0], shooter_close[1]),
+                new Pair<Double, Double>(shooter_mid[0], shooter_mid[1]),
+                new Pair<Double, Double>(shooter_far[0], shooter_far[1]),
         };
 
         interpolatorShooter = new Interpolator(interpolatorShooterData);
 
         interpolatorHoodData = new Pair[]{
-                new Pair<Double, Double>(hood040[0], hood040[1]),
-                new Pair<Double, Double>(hood050[0], hood050[1]),
-                new Pair<Double, Double>(hood060[0], hood060[1]),
-                new Pair<Double, Double>(hood070[0], hood070[1]),
-                new Pair<Double, Double>(hood080[0], hood080[1]),
-                new Pair<Double, Double>(hood090[0], hood090[1]),
-                new Pair<Double, Double>(hood100[0], hood100[1]),
-                new Pair<Double, Double>(hood110[0], hood110[1]),
+                new Pair<Double, Double>(hood_mid[0], hood_mid[1]),
+                new Pair<Double, Double>(hood_mid[0], hood_mid[1]),
+                new Pair<Double, Double>(hood_far[0], hood_far[1]),
         };
 
         interpolatorHood = new Interpolator(interpolatorHoodData);
     }
-
-    public static double SHOOTER_FF_CLOSE = 1.0;
-    public static double SHOOTER_FF_MIDDLE = 0.41;
-    public static double SHOOTER_FF_FAR = 0.54;
-    public static double SHOOTER_FF_AUTO = 0.5;//0.5 red || 0.56 blue
-
-    public static double SHOOTER_CLOSE = 2.0;
-    public static double SHOOTER_MIDDLE = 2.4;
-    public static double SHOOTER_FAR = 2.7;
-    public static double SHOOTER_AUTO = 2.6; //0.26 for red 2.7
-    public static double SHOOTER_RPM_TOLERANCE = 0.15;
 
     // TURRET
     public static List<Integer> BLUE_TAGS = Collections.singletonList(20);
@@ -140,14 +98,10 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double TURRET_LEFT = 500;
     public static double TURRET_RIGHT = -500;
 
-    // 10 degrees switch
+    // 20 degrees switch
     public static double TURRET_KP_SWITCH = 20.0 * 310 / 45;
     public static double TURRET_KP_PRIMARY = 0.005;
     public static double TURRET_KP_SECONDARY = 0.0015;
-
-    // BRAKE
-    public static double BRAKE_DOWN = 0.3;
-    public static double BRAKE_UP = 0.1;
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);
@@ -167,8 +121,6 @@ public class PestoFTCConfig implements ConfigInterface {
         });
 
         mecanumController.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        mecanumController.setStaticPower(PestoFTCConfig.STATIC_DRIVE);
 
         if (initializePinpoint) {
             follower = Constants.createFollower(hardwareMap);
