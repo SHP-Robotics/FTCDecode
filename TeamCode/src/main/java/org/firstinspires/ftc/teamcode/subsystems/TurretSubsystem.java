@@ -25,7 +25,9 @@ public class TurretSubsystem {
 
     private final PID positionPIDControllerPrimary;
     private final PID positionPIDControllerSecondary;
-    public final PID cameraPIDController;
+
+    private final PID cameraPIDControllerPrimary;
+    private final PID cameraPIDControllerSecondary;
 
     public AprilTagProcessor aprilTag;
     public VisionPortal visionPortal;
@@ -55,7 +57,9 @@ public class TurretSubsystem {
 
         positionPIDControllerPrimary = new PID(PestoFTCConfig.TURRET_KP_PRIMARY, 0, 0);
         positionPIDControllerSecondary = new PID(PestoFTCConfig.TURRET_KP_SECONDARY, 0, 0);
-        cameraPIDController = new PID(0.018, 0, 0);
+
+        cameraPIDControllerPrimary = new PID(0.018, 0, 0);
+        cameraPIDControllerSecondary = new PID(0.08, 0, 0);
 
         aprilTag = new AprilTagProcessor.Builder()
                 .build();
@@ -151,7 +155,12 @@ public class TurretSubsystem {
 
     public void setBearing(double bearing) {
         double turretDegrees = this.getDegrees();
-        double power = cameraPIDController.getOutput(turretDegrees, turretDegrees + bearing);
+
+        double power;
+        if (bearing < PestoFTCConfig.TURRET_BEARING_SWITCH)
+            power = cameraPIDControllerSecondary.getOutput(turretDegrees, turretDegrees + bearing);
+        else
+            power = cameraPIDControllerPrimary.getOutput(turretDegrees, turretDegrees + bearing);
 
         // Left end stop
         if (this.getPosition() > targetPosition + 1860)
@@ -188,7 +197,7 @@ public class TurretSubsystem {
         if (this.state == MANUAL)
             return;
 
-        if (!recenterAfter)
+        if (detectAprilTag && !recenterAfter)
             return;
 
         // State == POSITION

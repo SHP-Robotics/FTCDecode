@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.PestoFTCConfig.follower;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -14,8 +15,8 @@ import org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedClose.PathState;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 
+@Disabled
 @Autonomous(name = "Red Auto Close")
 public class RedAutoClose extends BaseRobot {
     Telemetry dashboardTelemetry;

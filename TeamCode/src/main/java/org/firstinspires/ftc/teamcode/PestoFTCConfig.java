@@ -84,10 +84,12 @@ public class PestoFTCConfig implements ConfigInterface {
     public static List<Integer> BLUE_TAGS = Collections.singletonList(20);
     public static List<Integer> RED_TAGS = Collections.singletonList(24);
 
-    // 20 degrees switch
-    public static double TURRET_KP_SWITCH = 20.0 * 310 / 45;
+    // 10 degrees switch
+    public static double TURRET_BEARING_SWITCH = 3.0;
+
+    public static double TURRET_KP_SWITCH = 5.0 * 310 / 45;
     public static double TURRET_KP_PRIMARY = 0.005;
-    public static double TURRET_KP_SECONDARY = 0.01;
+    public static double TURRET_KP_SECONDARY = 0.010;
 
     public static void initialize(HardwareMap hardwareMap) {
         MotorCortex.initialize(hardwareMap);

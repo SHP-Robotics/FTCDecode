@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleops;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
@@ -11,7 +12,7 @@ import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.FuzzyPidController;
 
-//@Disabled
+@Disabled
 @Config
 @TeleOp(name = "Fuzzy PID Tuner")
 public class PIDFTuner extends BaseRobot {

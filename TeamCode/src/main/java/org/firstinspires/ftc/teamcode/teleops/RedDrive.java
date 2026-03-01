@@ -16,8 +16,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.util.List;
 
-@TeleOp(name = "Blue Drive")
-public class BlueDrive extends BaseRobot {
+@TeleOp(name = "Red Drive")
+public class RedDrive extends BaseRobot {
     @Override
     public void runOpMode() {
         PestoFTCConfig.initializePinpoint = true;
@@ -29,7 +29,7 @@ public class BlueDrive extends BaseRobot {
 
         super.initialize();
 
-        turretSubsystem.setAcceptedTags(PestoFTCConfig.BLUE_TAGS);
+        turretSubsystem.setAcceptedTags(PestoFTCConfig.RED_TAGS);
         turretSubsystem.setTargetPosition(0);
         turretSubsystem.setVisionOffset(0);
         turretSubsystem.setDetectAprilTag(true);
@@ -60,7 +60,7 @@ public class BlueDrive extends BaseRobot {
             tracker.update();
 
             if (gamepadInterface1.isKeyUp(GamepadKey.DPAD_DOWN))
-                turretSubsystem.setTargetPosition(turretSubsystem.getTargetPosition() == 0 ? 1550 : 0);
+                turretSubsystem.setTargetPosition(turretSubsystem.getTargetPosition() == 0 ? 930 : 0);
 
             if (gamepad1.x) {
                 tracker.reset();

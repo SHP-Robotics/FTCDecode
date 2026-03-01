@@ -10,13 +10,13 @@ import com.shprobotics.pestocore.processing.MotorCortex;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
-import org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedFar.PathState;
+import org.firstinspires.ftc.teamcode.autonomous.AutoPathsBlueFar.PathState;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
 
-@Autonomous(name = "Red Auto Far")
-public class RedAutoFar extends BaseRobot {
+@Autonomous(name = "Blue Auto Far")
+public class BlueAutoFar extends BaseRobot {
     Telemetry dashboardTelemetry;
 
     private void shoot(double timePrecise, double timeRapid, double power, double position) {
@@ -114,7 +114,7 @@ public class RedAutoFar extends BaseRobot {
         dashboardTelemetry = dashboard.getTelemetry();
 
 
-        AutoPathsRedFar.initializePaths();
+        AutoPathsBlueFar.initializePaths();
         PathState pathState = PathState.SHOOT_PATH;
 
         // create follower
@@ -136,10 +136,10 @@ public class RedAutoFar extends BaseRobot {
 
         hoodSubsystem.setAngleDirect(0.60);
 
-        turretSubsystem.setAcceptedTags(PestoFTCConfig.RED_TAGS);
+        turretSubsystem.setAcceptedTags(PestoFTCConfig.BLUE_TAGS);
         turretSubsystem.rezero();
         turretSubsystem.setDetectAprilTag(true);
-        turretSubsystem.setVisionOffset(3.5);
+        turretSubsystem.setVisionOffset(-3.5);
 
         // 68 degrees
         double position = 63 * 6.88;
@@ -172,7 +172,7 @@ public class RedAutoFar extends BaseRobot {
             return;
 
         waitForStart();
-        turretSubsystem.setVisionOffset(4);
+        turretSubsystem.setVisionOffset(-4);
         double power = -0.70;
         outtakeSubsystem.setPower(power);
 

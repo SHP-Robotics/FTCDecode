@@ -5,7 +5,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 
-public class AutoPathsRedFar {
+public class AutoPathsBlueFar {
     public enum PathState {
         SHOOT_PATH (SHOOT, 1.5),
         FIRST_PATH (FIRST_MOVE, 1.5),
@@ -39,66 +39,66 @@ public class AutoPathsRedFar {
     public static Path SHOOT = new Path(
             new BezierLine(
                     new Pose(0, 0),
-                    new Pose(-2, 15)
+                    new Pose(-2, -15)
             )
     );
 
     public static Path FIRST_MOVE = new Path(
             new BezierLine(
-                    new Pose(-2, 15),
-                    new Pose(11, 29)
+                    new Pose(-2, -15),
+                    new Pose(11, -29)
             )
     );
 
     public static Path SECOND_MOVE = new Path(
             new BezierLine(
-                    new Pose(11, 29),
-                    new Pose(45, 29)
+                    new Pose(11, -29),
+                    new Pose(45, -29)
             )
     );
 
     public static Path THIRD_MOVE = new Path(
             new BezierLine(
-                    new Pose(45, 29),
-                    new Pose(-2, 15)
+                    new Pose(45, -29),
+                    new Pose(-2, -15)
             )
     );
 
     public static Path FOURTH_MOVE = new Path(
             new BezierCurve(
-                    new Pose(-2, 15),
+                    new Pose(-2, -15),
                     new Pose(20, 0),
-                    new Pose(43, 1.0)
+                    new Pose(43, -1.0)
             )
     );
 
     public static Path FIFTH_MOVE = new Path(
             new BezierLine(
-                    new Pose(43, 1),
-                    new Pose(-2, 15)
+                    new Pose(43, -1),
+                    new Pose(-2, -15)
             )
     );
 
     public static Path SIXTH_MOVE = new Path(
             new BezierCurve(
-                    new Pose(-2, 15),
+                    new Pose(-2, -15),
                     new Pose(20, 0),
-                    new Pose(43, 1)
+                    new Pose(43, -1)
             )
     );
 
     public static Path SEVENTH_MOVE = new Path(
             new BezierLine(
-                    new Pose(43, 1),
-                    new Pose(-2, 15)
+                    new Pose(43, -1),
+                    new Pose(-2, -15)
             )
     );
 
     public static Path EIGHTH_MOVE = new Path(
             new BezierCurve(
-                    new Pose(-2, 15),
+                    new Pose(-2, -15),
                     new Pose(20, 0),
-                    new Pose(43, 1)
+                    new Pose(43, -1)
             )
     );
 
