@@ -31,6 +31,7 @@ public class TurretSubsystem {
     public VisionPortal visionPortal;
     private List<Integer> acceptedTags;
     private boolean detectAprilTag;
+    private boolean recenterAfter;
 
     public AprilTagPoseFtc lastAprilTag;
     private long lastAprilTagTimer = 0;
@@ -71,6 +72,7 @@ public class TurretSubsystem {
 
         lastAprilTag = null;
         detected = false;
+        recenterAfter = true;
 
         state = MANUAL;
     }
@@ -91,6 +93,10 @@ public class TurretSubsystem {
 
     public void setDetectAprilTag(boolean detectAprilTag) {
         this.detectAprilTag = detectAprilTag;
+    }
+
+    public void setRecenterAfter(boolean recenterAfter) {
+        this.recenterAfter = recenterAfter;
     }
 
     public void setPower(double power) {
@@ -173,13 +179,16 @@ public class TurretSubsystem {
             }
 
             // So far zone can recognize
-            if ((System.nanoTime() - lastAprilTagTimer) / 1E9 < 0.5) {
+            if (!recenterAfter || (System.nanoTime() - lastAprilTagTimer) / 1E9 < 0.5) {
                 turret.setPowerResult(0.0);
                 return;
             }
         }
 
         if (this.state == MANUAL)
+            return;
+
+        if (!recenterAfter)
             return;
 
         // State == POSITION

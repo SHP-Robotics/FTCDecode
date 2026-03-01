@@ -84,6 +84,8 @@ public class BlueDrive extends BaseRobot {
 
             if (gamepad1.dpad_left) {
                 while (opModeIsActive() && !isStopRequested() && gamepad1.dpad_left) {
+                    MotorCortex.update();
+                    teleOpController.driveFieldCentric(0, 0, 0);
                     turretSubsystem.setPower(0.3);
                 }
                 turretSubsystem.setPower(0.0);
@@ -93,6 +95,8 @@ public class BlueDrive extends BaseRobot {
 
             if (gamepad1.dpad_right) {
                 while (opModeIsActive() && !isStopRequested() && gamepad1.dpad_right) {
+                    MotorCortex.update();
+                    teleOpController.driveFieldCentric(0, 0, 0);
                     turretSubsystem.setPower(-0.3);
                 }
                 turretSubsystem.setPower(0.0);
@@ -161,35 +165,35 @@ public class BlueDrive extends BaseRobot {
             dashboardTelemetry.update();
         }
 
-//        if (isStopRequested())
-//            return;
-//
-//        dogGear.setPosition(0.75);
-//
-//        mecanumController.frontLeft.motor.setPower(0.0);
-//        mecanumController.frontRight.motor.setPower(0.0);
-//        mecanumController.backLeft.motor.setPower(0.0);
-//        mecanumController.backRight.motor.setPower(0.0);
-//
-//        sleep(200);
-//
-//        blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
-//        blockerSubsystem.update();
-//
-//        intakeSubsystem.setPowerDirect(0.0);
-//
-//        indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUT);
-//        indexerSubsystem.update();
-//
-//        turretSubsystem.setPower(0.0);
-//
-//        mecanumController.frontLeft.motor.setPower(-1.0);
-//        mecanumController.frontRight.motor.setPower(-1.0);
-//        mecanumController.backLeft.motor.setPower(1.0);
-//        mecanumController.backRight.motor.setPower(1.0);
-//
-//        while (opModeIsActive() && !isStopRequested()) {
-//        }
+        if (isStopRequested())
+            return;
+
+        dogGear.setPosition(0.75);
+
+        mecanumController.frontLeft.motor.setPower(0.0);
+        mecanumController.frontRight.motor.setPower(0.0);
+        mecanumController.backLeft.motor.setPower(0.0);
+        mecanumController.backRight.motor.setPower(0.0);
+
+        sleep(200);
+
+        blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
+        blockerSubsystem.update();
+
+        intakeSubsystem.setPowerDirect(0.0);
+
+        indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUT);
+        indexerSubsystem.update();
+
+        turretSubsystem.setPower(0.0);
+
+        mecanumController.frontLeft.motor.setPower(-1.0);
+        mecanumController.frontRight.motor.setPower(-1.0);
+        mecanumController.backLeft.motor.setPower(1.0);
+        mecanumController.backRight.motor.setPower(1.0);
+
+        while (opModeIsActive() && !isStopRequested()) {
+        }
 
         turretSubsystem.visionPortal.close();
     }

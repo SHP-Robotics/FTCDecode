@@ -14,17 +14,17 @@ import org.firstinspires.ftc.teamcode.autonomous.AutoPathsRedFar.PathState;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 
 @Autonomous(name = "Red Auto Far")
 public class RedAutoFar extends BaseRobot {
     Telemetry dashboardTelemetry;
 
-    private void shoot(double time, double power) {
+    private void shoot(double time, double power, double position) {
         blockerSubsystem.setState(BlockerSubsystem.BlockerState.OUTTAKE);
         blockerSubsystem.update();
         intakeSubsystem.setPowerDirect(1.0);
         outtakeSubsystem.setPowerDirect(power);
+        turretSubsystem.setTargetPosition(position);
         indexerSubsystem.setState(IndexerSubsystem.IndexerState.PULSE_OUT);
 
         long start = System.nanoTime();
@@ -35,6 +35,7 @@ public class RedAutoFar extends BaseRobot {
 
             turretSubsystem.update();
             indexerSubsystem.update();
+            outtakeSubsystem.update();
 
             double elapsedTime = (System.nanoTime() - start) / 1E9;
 
@@ -48,11 +49,9 @@ public class RedAutoFar extends BaseRobot {
 
             dashboardTelemetry.addData("velocity", outtakeSubsystem.getVelocity());
             dashboardTelemetry.addData("expected velocity", outtakeSubsystem.getExpectedVelocity(power));
+            dashboardTelemetry.addData("GraphMax", 2500);
+            dashboardTelemetry.addData("GraphMin", 0);
             dashboardTelemetry.update();
-
-            telemetry.addData("velocity", outtakeSubsystem.getVelocity());
-            telemetry.addData("expected velocity", outtakeSubsystem.getExpectedVelocity(power));
-            telemetry.update();
         }
 
         blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
@@ -96,25 +95,37 @@ public class RedAutoFar extends BaseRobot {
 
         turretSubsystem.setAcceptedTags(PestoFTCConfig.RED_TAGS);
         turretSubsystem.rezero();
-//        turretSubsystem.setVisionOffset(3);
+        turretSubsystem.setDetectAprilTag(true);
+        turretSubsystem.setVisionOffset(4);
 
         // 68 degrees
-        turretSubsystem.setTargetPosition(63 * 6.88);
+        double position = 63 * 6.88;
+        turretSubsystem.setTargetPosition(position);
 
         while (!isStarted() && !isStopRequested()) {
             MotorCortex.update();
             turretSubsystem.update();
 
-            telemetry.addData("turret state", turretSubsystem.getState());
+            if (turretSubsystem.detected)
+                turretSubsystem.setRecenterAfter(false);
+
+            telemetry.addData("detected", turretSubsystem.lastAprilTag != null);
             telemetry.update();
+
+            dashboardTelemetry.addData("velocity", outtakeSubsystem.getVelocity());
+            dashboardTelemetry.addData("expected velocity", outtakeSubsystem.getExpectedVelocity(0));
+            dashboardTelemetry.addData("GraphMax", 2500);
+            dashboardTelemetry.addData("GraphMin", 0);
+            dashboardTelemetry.update();
         }
 
         if (isStopRequested())
             return;
 
         waitForStart();
-        double power = -0.72;
-        outtakeSubsystem.setPowerDirect(power);
+        turretSubsystem.setVisionOffset(3);
+        double power = -0.71;
+        outtakeSubsystem.setPower(power);
 
         long start = System.nanoTime();
         while (opModeIsActive() && !isStopRequested()) {
@@ -127,18 +138,7 @@ public class RedAutoFar extends BaseRobot {
             if (pathState.getTimer() < elapsedTime) {
                 switch (pathState) {
                     case SHOOT_PATH:
-                        outtakeSubsystem.setPowerDirect(power);
-                        start = System.nanoTime();
-                        while (opModeIsActive() && !isStopRequested() && (System.nanoTime() - start) / 1E9 < 2.75) {
-                            MotorCortex.update();
-                            turretSubsystem.update();
-                            follower.update();
-
-                            telemetry.addData("turret state", turretSubsystem.getState());
-                            telemetry.update();
-                        }
-
-                        shoot(2.5, power);
+                        shoot(3, power, position);
 
                         pathState = PathState.FIRST_PATH;
                         break;
@@ -153,7 +153,7 @@ public class RedAutoFar extends BaseRobot {
                         pathState = PathState.THIRD_PATH;
                         break;
                     case THIRD_PATH:
-                        shoot(2.25, power);
+                        shoot(3, power, position);
                         intakeSubsystem.setPowerDirect(1.0);
 
                         pathState = PathState.FOURTH_PATH;
@@ -164,7 +164,7 @@ public class RedAutoFar extends BaseRobot {
                         pathState = PathState.FIFTH_PATH;
                         break;
                     case FIFTH_PATH:
-                        shoot(2.25, power);
+                        shoot(3, power, position);
                         intakeSubsystem.setPowerDirect(1.0);
 
                         pathState = PathState.SIXTH_PATH;
@@ -175,7 +175,7 @@ public class RedAutoFar extends BaseRobot {
                         pathState = PathState.SEVENTH_PATH;
                         break;
                     case SEVENTH_PATH:
-                        shoot(2.25, power);
+                        shoot(3, power, position);
                         intakeSubsystem.setPowerDirect(1.0);
 
                         pathState = PathState.EIGHTH_PATH;
@@ -188,20 +188,19 @@ public class RedAutoFar extends BaseRobot {
                 start = System.nanoTime();
             }
 
-            turretSubsystem.update();
+//            turretSubsystem.update();
+            turretSubsystem.setPower(0.0);
+            outtakeSubsystem.update();
 
-            dashboardTelemetry.addData("X", follower.getPose().getX());
-            dashboardTelemetry.addData("Y", follower.getPose().getY());
-            dashboardTelemetry.addData("R", follower.getPose().getHeading());
-            dashboardTelemetry.addLine();
-            dashboardTelemetry.addData("rpm", outtakeSubsystem.getRPM());
+            dashboardTelemetry.addData("velocity", outtakeSubsystem.getVelocity());
+            dashboardTelemetry.addData("expected velocity", outtakeSubsystem.getExpectedVelocity(power));
+            dashboardTelemetry.addData("GraphMax", 2500);
+            dashboardTelemetry.addData("GraphMin", 0);
             dashboardTelemetry.update();
 
             telemetry.addData("X", follower.getPose().getX());
             telemetry.addData("Y", follower.getPose().getY());
             telemetry.addData("R", follower.getPose().getHeading());
-            telemetry.addLine();
-            telemetry.addData("rpm", outtakeSubsystem.getRPM());
             telemetry.update();
         }
 

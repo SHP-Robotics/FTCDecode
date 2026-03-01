@@ -15,7 +15,7 @@ import com.shprobotics.pestocore.processing.MotorCortex;
 public class IndexerSubsystem {
     private CortexLinkedServo indexer;
 
-    private final double timer_max = 0.25;
+    private final double timer_max = 1.5;
 
     private IndexerState state;
     private long timer;

@@ -66,13 +66,13 @@ public class AutoPathsRedFar {
     public static Path FOURTH_MOVE = new Path(
             new BezierLine(
                     new Pose(-2, 15),
-                    new Pose(43.3, 3)
+                    new Pose(43, 1)
             )
     );
 
     public static Path FIFTH_MOVE = new Path(
             new BezierLine(
-                    new Pose(43.3, 3),
+                    new Pose(43, 1),
                     new Pose(-2, 15)
             )
     );
@@ -80,13 +80,13 @@ public class AutoPathsRedFar {
     public static Path SIXTH_MOVE = new Path(
             new BezierLine(
                     new Pose(-2, 15),
-                    new Pose(43.3, 15)
+                    new Pose(43, 15)
             )
     );
 
     public static Path SEVENTH_MOVE = new Path(
             new BezierLine(
-                    new Pose(43.3, 15),
+                    new Pose(43, 15),
                     new Pose(-2, 15)
             )
     );
@@ -94,7 +94,7 @@ public class AutoPathsRedFar {
     public static Path EIGHTH_MOVE = new Path(
             new BezierLine(
                     new Pose(-2, 15),
-                    new Pose(43.3, 15)
+                    new Pose(43, 15)
             )
     );
 

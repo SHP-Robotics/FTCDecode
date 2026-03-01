@@ -100,7 +100,7 @@ public class OuttakeSubsystem {
     }
 
     public double getVelocity() {
-        return Math.abs(leftShooter.getVelocity());
+        return (Math.abs(leftShooter.getVelocity()) + Math.abs(rightShooter.getVelocity())) / 2;
     }
 
     public double getExpectedVelocity(double power) {
@@ -110,7 +110,7 @@ public class OuttakeSubsystem {
     public boolean isBusy(double power) {
         double expectedTPS = getExpectedVelocity(power);
         double TPS = getVelocity();
-        return (expectedTPS - TPS) / expectedTPS > 0.06;
+        return (expectedTPS - TPS) / expectedTPS > 0.01;
     }
 
     /**
