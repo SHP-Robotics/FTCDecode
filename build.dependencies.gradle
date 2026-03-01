@@ -25,10 +25,9 @@ dependencies {
 
     implementation "dev.frozenmilk.dairy:CachingHardware:1.0.0"
 
-//    implementation 'io.github.william27b:dashboard:0.15.03'
-//    implementation 'io.github.william27b:core:0.15.03'
+    implementation "com.acmerobotics.slothboard:dashboard:0.2.4+0.5.1"
 
-    implementation 'com.acmerobotics.dashboard:dashboard:0.5.1'
+//    implementation 'com.acmerobotics.dashboard:dashboard:0.5.1'
 
     implementation 'org.ejml:ejml-all:0.43'
 

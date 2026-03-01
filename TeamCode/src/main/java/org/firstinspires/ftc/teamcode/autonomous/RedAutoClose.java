@@ -99,8 +99,7 @@ public class RedAutoClose extends BaseRobot {
 //        turretSubsystem.setVisionOffset(3);
 
         // 68 degrees
-        turretSubsystem.setPosition(63 * 6.88);
-        turretSubsystem.setState(TurretSubsystem.TurretState.CUSTOM_POSITION_SOLID);
+        turretSubsystem.setTargetPosition(63 * 6.88);
 
         while (!isStarted() && !isStopRequested()) {
             MotorCortex.update();

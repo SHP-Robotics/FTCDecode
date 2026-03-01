@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Pair;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Vector;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -20,7 +21,7 @@ import com.shprobotics.pestocore.processing.PestoConfig;
 import java.util.Collections;
 import java.util.List;
 
-//@Config
+@Config
 @PestoConfig()
 public class PestoFTCConfig implements ConfigInterface {
     public static boolean initialized = false; // don't mess with this :O
@@ -37,15 +38,9 @@ public class PestoFTCConfig implements ConfigInterface {
     public static double INDEXER_OUTISH = 0.54;
     public static double INDEXER_OUT = 0.589;
 
-    // HOOD
-    public static double HOOD_CLOSE = 0.45;
-
-    public static double HOOD_MID = 0.45;
-    public static double HOOD_FAR = 0.37;
-
-    // SHOOTER
-    public static double SHOOTER_CLOSE = -0.45;
-
+//    public static double[] shooter_close = new double[]{51.3, -0.5};
+//    public static double[] shooter_mid = new double[]{92.5, -0.68};
+//    public static double[] shooter_far = new double[]{132.0, -0.95};
     public static double[] shooter_close = new double[]{51.3, -0.5};
     public static double[] shooter_mid = new double[]{92.5, -0.65};
     public static double[] shooter_far = new double[]{132.0, -0.95};

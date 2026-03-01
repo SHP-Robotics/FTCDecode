@@ -1,28 +1,28 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.shprobotics.pestocore.devices.GamepadKey;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.subsystems.BaseRobot;
 import org.firstinspires.ftc.teamcode.subsystems.BlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IndexerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.util.List;
 
-@Disabled
-@TeleOp(name = "Blue new Drive")
+@TeleOp(name = "Blue Drive")
 public class BlueDrive extends BaseRobot {
     @Override
     public void runOpMode() {
         PestoFTCConfig.initializePinpoint = true;
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
         boolean revving = false;
         boolean outtaking;
@@ -30,7 +30,9 @@ public class BlueDrive extends BaseRobot {
         super.initialize();
 
         turretSubsystem.setAcceptedTags(PestoFTCConfig.BLUE_TAGS);
-        turretSubsystem.setState(TurretSubsystem.TurretState.STRAIGHT);
+        turretSubsystem.setTargetPosition(0);
+        turretSubsystem.setVisionOffset(0);
+        turretSubsystem.setDetectAprilTag(true);
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
@@ -43,8 +45,10 @@ public class BlueDrive extends BaseRobot {
 
         turretSubsystem.rezero();
 
+        long start;
         while (opModeIsActive() && !isStopRequested() && !(gamepad1.left_bumper && gamepad1.right_bumper)) {
-            // only for tuning purposes
+            start = System.nanoTime();
+
             PestoFTCConfig.recalculate_interpolators();
 
             List<AprilTagDetection> currentDetections = turretSubsystem.aprilTag.getDetections();
@@ -55,10 +59,8 @@ public class BlueDrive extends BaseRobot {
             gamepadInterface1.update();
             tracker.update();
 
-            if (gamepad1.x) {
-                brake = !brake;
-                mecanumController.setZeroPowerBehavior(brake ? DcMotor.ZeroPowerBehavior.BRAKE : DcMotor.ZeroPowerBehavior.FLOAT);
-            }
+            if (gamepadInterface1.isKeyUp(GamepadKey.DPAD_DOWN))
+                turretSubsystem.setTargetPosition(turretSubsystem.getTargetPosition() == 0 ? 1550 : 0);
 
             if (gamepad1.x) {
                 tracker.reset();
@@ -70,15 +72,14 @@ public class BlueDrive extends BaseRobot {
             boolean intaking = gamepad1.right_trigger > 0.05;
             outtaking = !intaking && gamepadInterface1.getTimeDown(GamepadKey.LEFT_TRIGGER) > 0.3;
             revving = (revving != gamepadInterface1.isClicked(GamepadKey.LEFT_TRIGGER, 0.3)) || outtaking;
-            telemetry.addData("outtaking", outtaking);
-            telemetry.addData("revving", revving);
-            telemetry.addData("held", gamepadInterface1.isHeld(GamepadKey.LEFT_TRIGGER, 0.3));
-            telemetry.addData("clicked", gamepadInterface1.isClicked(GamepadKey.LEFT_TRIGGER, 0.3));
             boolean rejecting = !intaking && !outtaking && gamepad1.a;
             boolean neutralizing = !intaking && !outtaking && !rejecting;
 
             if (state == RobotState.OUTTAKE) {
-                intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
+                if (!outtakeSubsystem.isBusy(PestoFTCConfig.interpolatorShooter.getValue(cam_distance)))
+                    intakeSubsystem.setState(IntakeSubsystem.IntakeState.INTAKE);
+                else
+                    intakeSubsystem.setState(IntakeSubsystem.IntakeState.NEUTRAL);
             }
 
             if (gamepad1.dpad_left) {
@@ -86,6 +87,8 @@ public class BlueDrive extends BaseRobot {
                     turretSubsystem.setPower(0.3);
                 }
                 turretSubsystem.setPower(0.0);
+                turretSubsystem.rezero();
+                turretSubsystem.setTargetPosition(turretSubsystem.getTargetPosition());
             }
 
             if (gamepad1.dpad_right) {
@@ -93,10 +96,8 @@ public class BlueDrive extends BaseRobot {
                     turretSubsystem.setPower(-0.3);
                 }
                 turretSubsystem.setPower(0.0);
-            }
-
-            if (gamepad1.dpad_up && gamepad1.y) {
                 turretSubsystem.rezero();
+                turretSubsystem.setTargetPosition(turretSubsystem.getTargetPosition());
             }
 
             if (intaking) {
@@ -126,17 +127,17 @@ public class BlueDrive extends BaseRobot {
                 blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
             }
 
-            if (revving) {
-                hoodSubsystem.setAngleDirect(PestoFTCConfig.interpolatorHood.getValue(cam_distance));
-                outtakeSubsystem.setPowerDirect(PestoFTCConfig.interpolatorShooter.getValue(cam_distance));
-            } else {
-                outtakeSubsystem.setPowerDirect(0.0);
-            }
-
             if (gamepad1.b)
                 indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUTISH);
             else
                 indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUT);
+
+            if (revving) {
+                hoodSubsystem.setAngleDirect(PestoFTCConfig.interpolatorHood.getValue(cam_distance));
+                outtakeSubsystem.setPower(PestoFTCConfig.interpolatorShooter.getValue(cam_distance));
+            } else {
+                outtakeSubsystem.setPower(0.0);
+            }
 
             dogGear.setPosition(0.00);
             blockerSubsystem.update();
@@ -144,42 +145,51 @@ public class BlueDrive extends BaseRobot {
             intakeSubsystem.update();
             indexerSubsystem.update();
             turretSubsystem.update();
+            outtakeSubsystem.update();
 
-            cam_distance = turretSubsystem.getAprilTagDistance();
+            cam_distance = turretSubsystem.lastAprilTag == null ? 0 : turretSubsystem.lastAprilTag.y;
 
-            telemetry.addData("distance", cam_distance);
-            telemetry.addData("hood", PestoFTCConfig.interpolatorHood.getValue(cam_distance));
-            telemetry.addData("shooter", PestoFTCConfig.interpolatorShooter.getValue(cam_distance));
+            telemetry.addData("hz", 1E9 / (System.nanoTime() - start));
+            telemetry.addData("dist", cam_distance);
+            telemetry.addData("vel", outtakeSubsystem.getVelocity());
+            telemetry.addData("exp", outtakeSubsystem.getExpectedVelocity(PestoFTCConfig.interpolatorShooter.getValue(cam_distance)));
+            telemetry.addData("busy", outtakeSubsystem.isBusy(PestoFTCConfig.interpolatorShooter.getValue(cam_distance)));
             telemetry.update();
+
+            dashboardTelemetry.addData("expected velocity", outtakeSubsystem.getExpectedVelocity(-PestoFTCConfig.interpolatorShooter.getValue(cam_distance)));
+            dashboardTelemetry.addData("velocity", outtakeSubsystem.getVelocity());
+            dashboardTelemetry.update();
         }
 
-        dogGear.setPosition(0.75);
-
-        mecanumController.frontLeft.motor.setPower(0.0);
-        mecanumController.frontRight.motor.setPower(0.0);
-        mecanumController.backLeft.motor.setPower(0.0);
-        mecanumController.backRight.motor.setPower(0.0);
-
-        sleep(200);
-
-        blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
-        blockerSubsystem.update();
-
-        intakeSubsystem.setPowerDirect(0.0);
-
-        indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUT);
-        indexerSubsystem.update();
-
-        turretSubsystem.setState(TurretSubsystem.TurretState.MANUAL);
-        turretSubsystem.setPower(0.0);
-
-        mecanumController.frontLeft.motor.setPower(-1.0);
-        mecanumController.frontRight.motor.setPower(-1.0);
-        mecanumController.backLeft.motor.setPower(1.0);
-        mecanumController.backRight.motor.setPower(1.0);
-
-        while (opModeIsActive() && !isStopRequested()) {
-        }
+//        if (isStopRequested())
+//            return;
+//
+//        dogGear.setPosition(0.75);
+//
+//        mecanumController.frontLeft.motor.setPower(0.0);
+//        mecanumController.frontRight.motor.setPower(0.0);
+//        mecanumController.backLeft.motor.setPower(0.0);
+//        mecanumController.backRight.motor.setPower(0.0);
+//
+//        sleep(200);
+//
+//        blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
+//        blockerSubsystem.update();
+//
+//        intakeSubsystem.setPowerDirect(0.0);
+//
+//        indexerSubsystem.setState(IndexerSubsystem.IndexerState.OUT);
+//        indexerSubsystem.update();
+//
+//        turretSubsystem.setPower(0.0);
+//
+//        mecanumController.frontLeft.motor.setPower(-1.0);
+//        mecanumController.frontRight.motor.setPower(-1.0);
+//        mecanumController.backLeft.motor.setPower(1.0);
+//        mecanumController.backRight.motor.setPower(1.0);
+//
+//        while (opModeIsActive() && !isStopRequested()) {
+//        }
 
         turretSubsystem.visionPortal.close();
     }

@@ -2,15 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
-import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.AUTO;
-import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.BLUE;
-import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.CUSTOM_POSITION;
-import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.CUSTOM_POSITION_SOLID;
-import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.LEFT;
 import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.MANUAL;
-import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.RED;
-import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.RIGHT;
-import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.STRAIGHT_SOLID;
+import static org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem.TurretState.POSITION;
 import static java.util.Arrays.asList;
 
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -37,27 +30,21 @@ public class TurretSubsystem {
     public AprilTagProcessor aprilTag;
     public VisionPortal visionPortal;
     private List<Integer> acceptedTags;
-    public boolean detected;
-    private AprilTagPoseFtc lastAprilTag;
+    private boolean detectAprilTag;
+
+    public AprilTagPoseFtc lastAprilTag;
     private long lastAprilTagTimer = 0;
+    public boolean detected;
+
     private double visionOffset = 0.0;
 
     private TurretState state;
 
-    private double customPosition;
+    private double targetPosition;
 
     public enum TurretState {
-        LEFT,
-        STRAIGHT,
-        STRAIGHT_SOLID,
-        RIGHT,
-        RED,
-        BLUE,
-
-        CUSTOM_POSITION,
-        CUSTOM_POSITION_SOLID,
-        MANUAL,
-        AUTO
+        POSITION,
+        MANUAL
     }
 
     public TurretSubsystem() {
@@ -80,9 +67,10 @@ public class TurretSubsystem {
 
         // BLUE GOAL, RED GOAL
         acceptedTags = asList(20, 24);
+        detectAprilTag = false;
 
-        detected = false;
         lastAprilTag = null;
+        detected = false;
 
         state = MANUAL;
     }
@@ -101,18 +89,22 @@ public class TurretSubsystem {
         this.acceptedTags = tags;
     }
 
-    public void setState(TurretState state) {
-        this.state = state;
+    public void setDetectAprilTag(boolean detectAprilTag) {
+        this.detectAprilTag = detectAprilTag;
     }
 
     public void setPower(double power) {
-//        assert state == MANUAL;
+        this.state = MANUAL;
         turret.setPowerResult(power);
     }
 
-    public void setPosition(double position) {
-        this.customPosition = position;
-        this.state = CUSTOM_POSITION;
+    public void setTargetPosition(double position) {
+        this.state = POSITION;
+        this.targetPosition = position;
+    }
+
+    public double getTargetPosition() {
+        return targetPosition;
     }
 
     public double getPosition() {
@@ -128,15 +120,12 @@ public class TurretSubsystem {
         turret.setMode(RUN_USING_ENCODER);
     }
 
-    public AprilTagPoseFtc getAprilTag() {
+    private void updateTags() {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
 
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata == null)
                 continue;
-
-            // TODO: INSERT MAGIC HERE
-            // detection.ftcPose.yaw
 
             if (!acceptedTags.contains(detection.id))
                 continue;
@@ -144,176 +133,56 @@ public class TurretSubsystem {
             lastAprilTag = detection.ftcPose;
             lastAprilTagTimer = System.nanoTime();
             detected = true;
-            return lastAprilTag;
+            return;
         }
 
         detected = false;
-        return null;
     }
-
-    public Double getAprilTagBearing() {
-        if (!detected)
-            return 0.0;
-
-        return lastAprilTag.bearing;
-    }
-
-    public Double getAprilTagDistance() {
-        if (lastAprilTag == null)
-            return 0.0;
-
-        return lastAprilTag.y;
-    }
-
-    public Double getAprilTagYaw() {
-        if (!detected)
-            return 0.0;
-
-        return -lastAprilTag.yaw;
-    }
-
-//    public Double getTargetBearing() {
-//        getAprilTag();
-//
-//        if (lastAprilTag == null)
-//            return null;
-//
-//        Double bearing = getAprilTagBearing();
-//        Double distance = getAprilTagDistance();
-//
-//        assert bearing != null;
-//        assert distance != null;
-//
-//        double heading = -bearing - getDegrees();
-//        heading = 90 - heading + RobotPose.robotPosition.getHeadingRadians();
-//
-//        double aprilTagX = getAprilTagDistance() * Math.cos(Math.toRadians(heading));
-//        double aprilTagY = getAprilTagDistance() * Math.sin(Math.toRadians(heading));
-//
-//        double targetHeading = Math.toDegrees(Math.atan2(aprilTagY + (18 / Math.sqrt(2)), aprilTagX + (18 / Math.sqrt(2))));
-//
-//        return targetHeading - 90;
-//    }
 
     public double getDegrees() {
         return this.getPosition() * 45 / 310;
     }
 
-    public double getTargetPosition() {
-        double targetPosition = 0;
-
-        if (this.state == RED)
-            targetPosition = 930;
-
-        if (this.state == BLUE)
-            targetPosition = 1550;
-
-        if (this.state == LEFT)
-            targetPosition = PestoFTCConfig.TURRET_LEFT;
-
-        if (this.state == RIGHT)
-            targetPosition = PestoFTCConfig.TURRET_RIGHT;
-
-        if (this.state == CUSTOM_POSITION)
-            targetPosition = customPosition;
-
-        if (this.state == CUSTOM_POSITION_SOLID)
-            targetPosition = customPosition;
-
-        return targetPosition;
-    }
-
     public void setBearing(double bearing) {
         double turretDegrees = this.getDegrees();
         double power = cameraPIDController.getOutput(turretDegrees, turretDegrees + bearing);
-//        double power = cameraPIDController.getOutput(turretDegrees - RobotPose.robotPosition.getHeadingRadians(), bearing);
 
-        // Approx 15 degrees left
-        if (this.getPosition() < getTargetPosition() - 620)
-            power = Math.max(power, 0);
-
-        // Approx 15 degrees right
-        if (this.getPosition() > getTargetPosition() + 1860)
+        // Left end stop
+        if (this.getPosition() > targetPosition + 1860)
             power = Math.min(power, 0);
+
+        // Right end stop
+        if (this.getPosition() < targetPosition - 620)
+            power = Math.max(power, 0);
 
         turret.setPowerResult(power);
     }
 
     public boolean useSecondary() {
-        double targetPosition = getTargetPosition();
         return Math.abs(turret.getCurrentPosition() - targetPosition) < PestoFTCConfig.TURRET_KP_SWITCH;
     }
 
     public void update() {
+        // Camera Processing Code
+        updateTags();
+
+        if (detectAprilTag && lastAprilTag != null) {
+            if (detected) {
+                this.setBearing(lastAprilTag.bearing - visionOffset);
+                return;
+            }
+
+            // So far zone can recognize
+            if ((System.nanoTime() - lastAprilTagTimer) / 1E9 < 0.5) {
+                turret.setPowerResult(0.0);
+                return;
+            }
+        }
+
         if (this.state == MANUAL)
             return;
 
-        if (this.state == AUTO) {
-            // update
-            getAprilTag();
-//            Double bearing = getTargetBearing();
-            Double bearing = getAprilTagBearing();
-
-            if (bearing != null) {
-                double turretDegrees = this.getDegrees();
-                double power = cameraPIDController.getOutput(turretDegrees + visionOffset, turretDegrees + bearing);
-
-                turret.setPowerResult(power);
-            } else
-                turret.setPowerResult(0.0);
-
-            return;
-        }
-
-        if (this.state == STRAIGHT_SOLID) {
-            // Position Processing Code
-
-            double targetPosition = getTargetPosition();
-
-            if (useSecondary()) {
-                double power = positionPIDControllerSecondary.getOutput(turret.getCurrentPosition(), targetPosition);
-                turret.setPowerResult(power);
-            } else {
-                double power = positionPIDControllerPrimary.getOutput(turret.getCurrentPosition(), targetPosition);
-                turret.setPowerResult(power);
-            }
-
-            return;
-        }
-
-        if (state == CUSTOM_POSITION_SOLID) {
-            double targetPosition = getTargetPosition();
-
-            if (useSecondary()) {
-                double power = positionPIDControllerSecondary.getOutput(turret.getCurrentPosition(), targetPosition);
-                turret.setPowerResult(power);
-            } else {
-                double power = positionPIDControllerPrimary.getOutput(turret.getCurrentPosition(), targetPosition);
-                turret.setPowerResult(power);
-            }
-
-            return;
-        }
-
-        // Camera Processing Code
-
-        getAprilTag();
-        if (lastAprilTag != null) {
-            Double bearing = getAprilTagBearing(); //getTargetBearing();
-            this.setBearing(bearing - visionOffset);
-            return;
-        }
-
-        // So far zone can recognize
-        if ((System.nanoTime() - lastAprilTagTimer) / 1E9 < 0.5) {
-            turret.setPowerResult(0.0);
-            return;
-        }
-
-        // Position Processing Code
-
-        double targetPosition = getTargetPosition();
-
+        // State == POSITION
         if (useSecondary()) {
             double power = positionPIDControllerSecondary.getOutput(turret.getCurrentPosition(), targetPosition);
             turret.setPowerResult(power);
