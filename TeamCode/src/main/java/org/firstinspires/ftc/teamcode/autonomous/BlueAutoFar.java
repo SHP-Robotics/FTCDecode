@@ -139,10 +139,10 @@ public class BlueAutoFar extends BaseRobot {
         turretSubsystem.setAcceptedTags(PestoFTCConfig.BLUE_TAGS);
         turretSubsystem.rezero();
         turretSubsystem.setDetectAprilTag(true);
-        turretSubsystem.setVisionOffset(-3.5);
+//        turretSubsystem.setVisionOffset(-3.5);
 
         // 68 degrees
-        double position = 63 * 6.88;
+        double position = -63 * 6.88;
         turretSubsystem.setTargetPosition(position);
 
         while (!isStarted() && !isStopRequested()) {
@@ -172,7 +172,7 @@ public class BlueAutoFar extends BaseRobot {
             return;
 
         waitForStart();
-        turretSubsystem.setVisionOffset(-4);
+//        turretSubsystem.setVisionOffset(-4);
         double power = -0.70;
         outtakeSubsystem.setPower(power);
 

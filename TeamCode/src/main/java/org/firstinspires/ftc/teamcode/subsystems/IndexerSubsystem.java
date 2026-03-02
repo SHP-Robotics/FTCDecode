@@ -45,6 +45,10 @@ public class IndexerSubsystem {
         this.state = state;
     }
 
+    public void setPositionDirect(double position) {
+        indexer.setPositionResult(position);
+    }
+
     public void update() {
         if (state == OUT)
             indexer.setPositionResult(INDEXER_OUT);
