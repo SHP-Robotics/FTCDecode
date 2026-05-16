@@ -44,7 +44,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
         teleOpController.configureIMU(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
         ));
 
         teleOpController.setSpeedController(gamepad -> 1.0);
