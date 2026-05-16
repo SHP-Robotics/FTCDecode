@@ -18,8 +18,8 @@ import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 import java.util.List;
 
-@TeleOp(name = "William")
-public class FieldOriented extends BaseRobot {
+@TeleOp(name = "Angela")
+public class RobotOriented extends BaseRobot {
     @Override
     public void runOpMode() {
         PestoFTCConfig.initializePinpoint = true;
@@ -87,7 +87,7 @@ public class FieldOriented extends BaseRobot {
                 correction = correction * -0.6; // 0.6 == headingKP
                 correction += Math.signum(correction) * PestoFTCConfig.STATIC_DRIVE;
 
-                teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, correction);
+                teleOpController.driveRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, correction);
             } else if (outtaking) {
                 LLResult result = limelight.getLatestResult();
 
@@ -102,14 +102,14 @@ public class FieldOriented extends BaseRobot {
                     else
                         rotate += PestoFTCConfig.STATIC_DRIVE;
 
-                    teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, rotate);
+                    teleOpController.driveRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, rotate);
                     telemetry.addData("tx", result.getTx());
                 } else {
                     telemetry.addLine("No Target :(");
-                    teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+                    teleOpController.driveRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 }
             } else
-                teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+                teleOpController.driveRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
             if (!outtaking && state == RobotState.OUTTAKE) {
                 FrontalLobe.removeMacros("outtake");

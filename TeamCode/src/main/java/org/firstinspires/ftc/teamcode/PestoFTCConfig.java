@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -9,15 +8,13 @@ import com.shprobotics.pestocore.algorithms.Constants;
 import com.shprobotics.pestocore.drivebases.controllers.MecanumController;
 import com.shprobotics.pestocore.drivebases.controllers.TeleOpController;
 import com.shprobotics.pestocore.drivebases.trackers.DeterministicTracker;
-import com.shprobotics.pestocore.drivebases.trackers.NotEnoughOdometryTracker;
+import com.shprobotics.pestocore.drivebases.trackers.ThreeWheelOdometryTracker;
 import com.shprobotics.pestocore.processing.ConfigInterface;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
 import com.shprobotics.pestocore.processing.PestoConfig;
 
-import org.ejml.simple.SimpleMatrix;
-
-@Config
+//@Config
 @PestoConfig()
 public class PestoFTCConfig implements ConfigInterface {
     private static boolean initialized = false; // don't mess with this :O
@@ -37,24 +34,8 @@ public class PestoFTCConfig implements ConfigInterface {
     private static DcMotorSimple.Direction rightDirection = DcMotorSimple.Direction.REVERSE;
 
     private static double ODOMETRY_TICKS_PER_INCH = 505.3169;
-
-    public static SimpleMatrix ODOMETRY_PARAMETERS_X = new SimpleMatrix(new double[][]{
-            new double[]{0.0},
-            new double[]{0.0},
-            new double[]{0.0},
-    });
-
-    public static SimpleMatrix ODOMETRY_PARAMETERS_Y = new SimpleMatrix(new double[][]{
-            new double[]{0.0},
-            new double[]{0.0},
-            new double[]{0.0},
-    });
-
-    public static SimpleMatrix ODOMETRY_PARAMETERS_R = new SimpleMatrix(new double[][]{
-            new double[]{-0.11201892953178422},
-            new double[]{-0.0034454197797296054},
-            new double[]{0.11231265526595093},
-    });
+    public static double FORWARD_OFFSET = -1.565;
+    public static double ODOMETRY_WIDTH = 9.1474;
 
     // DROPDOWN
     public static double DROPDOWN_DRIVE = 35; // 0.29;
@@ -124,23 +105,22 @@ public class PestoFTCConfig implements ConfigInterface {
         driveController.backLeft.setAccelerationMax(Double.POSITIVE_INFINITY);
         driveController.backRight.setAccelerationMax(Double.POSITIVE_INFINITY);
 
+        FrontalLobe.driveController = driveController;
+
         if (initializePinpoint) {
-            DeterministicTracker tracker = new NotEnoughOdometryTracker.TrackerBuilder(
+            DeterministicTracker tracker = new ThreeWheelOdometryTracker.TrackerBuilder(
                     hardwareMap,
                     ODOMETRY_TICKS_PER_INCH,
-                    ODOMETRY_PARAMETERS_X,
-                    ODOMETRY_PARAMETERS_Y,
-                    ODOMETRY_PARAMETERS_R,
-                    new String[]{
-                            leftName,
-                            centerName,
-                            rightName
-                    },
-                    new DcMotorSimple.Direction[]{
-                            leftDirection,
-                            centerDirection,
-                            rightDirection
-                    }
+                    ODOMETRY_TICKS_PER_INCH,
+                    ODOMETRY_TICKS_PER_INCH,
+                    FORWARD_OFFSET,
+                    ODOMETRY_WIDTH,
+                    leftName,
+                    centerName,
+                    rightName,
+                    leftDirection,
+                    centerDirection,
+                    rightDirection
             ).build();
 
             TeleOpController teleOpController = new TeleOpController(driveController, hardwareMap);
@@ -157,7 +137,6 @@ public class PestoFTCConfig implements ConfigInterface {
             FrontalLobe.tracker = tracker;
         }
 
-        FrontalLobe.driveController = driveController;
         Constants.mass = mass;
     }
 }

@@ -12,11 +12,6 @@ repositories {
 }
 
 dependencies {
-    implementation "dev.frozenmilk.dairy:CachingHardware:1.0.0"
-
-    implementation 'io.github.william27b:dashboard:0.15.03'
-    implementation 'io.github.william27b:core:0.15.03'
-
     implementation 'org.firstinspires.ftc:Inspection:11.0.0'
     implementation 'org.firstinspires.ftc:Blocks:11.0.0'
     implementation 'org.firstinspires.ftc:RobotCore:11.0.0'
@@ -27,8 +22,8 @@ dependencies {
     implementation 'org.firstinspires.ftc:Vision:11.0.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
-    implementation 'org.ejml:ejml-all:0.43'
+    implementation "dev.frozenmilk.dairy:CachingHardware:1.0.0"
 
-    implementation "dev.frozenmilk.sinister:Sloth:0.2.4"
+    implementation 'com.acmerobotics.dashboard:dashboard:0.5.1'
 }
 
