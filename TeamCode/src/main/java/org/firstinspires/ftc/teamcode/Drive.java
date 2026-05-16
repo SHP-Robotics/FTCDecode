@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.shprobotics.pestocore.processing.MotorCortex;
 
 @TeleOp(name = "Drive")
@@ -31,8 +32,13 @@ public class Drive extends BaseRobot {
         rI = (DcMotor) hardwareMap.get("intakeRight");
         lI = (DcMotor) hardwareMap.get("intakeLeft");
 
+        rI.setDirection(DcMotorSimple.Direction.REVERSE);
+
         rO = (DcMotor) hardwareMap.get("shooterRight");
         lO = (DcMotor) hardwareMap.get("shooterLeft");
+
+        rO.setDirection(DcMotorSimple.Direction.REVERSE);
+        lO.setDirection(DcMotorSimple.Direction.REVERSE);
 
     waitForStart();
 
