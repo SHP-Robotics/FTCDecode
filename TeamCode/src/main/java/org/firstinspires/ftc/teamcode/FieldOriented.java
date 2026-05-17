@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.shprobotics.pestocore.devices.GamepadKey;
@@ -30,6 +31,12 @@ public class FieldOriented extends BaseRobot {
         boolean usingOdometry = true;
 
         super.initialize();
+
+        teleOpController.useIMU();
+        teleOpController.configureIMU(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP
+        ));
 
         waitForStart();
 

@@ -60,7 +60,7 @@ public class PestoFTCConfig implements ConfigInterface {
 
     // CAMERA
     public static double STATIC_DRIVE = 0.1;
-    public static double KP = 0.015;
+    public static double KP = 0.010;
 
     // AUTO
     public static double DRIVE_STATIC = 0.25;
