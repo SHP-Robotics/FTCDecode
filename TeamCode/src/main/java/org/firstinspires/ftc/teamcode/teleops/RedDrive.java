@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleops;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.shprobotics.pestocore.devices.GamepadKey;
 import com.shprobotics.pestocore.processing.FrontalLobe;
 import com.shprobotics.pestocore.processing.MotorCortex;
@@ -29,6 +30,8 @@ public class RedDrive extends BaseRobot {
 
         super.initialize();
 
+        DcMotor encoder = MotorCortex.getMotor(3, 173);
+
         turretSubsystem.setAcceptedTags(PestoFTCConfig.RED_TAGS);
         turretSubsystem.setTargetPosition(0);
         turretSubsystem.setVisionOffset(0);
@@ -42,6 +45,8 @@ public class RedDrive extends BaseRobot {
         double cam_distance = 0.0;
 
         waitForStart();
+
+        int encoderStart = encoder.getCurrentPosition();
 
 //        turretSubsystem.rezero();
 
@@ -175,7 +180,6 @@ public class RedDrive extends BaseRobot {
         mecanumController.backLeft.motor.setPower(0.0);
         mecanumController.backRight.motor.setPower(0.0);
 
-        sleep(200);
 
         blockerSubsystem.setState(BlockerSubsystem.BlockerState.BLOCK);
         blockerSubsystem.update();
@@ -187,12 +191,28 @@ public class RedDrive extends BaseRobot {
 
         turretSubsystem.setPower(0.0);
 
-        mecanumController.frontLeft.motor.setPower(-1.0);
-        mecanumController.frontRight.motor.setPower(-1.0);
-        mecanumController.backLeft.motor.setPower(1.0);
-        mecanumController.backRight.motor.setPower(1.0);
+        mecanumController.frontLeft.motor.setPower(0.2);
+        mecanumController.frontRight.motor.setPower(0.2);
+
+        sleep(750);
+
+        mecanumController.frontLeft.motor.setPower(1.0);
+        mecanumController.frontRight.motor.setPower(1.0);
+        mecanumController.backLeft.motor.setPower(-1.0);
+        mecanumController.backRight.motor.setPower(-1.0);
 
         while (opModeIsActive() && !isStopRequested()) {
+            MotorCortex.update();
+
+            if (encoder.getCurrentPosition() - encoderStart > 38000) {
+                mecanumController.frontLeft.motor.setPower(0.0);
+                mecanumController.frontRight.motor.setPower(0.0);
+                mecanumController.backLeft.motor.setPower(0.0);
+                mecanumController.backRight.motor.setPower(0.0);
+            }
+
+            telemetry.addData("encoder", encoder.getCurrentPosition());
+            telemetry.update();
         }
 
         turretSubsystem.visionPortal.close();

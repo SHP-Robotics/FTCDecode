@@ -113,8 +113,7 @@ public class TurretSubsystem {
         this.targetPosition = position;
     }
 
-    public double getTargetPosition() {
-        return targetPosition;
+    public double getTargetPosition() {return targetPosition;
     }
 
     public double getPosition() {

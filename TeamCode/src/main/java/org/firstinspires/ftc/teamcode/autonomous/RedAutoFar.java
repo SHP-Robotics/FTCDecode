@@ -142,7 +142,7 @@ public class RedAutoFar extends BaseRobot {
         turretSubsystem.setVisionOffset(3.5);
 
         // 68 degrees
-        double position = 63 * 6.88;
+        double position = 60 * 6.88;
         turretSubsystem.setTargetPosition(position);
 
         while (!isStarted() && !isStopRequested()) {
@@ -173,7 +173,7 @@ public class RedAutoFar extends BaseRobot {
 
         waitForStart();
         turretSubsystem.setVisionOffset(4);
-        double power = -0.70;
+        double power = -0.78;
         outtakeSubsystem.setPower(power);
 
         long start = System.nanoTime();
