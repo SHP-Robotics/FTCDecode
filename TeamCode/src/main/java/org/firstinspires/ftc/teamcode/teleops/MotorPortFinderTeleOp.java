@@ -12,7 +12,6 @@ import java.util.List;
 public class MotorPortFinderTeleOp extends LinearOpMode {
     private static final int FIRST_MOTOR_PORT = 0;
     private static final int LAST_MOTOR_PORT = 3;
-    private static final double TEST_POWER = 0.25;
     private static final String UNKNOWN_WHEEL = "not found yet";
 
     @Override
@@ -113,14 +112,7 @@ public class MotorPortFinderTeleOp extends LinearOpMode {
 
             stopAllControllers(controllers);
 
-            double power = 0.0;
-            if (gamepad1.right_trigger > 0.2) {
-                power = TEST_POWER;
-            } else if (gamepad1.left_trigger > 0.2) {
-                power = -TEST_POWER;
-            }
-
-            controller.setMotorPower(selectedPort, power);
+            controller.setMotorPower(selectedPort, -gamepad1.left_stick_y);
 
             telemetry.addLine("MOTOR PORT FINDER");
             telemetry.addData("Controller", getDeviceName(controller));
