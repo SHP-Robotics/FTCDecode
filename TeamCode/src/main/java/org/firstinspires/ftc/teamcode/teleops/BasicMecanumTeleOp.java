@@ -12,6 +12,8 @@ public class BasicMecanumTeleOp extends LinearOpMode {
     private DcMotorEx rightFront;
     private DcMotorEx leftBack;
     private DcMotorEx rightBack;
+    private DcMotorEx leftIntake;
+    private DcMotorEx rightIntake;
 
     @Override
     public void runOpMode() {
@@ -19,6 +21,18 @@ public class BasicMecanumTeleOp extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        leftIntake = hardwareMap.get(DcMotorEx.class, "leftIntake");
+        rightIntake = hardwareMap.get(DcMotorEx.class, "rightIntake");
+
+        // Reverse the left intake to account for its mounting.
+        leftIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightIntake.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftIntake.setPower(0);
+        rightIntake.setPower(0);
+        leftIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -28,8 +42,23 @@ public class BasicMecanumTeleOp extends LinearOpMode {
         setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        try {
+            runDrive();
+        } finally {
+            leftIntake.setPower(0);
+            rightIntake.setPower(0);
+            leftFront.setPower(0);
+            rightFront.setPower(0);
+            leftBack.setPower(0);
+            rightBack.setPower(0);
+        }
+    }
+
+    private void runDrive() {
         telemetry.addLine("Ready");
         telemetry.addData("Motors", "leftFront, rightFront, leftBack, rightBack");
+        telemetry.addLine("Left trigger: both intakes | Hold left bumper + trigger: outtake");
+        telemetry.addLine("Left bumper also sets drive speed to 35%");
         telemetry.update();
 
         waitForStart();
@@ -56,10 +85,15 @@ public class BasicMecanumTeleOp extends LinearOpMode {
             leftBack.setPower((leftBackPower / max) * speedMultiplier);
             rightBack.setPower((rightBackPower / max) * speedMultiplier);
 
+            double intakePower = gamepad1.left_trigger * (gamepad1.left_bumper ? -1.0 : 1.0);
+            leftIntake.setPower(intakePower);
+            rightIntake.setPower(intakePower);
+
             telemetry.addData("Speed", gamepad1.left_bumper ? "Slow" : "Full");
             telemetry.addData("Forward", "%.2f", forward);
             telemetry.addData("Strafe", "%.2f", strafe);
             telemetry.addData("Turn", "%.2f", turn);
+            telemetry.addData("Intake power", "%.2f", intakePower);
             telemetry.update();
         }
     }
