@@ -22,7 +22,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.Collections;
 import java.util.List;
 
-@TeleOp(name = "Field Oriented", group = "Drive")
+@TeleOp(name = "Field Oriented")
 public class FieldOriented extends LinearOpMode {
     private static final RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIRECTION =
             RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
@@ -35,6 +35,9 @@ public class FieldOriented extends LinearOpMode {
     DcMotorEx rightBack;
     DcMotorEx leftIntake;
     DcMotorEx rightIntake;
+
+    DcMotorEx transfer;
+    DcMotorEx outtake;
 
     private static final String WEBCAM_NAME = "Webcam 1";
     private VisionPortal visionPortal;
@@ -70,8 +73,12 @@ public class FieldOriented extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+
         leftIntake = hardwareMap.get(DcMotorEx.class, "intakeLeft");
         rightIntake = hardwareMap.get(DcMotorEx.class, "intakeRight");
+
+        transfer = hardwareMap.get(DcMotorEx.class, "transfer");
+        outtake = hardwareMap.get(DcMotorEx.class, "outtake");
 
         // Reverse the left intake to account for its mounting.
         leftIntake.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -87,6 +94,9 @@ public class FieldOriented extends LinearOpMode {
         leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        transfer.setDirection(DcMotorSimple.Direction.FORWARD);
+        outtake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -129,6 +139,9 @@ public class FieldOriented extends LinearOpMode {
             telemetry.addLine();
             addVisionTelemetry(detections);
             telemetry.update();
+
+            transfer.setPower(gamepad1.right_trigger);
+            outtake.setPower(gamepad1.right_trigger * .50);
         }
     }
 
@@ -174,11 +187,6 @@ public class FieldOriented extends LinearOpMode {
         telemetry.addData("Camera", cameraError != null ? cameraError
                 : visionPortal == null ? "Unavailable" : visionPortal.getCameraState());
         telemetry.addData("AprilTag alignment", alignment.getStatus());
-        if (alignment.getTargetId() >= 0 && Double.isFinite(alignment.getRollErrorDeg())) {
-            telemetry.addData("Last roll error", "Tag %d: %.1f deg | goal 0 +/- %.1f",
-                    alignment.getTargetId(), alignment.getRollErrorDeg(),
-                    AprilTagAlignmentController.ROLL_TOLERANCE_DEG);
-        }
         telemetry.addData("Tags in latest frame", detections.size());
         AprilTagDetection target = AprilTagAlignmentController.selectTarget(detections, alignment.getTargetId());
         if (target != null) {
